@@ -1,0 +1,116 @@
+/* ========================================
+   MOBILE BOTTOM NAVIGATION
+   Hidden on tablet/desktop — only shown
+   below the 768px breakpoint.
+======================================== */
+
+.mobile-bottom-nav {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .mobile-bottom-nav {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        z-index: 1100;
+
+        background: rgba(255, 255, 255, 0.9);
+        border-top: 1px solid #eaecf0;
+
+        backdrop-filter: blur(18px) saturate(180%);
+        -webkit-backdrop-filter: blur(18px) saturate(180%);
+
+        box-shadow:
+            0 -20px 40px rgba(16, 24, 40, 0.1),
+            0 -2px 8px rgba(16, 24, 40, 0.04);
+
+        /* Respect iOS home-indicator safe area without
+           the bar itself growing taller than it needs to. */
+        padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    .mobile-nav-item {
+        flex: 1;
+        min-width: 0;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+
+        padding: 8px 2px 6px;
+
+        color: #667085;
+        text-decoration: none;
+
+        transition: color 0.2s ease;
+    }
+
+    .mobile-nav-item.active {
+        color: #F97316;
+    }
+
+    .mobile-nav-icon-wrap {
+        position: relative;
+        display: flex;
+    }
+
+    .mobile-nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .mobile-nav-badge {
+        position: absolute;
+        top: -5px;
+        right: -8px;
+
+        min-width: 15px;
+        height: 15px;
+        padding: 0 3px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 999px;
+        background: #F97316;
+        color: #ffffff;
+
+        font-size: 9px;
+        font-weight: 700;
+
+        border: 1.5px solid #ffffff;
+    }
+
+    /* Keep page content from sitting underneath the fixed
+       bottom bar — a global, low-risk safety net rather than
+       touching every page's own bottom padding. */
+    body {
+        padding-bottom: 62px;
+    }
+
+}
+
+@media (max-width: 360px) {
+
+    .mobile-nav-label {
+        font-size: 9px;
+    }
+
+    .mobile-nav-icon-wrap svg {
+        width: 20px;
+        height: 20px;
+    }
+
+}

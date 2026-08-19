@@ -1,0 +1,969 @@
+/* ========================================
+   PROFILE PAGE
+======================================== */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+.profile-page {
+    min-height: 100vh;
+    background: #f6f8fb;
+    color: #1d2939;
+    font-family: "Poppins", sans-serif;
+    padding-bottom: 60px;
+}
+
+/* ========================================
+   USER LIST MODAL
+======================================== */
+
+.user-modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 2000;
+
+    padding: 20px;
+}
+
+.user-modal {
+    width: 100%;
+    max-width: 450px;
+
+    max-height: 600px;
+
+    background: #ffffff;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.2);
+
+    animation: userModalOpen 0.25s ease;
+}
+
+@keyframes userModalOpen {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+.user-modal-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid #eaecf0;
+}
+
+.user-modal-header h2 {
+    margin: 0;
+
+    color: #101828;
+
+    font-size: 20px;
+}
+
+.close-modal-btn {
+    width: 34px;
+    height: 34px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #f2f4f7;
+
+    color: #475467;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+.close-modal-btn:hover {
+    background: #eaecf0;
+}
+
+.user-list {
+    padding: 10px 0;
+
+    max-height: 500px;
+
+    overflow-y: auto;
+}
+
+.user-list-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 20px;
+
+    transition: background 0.2s ease;
+}
+
+.user-list-item:hover {
+    background: #f9fafb;
+}
+
+.user-list-item img {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+}
+
+.user-list-info {
+    flex: 1;
+}
+
+.user-list-info h4 {
+    margin: 0;
+
+    color: #101828;
+
+    font-size: 14px;
+}
+
+.user-list-info p {
+    margin: 3px 0 0;
+
+    color: #667085;
+
+    font-size: 12px;
+}
+
+.view-profile-btn {
+    padding: 7px 14px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #101828;
+
+    color: #ffffff;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.view-profile-btn:hover {
+    background: #1d2939;
+}
+
+.no-users {
+    padding: 40px 20px;
+
+    text-align: center;
+
+    color: #667085;
+}
+
+/* ========================================
+   COVER SECTION
+======================================== */
+
+.cover-section {
+    width: 100%;
+    height: 330px;
+    overflow: hidden;
+    position: relative;
+    background: #e8edf3;
+}
+
+.cover-section::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.05),
+        rgba(0, 0, 0, 0.35)
+    );
+}
+
+.cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+
+/* ========================================
+   PROFILE HEADER
+======================================== */
+
+.profile-header {
+    max-width: 1150px;
+    margin: -80px auto 0;
+    position: relative;
+    z-index: 2;
+
+    background: #ffffff;
+    border-radius: 24px;
+
+    padding: 0 45px 35px;
+
+    text-align: center;
+
+    box-shadow:
+        0 15px 45px rgba(16, 24, 40, 0.10);
+
+    border: 1px solid rgba(16, 24, 40, 0.05);
+}
+
+.profile-image {
+    width: 155px;
+    height: 155px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    border: 7px solid #ffffff;
+
+    margin-top: -78px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.18);
+
+    background: #ffffff;
+}
+
+.profile-header h1 {
+    margin: 18px 0 4px;
+
+    font-size: 32px;
+    font-weight: 700;
+
+    letter-spacing: -0.5px;
+
+    color: #101828;
+}
+
+.profile-header h3 {
+    margin: 0;
+
+    font-size: 15px;
+    font-weight: 500;
+
+    color: #667085;
+}
+
+.community-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-top: 10px;
+
+    padding: 5px 14px;
+
+    border-radius: 999px;
+
+    background: var(--tm-orange-tint, #FFF7ED);
+    border: 1px solid rgba(249, 115, 22, 0.25);
+
+    color: var(--tm-orange-dark, #EA580C);
+
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.bio {
+    max-width: 600px;
+
+    margin: 18px auto 8px;
+
+    font-size: 15px;
+    line-height: 1.7;
+
+    color: #475467;
+}
+
+.location {
+    margin: 5px 0 22px;
+
+    font-size: 14px;
+
+    color: #667085;
+}
+
+
+/* ========================================
+   PROFILE BUTTONS
+======================================== */
+
+.profile-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 22px;
+}
+
+.profile-buttons button {
+    border: none;
+    cursor: pointer;
+
+    padding: 12px 24px;
+
+    border-radius: 10px;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.edit-btn {
+    background: #101828;
+    color: #ffffff;
+
+    box-shadow:
+        0 5px 15px rgba(16, 24, 40, 0.18);
+}
+
+.edit-btn:hover {
+    background: #1d2939;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(16, 24, 40, 0.25);
+}
+
+.share-btn {
+    background: #ffffff;
+    color: #344054;
+
+    border: 1px solid #d0d5dd !important;
+}
+
+.share-btn:hover {
+    background: #f9fafb;
+
+    transform: translateY(-2px);
+
+    border-color: #98a2b3 !important;
+}
+
+
+/* ========================================
+   STATS SECTION
+======================================== */
+
+.stats-section {
+    max-width: 1150px;
+
+    margin: 25px auto;
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 18px;
+}
+
+.stat-card {
+    background: #ffffff;
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 18px;
+
+    padding: 25px 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 4px 15px rgba(16, 24, 40, 0.04);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 12px 30px rgba(16, 24, 40, 0.08);
+}
+
+.stat-card h2 {
+    margin: 0 0 5px;
+
+    font-size: 27px;
+    font-weight: 700;
+
+    color: #101828;
+}
+
+.stat-card p {
+    margin: 0;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    color: #667085;
+}
+
+
+/* ========================================
+   ABOUT CARD
+======================================== */
+
+.about-card {
+    max-width: 1150px;
+
+    margin: 25px auto;
+
+    background: #ffffff;
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 20px;
+
+    padding: 30px 35px;
+
+    box-shadow:
+        0 5px 20px rgba(16, 24, 40, 0.04);
+}
+
+.about-card h2 {
+    margin: 0 0 25px;
+
+    font-size: 21px;
+    font-weight: 700;
+
+    color: #101828;
+}
+
+.about-item {
+    display: flex;
+
+    align-items: center;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid #f2f4f7;
+
+    font-size: 14px;
+}
+
+.about-item:last-child {
+    border-bottom: none;
+}
+
+.about-item strong {
+    width: 140px;
+
+    color: #344054;
+
+    font-weight: 600;
+}
+
+.about-item span {
+    color: #667085;
+
+    word-break: break-word;
+}
+
+
+/* ========================================
+   SECTIONS
+======================================== */
+
+.posts-section {
+    max-width: 1150px;
+
+    margin: 30px auto;
+}
+
+.posts-section > h2 {
+    margin: 0 0 20px;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    color: #101828;
+}
+
+
+/* ========================================
+   SAVED TRIPS
+======================================== */
+
+.saved-trip-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+.saved-trip-card {
+    position: relative;
+
+    background: #ffffff;
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 18px;
+
+    padding: 24px;
+
+    box-shadow:
+        0 5px 18px rgba(16, 24, 40, 0.04);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.saved-trip-card:hover {
+    transform: translateY(-5px);
+
+    border-color: #d0d5dd;
+
+    box-shadow:
+        0 15px 35px rgba(16, 24, 40, 0.09);
+}
+
+.saved-trip-card h3 {
+    margin: 0 0 18px;
+
+    font-size: 19px;
+    font-weight: 700;
+
+    color: #101828;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.saved-trip-card p {
+    margin: 10px 0;
+
+    font-size: 13px;
+
+    color: #667085;
+
+    line-height: 1.5;
+}
+
+
+/* ========================================
+   TRIP BUTTONS
+======================================== */
+
+.trip-buttons {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 22px;
+}
+
+.trip-buttons button {
+    flex: 1;
+
+    padding: 10px 14px;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.view-trip-btn {
+    border: none;
+
+    background: #101828;
+
+    color: #ffffff;
+}
+
+.view-trip-btn:hover {
+    background: #1d2939;
+
+    transform: translateY(-2px);
+}
+
+.delete-trip-btn {
+    border: 1px solid var(--tm-danger-border, #fda29b);
+
+    background: #ffffff;
+
+    color: var(--tm-danger, #b42318);
+}
+
+.delete-trip-btn:hover {
+    background: var(--tm-danger-tint, #fef3f2);
+
+    transform: translateY(-2px);
+}
+
+
+/* ========================================
+   POSTS GRID
+======================================== */
+
+.post-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+.post-card {
+    background: #ffffff;
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 5px 18px rgba(16, 24, 40, 0.04);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 15px 35px rgba(16, 24, 40, 0.10);
+}
+
+.post-card img {
+    width: 100%;
+    height: 220px;
+
+    object-fit: cover;
+
+    display: block;
+
+    transition: transform 0.4s ease;
+}
+
+.post-card:hover img {
+    transform: scale(1.04);
+}
+
+.post-card h4 {
+    margin: 18px 20px 8px;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    color: #101828;
+}
+
+.post-card p {
+    margin: 0 20px 17px;
+
+    font-size: 13px;
+
+    color: #667085;
+}
+
+
+/* ========================================
+   DETAILS BUTTON
+======================================== */
+
+.details-btn {
+    margin: 0 20px 20px;
+
+    padding: 10px 17px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #f2f4f7;
+
+    color: #344054;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.details-btn:hover {
+    background: #101828;
+
+    color: #ffffff;
+
+    transform: translateX(3px);
+}
+
+
+/* ========================================
+   EMPTY STATE
+======================================== */
+
+.empty-posts {
+    background: #ffffff;
+
+    border: 1px dashed #d0d5dd;
+
+    border-radius: 18px;
+
+    padding: 55px 25px;
+
+    text-align: center;
+}
+
+.empty-posts h3 {
+    margin: 0 0 8px;
+
+    font-size: 19px;
+
+    color: #344054;
+}
+
+.empty-posts p {
+    margin: 0;
+
+    font-size: 14px;
+
+    color: #98a2b3;
+}
+
+
+/* ========================================
+   LOADING
+======================================== */
+
+.profile-loading {
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #f6f8fb;
+
+    color: #475467;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   RESPONSIVE - TABLET
+======================================== */
+
+@media (max-width: 1000px) {
+
+    .profile-header,
+    .stats-section,
+    .about-card,
+    .posts-section {
+        width: calc(100% - 40px);
+    }
+
+    .saved-trip-grid,
+    .post-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+/* ========================================
+   RESPONSIVE - MOBILE
+======================================== */
+
+@media (max-width: 650px) {
+
+    .cover-section {
+        height: 230px;
+    }
+
+    .profile-header {
+        width: calc(100% - 24px);
+
+        margin-top: -55px;
+
+        padding: 0 20px 28px;
+
+        border-radius: 20px;
+    }
+
+    .profile-image {
+        width: 120px;
+        height: 120px;
+
+        margin-top: -60px;
+
+        border-width: 5px;
+    }
+
+    .profile-header h1 {
+        font-size: 25px;
+    }
+
+    .profile-header h3 {
+        font-size: 14px;
+    }
+
+    .bio {
+        font-size: 14px;
+    }
+
+    .profile-buttons {
+        flex-direction: column;
+
+        width: 100%;
+    }
+
+    .profile-buttons button {
+        width: 100%;
+    }
+
+    .stats-section {
+        width: calc(100% - 24px);
+
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 20px 15px;
+    }
+
+    .stat-card h2 {
+        font-size: 23px;
+    }
+
+    .about-card {
+        width: calc(100% - 24px);
+
+        padding: 25px 20px;
+    }
+
+    .about-item {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 5px;
+    }
+
+    .about-item strong {
+        width: auto;
+    }
+
+    .posts-section {
+        width: calc(100% - 24px);
+    }
+
+    .saved-trip-grid,
+    .post-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .post-card img {
+        height: 230px;
+    }
+
+}
+
+
+/* ========================================
+   SMALL MOBILE
+======================================== */
+
+@media (max-width: 400px) {
+
+    .cover-section {
+        height: 200px;
+    }
+
+    .profile-header h1 {
+        font-size: 22px;
+    }
+
+    .stats-section {
+        gap: 8px;
+    }
+
+    .stat-card {
+        padding: 17px 10px;
+    }
+
+    .trip-buttons {
+        flex-direction: column;
+    }
+
+}
+

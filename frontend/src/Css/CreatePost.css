@@ -1,0 +1,439 @@
+
+.create-post-page {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 110px 20px 60px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc 0%,
+            #eef2f6 100%
+        );
+
+    font-family: "Poppins", sans-serif;
+
+    color: #101828;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+/* ========================================
+   BACKGROUND DECORATION
+======================================== */
+
+.create-post-page::before {
+    content: "";
+
+    position: absolute;
+
+    width: 470px;
+    height: 470px;
+
+    top: -250px;
+    left: -210px;
+
+    border-radius: 50%;
+
+    background: rgba(16, 24, 40, 0.035);
+
+    pointer-events: none;
+}
+
+.create-post-page::after {
+    content: "";
+
+    position: absolute;
+
+    width: 400px;
+    height: 400px;
+
+    right: -200px;
+    bottom: -190px;
+
+    border-radius: 50%;
+
+    background: rgba(16, 24, 40, 0.035);
+
+    pointer-events: none;
+}
+
+
+/* ========================================
+   PAGE TITLE
+======================================== */
+
+.create-post-page h1 {
+    position: relative;
+
+    z-index: 2;
+
+    margin: 0 0 28px;
+
+    font-size: 32px;
+
+    font-weight: 700;
+
+    letter-spacing: -0.8px;
+
+    text-align: center;
+
+    color: #101828;
+}
+
+
+/* ========================================
+   FORM
+======================================== */
+
+.create-post-form {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+
+    max-width: 560px;
+
+    padding: 40px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 20px 55px rgba(16, 24, 40, 0.09);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+
+/* ========================================
+   INPUTS
+======================================== */
+
+.create-post-form input {
+    width: 100%;
+
+    height: 50px;
+
+    box-sizing: border-box;
+
+    padding: 0 15px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #101828;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.create-post-form input::placeholder {
+    color: #98a2b3;
+}
+
+.create-post-form input:hover {
+    border-color: #98a2b3;
+}
+
+.create-post-form input:focus {
+    border-color: #344054;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(16, 24, 40, 0.06);
+}
+
+
+/* ========================================
+   DESCRIPTION
+======================================== */
+
+.create-post-form textarea {
+    width: 100%;
+
+    min-height: 150px;
+
+    box-sizing: border-box;
+
+    padding: 14px 15px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    resize: vertical;
+
+    background: #ffffff;
+
+    color: #101828;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.create-post-form textarea::placeholder {
+    color: #98a2b3;
+}
+
+.create-post-form textarea:hover {
+    border-color: #98a2b3;
+}
+
+.create-post-form textarea:focus {
+    border-color: #344054;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(16, 24, 40, 0.06);
+}
+
+
+/* ========================================
+   CATEGORY SELECT
+======================================== */
+
+.create-post-form select {
+    width: 100%;
+
+    height: 50px;
+
+    box-sizing: border-box;
+
+    padding: 0 15px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #344054;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.create-post-form select:hover {
+    border-color: #98a2b3;
+}
+
+.create-post-form select:focus {
+    border-color: #344054;
+
+    box-shadow:
+        0 0 0 3px rgba(16, 24, 40, 0.06);
+}
+
+
+/* ========================================
+   CREATE BUTTON
+======================================== */
+
+.create-post-form button {
+    width: 100%;
+
+    height: 52px;
+
+    margin-top: 8px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #101828,
+            #1d2939
+        );
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.2px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 9px 22px rgba(16, 24, 40, 0.15);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.create-post-form button:hover {
+    transform: translateY(-2px);
+
+    background:
+        linear-gradient(
+            135deg,
+            #1d2939,
+            #344054
+        );
+
+    box-shadow:
+        0 13px 28px rgba(16, 24, 40, 0.21);
+}
+
+.create-post-form button:active {
+    transform: translateY(0);
+}
+
+
+/* ========================================
+   REQUIRED FIELD FEEDBACK
+======================================== */
+
+.create-post-form input:invalid:not(:placeholder-shown),
+.create-post-form textarea:invalid:not(:placeholder-shown) {
+    border-color: #d0d5dd;
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 700px) {
+
+    .create-post-page {
+        padding: 95px 18px 50px;
+    }
+
+    .create-post-page h1 {
+        font-size: 29px;
+    }
+
+    .create-post-form {
+        padding: 34px 28px;
+
+        border-radius: 19px;
+    }
+
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 500px) {
+
+    .create-post-page {
+        padding: 90px 14px 40px;
+    }
+
+    .create-post-page h1 {
+        margin-bottom: 22px;
+
+        font-size: 26px;
+    }
+
+    .create-post-form {
+        max-width: 100%;
+
+        padding: 26px 20px;
+
+        gap: 14px;
+
+        border-radius: 17px;
+    }
+
+    .create-post-form input,
+    .create-post-form select {
+        height: 48px;
+
+        font-size: 12px;
+    }
+
+    .create-post-form textarea {
+        min-height: 125px;
+
+        font-size: 12px;
+    }
+
+    .create-post-form button {
+        height: 49px;
+
+        font-size: 12px;
+    }
+
+}
+
+
+/* ========================================
+   SMALL MOBILE
+======================================== */
+
+@media (max-width: 380px) {
+
+    .create-post-page h1 {
+        font-size: 24px;
+    }
+
+    .create-post-form {
+        padding: 23px 17px;
+    }
+
+}
+

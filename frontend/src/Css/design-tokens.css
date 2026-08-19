@@ -1,0 +1,82 @@
+/* ========================================
+   TRAVELMET DESIGN TOKENS
+
+   Same orange/white/black identity as
+   before — this file only adds a consistent
+   shadow/radius/gradient scale so every
+   surface (navbar, cards, buttons, dropdowns)
+   reads as one deliberate system instead of
+   each component inventing its own shadow.
+
+   Existing hardcoded values elsewhere are left
+   as-is; new/updated components should prefer
+   these variables going forward.
+======================================== */
+
+:root {
+
+    /* ---- Brand ---- */
+    --tm-orange: #F97316;
+    --tm-orange-dark: #EA580C;
+    --tm-orange-light: #FB923C;
+    --tm-orange-tint: #FFF7ED;
+    --tm-orange-gradient: linear-gradient(135deg, #F97316, #FB923C);
+    --tm-yellow: #FACC15;
+
+    /* Exact token names as specified, for anything that
+       wants to reference the palette directly rather than
+       through the tm- prefixed aliases above. */
+    --primary: #F97316;
+    --secondary: #FB923C;
+    --accent: #FACC15;
+    --dark: #0F172A;
+    --text: #1E293B;
+    --light: #FFFFFF;
+    --background: #FFFDF8;
+    --border: #E2E8F0;
+    --radius: 12px;
+    --shadow: 0 4px 15px rgba(0, 0, 0, .08);
+
+    /* ---- Ink / neutrals (unchanged from existing palette) ---- */
+    --tm-ink: #101828;
+    --tm-ink-soft: #1D2939;
+    --tm-muted: #667085;
+    --tm-border: #EAECF0;
+    --tm-surface: #FFFFFF;
+    --tm-surface-muted: #F9FAFB;
+
+    /* ---- Semantic accents — used sparingly, for state/
+       meaning (success, danger, info), never as a
+       replacement for the orange brand color ---- */
+    --tm-success: #12B76A;
+    --tm-success-tint: #ECFDF3;
+    --tm-danger: #B42318;
+    --tm-danger-tint: #FEF3F2;
+    --tm-danger-border: #FDA29B;
+    --tm-info: #2563EB;
+    --tm-info-tint: #EFF4FF;
+    --tm-warning: #B54708;
+    --tm-warning-tint: #FFFAEB;
+
+    /* ---- Radius scale ---- */
+    --tm-radius-sm: 10px;
+    --tm-radius-md: 16px;
+    --tm-radius-lg: 22px;
+    --tm-radius-pill: 999px;
+
+    /* ---- Elevation scale — subtle → premium ---- */
+    --tm-shadow-sm: 0 2px 8px rgba(16, 24, 40, 0.06);
+    --tm-shadow-md: 0 8px 24px rgba(16, 24, 40, 0.08);
+    --tm-shadow-lg: 0 20px 48px rgba(16, 24, 40, 0.14);
+    --tm-shadow-orange: 0 10px 24px rgba(249, 115, 22, 0.28);
+
+    /* ---- Motion ---- */
+    --tm-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Buttons don't inherit font-family from the page by default
+   in most browsers — apply it globally so every <button> in
+   the app (existing and new) matches the body typography. */
+button {
+    font-family: inherit;
+}

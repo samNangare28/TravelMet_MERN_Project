@@ -1,0 +1,573 @@
+
+
+.trip-details {
+    min-height: 100vh;
+
+    padding: 110px 20px 70px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc 0%,
+            #eef2f6 100%
+        );
+
+    font-family: "Poppins", sans-serif;
+
+    color: #101828;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+/* ========================================
+   BACKGROUND DECORATION
+======================================== */
+
+.trip-details::before {
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    top: -280px;
+    left: -220px;
+
+    border-radius: 50%;
+
+    background: rgba(16, 24, 40, 0.035);
+
+    pointer-events: none;
+}
+
+.trip-details::after {
+    content: "";
+
+    position: absolute;
+
+    width: 420px;
+    height: 420px;
+
+    right: -220px;
+    bottom: -180px;
+
+    border-radius: 50%;
+
+    background: rgba(16, 24, 40, 0.035);
+
+    pointer-events: none;
+}
+
+
+/* ========================================
+   MAIN TRIP CARD
+======================================== */
+
+.trip-card {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+
+    max-width: 950px;
+
+    padding: 42px;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 20px 55px rgba(16, 24, 40, 0.08);
+}
+
+
+/* ========================================
+   BACK BUTTON
+======================================== */
+
+.back-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 9px 15px;
+
+    margin-bottom: 22px;
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #475467;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #f9fafb;
+
+    color: #101828;
+
+    border-color: #98a2b3;
+
+    transform: translateX(-2px);
+}
+
+
+/* ========================================
+   DESTINATION TITLE
+======================================== */
+
+.trip-card > h1 {
+    margin: 0 0 30px;
+
+    font-size: 34px;
+
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    letter-spacing: -0.8px;
+
+    color: #101828;
+}
+
+
+/* ========================================
+   TRIP INFORMATION
+======================================== */
+
+.trip-info {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 14px;
+
+    margin-bottom: 30px;
+}
+
+.trip-info p {
+    margin: 0;
+
+    padding: 17px 18px;
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 12px;
+
+    background: #f9fafb;
+
+    color: #667085;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.trip-info p:hover {
+    background: #ffffff;
+
+    border-color: #d0d5dd;
+
+    transform: translateY(-2px);
+}
+
+.trip-info strong {
+    color: #344054;
+
+    font-weight: 600;
+}
+
+
+/* ========================================
+   DIVIDER
+======================================== */
+
+.trip-card hr {
+    height: 1px;
+
+    margin: 32px 0;
+
+    border: none;
+
+    background: #eaecf0;
+}
+
+
+/* ========================================
+   ITINERARY HEADING
+======================================== */
+
+.trip-card > h2 {
+    margin: 0 0 22px;
+
+    font-size: 23px;
+
+    font-weight: 700;
+
+    letter-spacing: -0.3px;
+
+    color: #101828;
+}
+
+
+/* ========================================
+   ITINERARY CONTAINER
+======================================== */
+
+.itinerary {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+
+/* ========================================
+   DAY CARD
+======================================== */
+
+.day-card {
+    position: relative;
+
+    padding: 24px 25px;
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 5px 18px rgba(16, 24, 40, 0.045);
+
+    overflow: hidden;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.day-card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 4px;
+
+    background: #101828;
+}
+
+.day-card:hover {
+    transform: translateY(-3px);
+
+    border-color: #d0d5dd;
+
+    box-shadow:
+        0 12px 28px rgba(16, 24, 40, 0.08);
+}
+
+
+/* ========================================
+   DAY NUMBER
+======================================== */
+
+.day-card h3 {
+    margin: 0 0 8px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
+
+    color: #667085;
+}
+
+
+/* ========================================
+   DAY TITLE
+======================================== */
+
+.day-card h4 {
+    margin: 0 0 17px;
+
+    font-size: 19px;
+
+    font-weight: 650;
+
+    color: #101828;
+}
+
+/* .trip-map styling now lives in Css/TripMap.css,
+   shared by the reusable TripMap component. */
+
+
+/* ========================================
+   PLACES LIST
+======================================== */
+
+.day-card ul {
+    margin: 0;
+
+    padding: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    list-style: none;
+}
+
+.day-card li {
+    padding: 11px 14px;
+
+    border-radius: 9px;
+
+    background: #f9fafb;
+
+    color: #475467;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    border: 1px solid transparent;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.day-card li:hover {
+    background: #ffffff;
+
+    border-color: #eaecf0;
+
+    color: #101828;
+}
+
+
+/* ========================================
+   EMPTY ITINERARY
+======================================== */
+
+.itinerary > p {
+    margin: 0;
+
+    padding: 30px;
+
+    text-align: center;
+
+    border: 1px dashed #d0d5dd;
+
+    border-radius: 14px;
+
+    background: #f9fafb;
+
+    color: #667085;
+
+    font-size: 13px;
+}
+
+
+/* ========================================
+   LOADING / NOT FOUND
+======================================== */
+
+.trip-loading {
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 30px;
+
+    background: #f8fafc;
+
+    color: #475467;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 15px;
+
+    font-weight: 500;
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 800px) {
+
+    .trip-details {
+        padding: 100px 18px 55px;
+    }
+
+    .trip-card {
+        padding: 34px 28px;
+
+        border-radius: 20px;
+    }
+
+    .trip-card > h1 {
+        font-size: 30px;
+    }
+
+    .trip-info {
+        gap: 12px;
+    }
+
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .trip-details {
+        padding: 90px 12px 45px;
+    }
+
+    .trip-card {
+        padding: 26px 20px;
+
+        border-radius: 18px;
+    }
+
+    .back-btn {
+        margin-bottom: 18px;
+    }
+
+    .trip-card > h1 {
+        margin-bottom: 22px;
+
+        font-size: 27px;
+
+        letter-spacing: -0.5px;
+    }
+
+
+    /* TRIP INFO */
+
+    .trip-info {
+        grid-template-columns: 1fr;
+
+        gap: 10px;
+
+        margin-bottom: 25px;
+    }
+
+    .trip-info p {
+        padding: 14px;
+
+        font-size: 12px;
+    }
+
+
+    /* DIVIDER */
+
+    .trip-card hr {
+        margin: 26px 0;
+    }
+
+
+    /* ITINERARY */
+
+    .trip-card > h2 {
+        font-size: 21px;
+
+        margin-bottom: 18px;
+    }
+
+    .day-card {
+        padding: 20px 18px;
+    }
+
+    .day-card h4 {
+        font-size: 17px;
+    }
+
+    .day-card li {
+        font-size: 12px;
+
+        padding: 10px 12px;
+    }
+
+}
+
+
+/* ========================================
+   SMALL MOBILE
+======================================== */
+
+@media (max-width: 380px) {
+
+    .trip-card {
+        padding: 23px 16px;
+    }
+
+    .trip-card > h1 {
+        font-size: 24px;
+    }
+
+    .trip-card > h2 {
+        font-size: 19px;
+    }
+
+    .day-card {
+        padding: 18px 15px;
+    }
+
+}

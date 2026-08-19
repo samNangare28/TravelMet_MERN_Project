@@ -1,0 +1,683 @@
+
+/* ========================================
+   COMMUNITY PAGE
+======================================== */
+
+.community-header {
+    min-height: 360px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    padding: 80px 20px 60px;
+
+    background:
+        linear-gradient(
+            rgba(16, 24, 40, 0.60),
+            rgba(16, 24, 40, 0.60)
+        ),
+        url("https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600")
+        center / cover no-repeat;
+
+    color: #ffffff;
+}
+
+
+/* ========================================
+   HEADER CONTENT
+======================================== */
+
+.community-header h1 {
+    margin: 0 0 18px;
+
+    max-width: 850px;
+
+    font-size: 44px;
+    font-weight: 700;
+
+    line-height: 1.15;
+
+    letter-spacing: -1px;
+
+    color: #ffffff;
+}
+
+.community-header p {
+    max-width: 680px;
+
+    margin: 0;
+
+    font-size: 16px;
+
+    line-height: 1.8;
+
+    color: rgba(255, 255, 255, 0.88);
+}
+
+
+/* ========================================
+   COMMUNITY POSTS SECTION
+======================================== */
+
+.community-posts {
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding: 65px 25px 80px;
+}
+
+.posts-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 28px;
+}
+
+
+/* ========================================
+   POST CARD
+======================================== */
+
+.post-card {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 2px 10px rgba(16, 24, 40, 0.05),
+        0 1px 2px rgba(16, 24, 40, 0.04);
+
+    transition:
+        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.35s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-8px);
+
+    border-color: #d0d5dd;
+
+    box-shadow:
+        0 24px 48px rgba(16, 24, 40, 0.14),
+        0 8px 16px rgba(16, 24, 40, 0.06);
+}
+
+
+/* ========================================
+   POST IMAGE
+======================================== */
+
+.post-card > img {
+    width: 100%;
+    height: 245px;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.5s ease;
+}
+
+.post-card:hover > img {
+    transform: scale(1.05);
+}
+
+
+/* ========================================
+   POST INFO
+======================================== */
+
+.post-info {
+    padding: 23px 23px 25px;
+}
+
+.post-info h3 {
+    margin: 0 0 10px;
+
+    font-size: 19px;
+    font-weight: 700;
+
+    line-height: 1.35;
+
+    color: #101828;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+.post-info h5 {
+    margin: 0 0 12px;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    color: #667085;
+}
+
+.post-info p {
+    margin: 0 0 20px;
+
+    font-size: 13px;
+
+    color: #98a2b3;
+}
+
+
+/* ========================================
+   DETAILS BUTTON
+======================================== */
+
+.post-info button {
+    width: 100%;
+
+    height: 43px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #101828;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.post-info button:hover {
+    background: #1d2939;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(16, 24, 40, 0.18);
+}
+
+.post-info button:active {
+    transform: translateY(0);
+}
+
+
+/* ========================================
+   LOADING
+======================================== */
+
+.loading {
+    min-height: 250px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    color: #475467;
+}
+
+
+/* ========================================
+   EMPTY STATE
+======================================== */
+
+.posts-grid:empty::before {
+    content: "🌍 No travel posts available yet.";
+
+    grid-column: 1 / -1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 220px;
+
+    border: 1px dashed #d0d5dd;
+
+    border-radius: 18px;
+
+    background: #ffffff;
+
+    color: #667085;
+
+    font-size: 15px;
+}
+
+
+/* ========================================
+   ENDING SECTION
+======================================== */
+
+.community-ending {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 85px 25px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #101828,
+            #1d2939
+        );
+
+    color: #ffffff;
+}
+
+.community-ending::before {
+    content: "";
+
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    top: -160px;
+    left: -100px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.community-ending::after {
+    content: "";
+
+    position: absolute;
+
+    width: 350px;
+    height: 350px;
+
+    right: -150px;
+    bottom: -200px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.community-ending h2 {
+    position: relative;
+
+    z-index: 1;
+
+    max-width: 800px;
+
+    margin: 0 auto 16px;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    line-height: 1.35;
+
+    letter-spacing: -0.5px;
+
+    color: #ffffff;
+}
+
+.community-ending p {
+    position: relative;
+
+    z-index: 1;
+
+    max-width: 700px;
+
+    margin: 0 auto;
+
+    font-size: 15px;
+
+    line-height: 1.9;
+
+    color: rgba(255, 255, 255, 0.75);
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 1000px) {
+
+    .community-header {
+        min-height: 330px;
+    }
+
+    .community-header h1 {
+        font-size: 38px;
+    }
+
+    .community-header p {
+        font-size: 15px;
+    }
+
+    .posts-grid {
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 22px;
+    }
+
+    .community-posts {
+        padding: 55px 25px 70px;
+    }
+
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 650px) {
+
+    .community-header {
+        min-height: 310px;
+
+        padding: 80px 20px 50px;
+    }
+
+    .community-header h1 {
+        font-size: 30px;
+
+        letter-spacing: -0.5px;
+    }
+
+    .community-header p {
+        font-size: 14px;
+
+        line-height: 1.7;
+    }
+
+    .community-posts {
+        padding: 45px 16px 60px;
+    }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
+
+        gap: 20px;
+    }
+
+    .post-card > img {
+        height: 230px;
+    }
+
+    .post-info {
+        padding: 21px;
+    }
+
+    .post-info h3 {
+        font-size: 18px;
+    }
+
+    .community-ending {
+        padding: 65px 20px;
+    }
+
+    .community-ending h2 {
+        font-size: 24px;
+    }
+
+    .community-ending p {
+        font-size: 14px;
+
+        line-height: 1.8;
+    }
+
+}
+
+
+/* ========================================
+   SMALL MOBILE
+======================================== */
+
+@media (max-width: 400px) {
+
+    .community-header {
+        min-height: 290px;
+    }
+
+    .community-header h1 {
+        font-size: 26px;
+    }
+
+    .community-header p {
+        font-size: 13px;
+    }
+
+    .post-card > img {
+        height: 210px;
+    }
+
+    .community-ending h2 {
+        font-size: 21px;
+    }
+
+}
+.post-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.follow-btn,
+.following-btn {
+    border: none;
+    padding: 7px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.follow-btn {
+    background: #111;
+    color: white;
+}
+
+.following-btn {
+    background: #e8e8e8;
+    color: #111;
+    border: 1px solid #ccc;
+}
+
+.follow-btn:hover,
+.following-btn:hover {
+    opacity: 0.8;
+}
+
+/* ================= USER PROFILE LINK ================= */
+
+.post-user {
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+
+    display: inline-block;
+}
+
+.post-user:hover {
+    color: #101828;
+
+    text-decoration: underline;
+
+    transform: translateX(2px);
+}
+
+/* ========================================
+   POST ACTIONS
+======================================== */
+
+.post-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+/* ========================================
+   LIKE BUTTON
+======================================== */
+
+.like-btn {
+    height: 43px;
+
+    min-width: 65px;
+
+    padding: 0 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #344054;
+
+    font-family: inherit;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.like-btn:hover {
+    background: #fef3f2;
+
+    border-color: #fda29b;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 15px rgba(180, 35, 24, 0.08);
+}
+
+.like-btn:active {
+    transform: scale(0.96);
+}
+
+
+/* ========================================
+   LIKE COUNT
+======================================== */
+
+.like-btn span {
+    font-size: 13px;
+
+    color: #475467;
+}
+
+
+/* ========================================
+   DETAILS BUTTON
+======================================== */
+
+.details-btn {
+    flex: 1;
+
+    height: 43px;
+
+    padding: 0 15px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #101828;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.details-btn:hover {
+    background: #1d2939;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(16, 24, 40, 0.18);
+}
+
+.details-btn:active {
+    transform: translateY(0);
+}
+
+
+/* ========================================
+   MOBILE ACTIONS
+======================================== */
+
+@media (max-width: 400px) {
+
+    .post-actions {
+        gap: 8px;
+    }
+
+    .like-btn {
+        min-width: 58px;
+
+        padding: 0 10px;
+    }
+
+    .details-btn {
+        font-size: 12px;
+    }
+
+}
+

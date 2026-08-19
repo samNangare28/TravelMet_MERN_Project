@@ -1,0 +1,1331 @@
+/* ===========================
+        PAGE
+=========================== */
+
+.trip-preview{
+
+    min-height:100vh;
+
+    background:#F8FAFC;
+
+    padding:120px 20px 80px;
+
+}
+
+.trip-card{
+
+    max-width:1200px;
+
+    margin:auto;
+
+}
+
+/* ===========================
+        HERO
+=========================== */
+
+.trip-header{
+
+    height:320px;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    background:url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600")
+    center/cover;
+
+    margin-bottom:40px;
+
+    box-shadow:0 20px 60px rgba(0,0,0,.15);
+
+}
+
+.trip-overlay{
+
+    width:100%;
+
+    height:100%;
+
+    background:linear-gradient(
+        rgba(0,0,0,.35),
+        rgba(0,0,0,.65)
+    );
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:white;
+
+}
+
+.trip-overlay h1{
+
+    font-size:58px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+}
+
+.trip-overlay p{
+
+    font-size:20px;
+
+    color:#E2E8F0;
+
+}
+
+/* ===========================
+      SUMMARY
+=========================== */
+
+.trip-summary{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+
+    gap:25px;
+
+    margin-bottom:50px;
+
+}
+
+.summary-card{
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:28px;
+
+    text-align:center;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
+
+    transition:.35s;
+
+}
+
+.summary-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.summary-card h3{
+
+    font-size:38px;
+
+    margin-bottom:15px;
+
+}
+
+.summary-card span{
+
+    display:block;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#F97316;
+
+    margin-bottom:8px;
+
+}
+
+.summary-card p{
+
+    color:#64748B;
+
+    font-size:15px;
+
+}
+/* ===========================
+        DAY CARDS
+=========================== */
+
+.day-card{
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:30px;
+
+    margin-bottom:30px;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
+
+    transition:.35s;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.day-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 20px 45px rgba(249,115,22,.15);
+
+}
+
+.day-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:8px;
+
+    height:100%;
+
+    background:linear-gradient(#F97316,#FB923C);
+
+}
+
+.day-card h2{
+
+    color:#F97316;
+
+    font-size:28px;
+
+    margin-bottom:12px;
+
+}
+
+.day-card h3{
+
+    font-size:22px;
+
+    color:#1E293B;
+
+    margin-bottom:20px;
+
+}
+
+.day-card ul{
+
+    list-style:none;
+
+    padding:0;
+
+    margin:0;
+
+}
+
+.day-card li{
+
+    background:#F8FAFC;
+
+    margin-bottom:14px;
+
+    padding:15px 18px;
+
+    border-radius:14px;
+
+    border-left:5px solid #FB923C;
+
+    font-size:16px;
+
+    color:#334155;
+
+    transition:.3s;
+
+}
+
+.day-card li:hover{
+
+    background:#EFF6FF;
+
+    transform:translateX(8px);
+
+}
+/* ===========================
+        INFO CARDS
+=========================== */
+
+.info-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:25px;
+
+    margin:50px 0;
+
+}
+
+/* Common Card */
+
+.budget-card,
+.food-card,
+.tips-card{
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:30px;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
+
+    transition:.35s;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.budget-card:hover,
+.food-card:hover,
+.tips-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 20px 45px rgba(249,115,22,.15);
+
+}
+
+/* Top Border */
+
+.budget-card::before,
+.food-card::before,
+.tips-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:6px;
+
+    background:linear-gradient(90deg,#F97316,#FB923C);
+
+}
+
+/* Headings */
+
+.budget-card h2,
+.food-card h2,
+.tips-card h2{
+
+    font-size:26px;
+
+    color:#1E293B;
+
+    margin-bottom:25px;
+
+}
+
+/* Budget */
+
+.budget-card p{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 0;
+
+    border-bottom:1px solid #E2E8F0;
+
+    color:#475569;
+
+    font-size:16px;
+
+}
+
+.budget-card p:last-child{
+
+    border:none;
+
+    font-size:20px;
+
+    color:#F97316;
+
+    font-weight:700;
+
+}
+
+/* Lists */
+
+.food-card ul,
+.tips-card ul{
+
+    list-style:none;
+
+    padding:0;
+
+    margin:0;
+
+}
+
+.food-card li,
+.tips-card li{
+
+    background:#F8FAFC;
+
+    margin-bottom:14px;
+
+    padding:15px 18px;
+
+    border-radius:14px;
+
+    transition:.3s;
+
+    color:#334155;
+
+    font-size:16px;
+
+}
+
+.food-card li:hover{
+
+    background:#FFF7ED;
+
+    transform:translateX(8px);
+
+}
+
+.tips-card li:hover{
+
+    background:#EFF6FF;
+
+    transform:translateX(8px);
+
+}
+/* ===========================
+        ACTION BUTTONS
+=========================== */
+
+.action-buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:20px;
+
+    margin-top:50px;
+
+}
+
+.save-btn,
+.pdf-btn,
+.map-btn{
+
+    border:none;
+
+    padding:16px 30px;
+
+    border-radius:50px;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    color:white;
+
+}
+
+/* Save */
+
+.save-btn{
+
+    background:linear-gradient(135deg,#F97316,#FB923C);
+
+    box-shadow:0 12px 25px rgba(249,115,22,.25);
+
+}
+
+.save-btn:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 18px 35px rgba(249,115,22,.35);
+
+}
+
+/* PDF */
+
+.pdf-btn{
+
+    background:linear-gradient(135deg,#10B981,#34D399);
+
+}
+
+.pdf-btn:hover{
+
+    transform:translateY(-5px);
+
+}
+
+/* Map */
+
+.map-btn{
+
+    background:linear-gradient(135deg,#F97316,#FB923C);
+
+}
+
+.map-btn:hover{
+
+    transform:translateY(-5px);
+
+}
+
+
+/* ===========================
+        LOADING
+=========================== */
+
+.loading{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:120px 20px;
+
+}
+
+.loading h2{
+
+    margin-top:25px;
+
+    color:#334155;
+
+}
+
+.loading::before{
+
+    content:"";
+
+    width:70px;
+
+    height:70px;
+
+    border-radius:50%;
+
+    border:6px solid #E2E8F0;
+
+    border-top:6px solid #F97316;
+
+    animation:spin 1s linear infinite;
+
+}
+
+@keyframes spin{
+
+    100%{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+/* ===========================
+        RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+    .trip-summary{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+    .info-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .trip-preview{
+
+        padding:100px 15px 50px;
+
+    }
+
+    .trip-overlay h1{
+
+        font-size:36px;
+
+    }
+
+    .trip-overlay p{
+
+        font-size:16px;
+
+    }
+
+    .trip-summary{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .action-buttons{
+
+        flex-direction:column;
+
+        align-items:center;
+
+    }
+
+    .save-btn,
+    .pdf-btn,
+    .map-btn{
+
+        width:100%;
+
+        max-width:320px;
+
+    }
+
+}
+
+@media(max-width:500px){
+
+    .trip-header{
+
+        height:220px;
+
+    }
+
+    .trip-overlay h1{
+
+        font-size:28px;
+
+    }
+
+    .day-card{
+
+        padding:22px;
+
+    }
+
+    .budget-card,
+    .food-card,
+    .tips-card{
+
+        padding:22px;
+
+    }
+
+}
+/* ===========================
+   TRIP DURATION PILL
+=========================== */
+
+.trip-duration-pill {
+
+    display: inline-block;
+
+    margin-left: 12px;
+
+    padding: 4px 12px;
+
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.22);
+
+    border: 1px solid rgba(255, 255, 255, 0.4);
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+/* ===========================
+   DAY CARD AS <details>
+   (native collapsible, no JS)
+=========================== */
+
+.day-card summary {
+
+    list-style: none;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    outline: none;
+
+}
+
+.day-card summary::-webkit-details-marker {
+    display: none;
+}
+
+.day-card-badge {
+
+    flex: 0 0 auto;
+
+    padding: 6px 14px;
+
+    border-radius: 999px;
+
+    background: linear-gradient(135deg, #F97316, #FB923C);
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+}
+
+.day-card-title {
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    color: #1E293B;
+
+}
+
+.day-card summary::after {
+
+    content: "▾";
+
+    margin-left: auto;
+
+    color: #98A2B3;
+
+    transition: transform 0.25s ease;
+
+}
+
+.day-card[open] summary::after {
+    transform: rotate(180deg);
+}
+
+/* ===========================
+   ITINERARY TIMELINE
+=========================== */
+
+.day-timeline {
+
+    list-style: none;
+
+    margin: 22px 0 0;
+
+    padding: 0 0 0 6px;
+
+    position: relative;
+
+}
+
+.day-timeline::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 9px;
+
+    top: 6px;
+
+    bottom: 6px;
+
+    width: 2px;
+
+    background: #F2F4F7;
+
+}
+
+.day-timeline li {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 12px 0 12px 30px;
+
+    font-size: 16px;
+
+    color: #334155;
+
+}
+
+.day-timeline-dot {
+
+    position: absolute;
+
+    left: 3px;
+
+    width: 14px;
+
+    height: 14px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    border: 3px solid #F97316;
+
+}
+
+.day-timeline-place {
+
+    background: #F8FAFC;
+
+    padding: 12px 16px;
+
+    border-radius: 12px;
+
+    flex: 1;
+
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.day-timeline li:hover .day-timeline-place {
+    background: #FFF7ED;
+    transform: translateX(4px);
+}
+
+@media (max-width: 650px) {
+
+    .day-card-title {
+        font-size: 18px;
+    }
+
+    .trip-duration-pill {
+        display: block;
+        margin: 8px 0 0;
+        width: fit-content;
+    }
+
+}
+
+/* ===========================
+   BUS BOOKING (redBus)
+=========================== */
+
+.bus-booking-card {
+
+    background: var(--light, #ffffff);
+
+    border: 1px solid var(--border, #E2E8F0);
+
+    border-radius: var(--radius, 12px);
+
+    box-shadow: var(--shadow, 0 4px 15px rgba(0,0,0,.08));
+
+    padding: 26px;
+
+    margin: 40px 0;
+
+}
+
+.bus-booking-card h2 {
+
+    margin: 0 0 8px;
+
+    color: var(--dark, #0F172A);
+
+}
+
+.bus-booking-card p {
+
+    margin: 0 0 16px;
+
+    color: var(--text, #1E293B);
+
+    opacity: 0.75;
+
+}
+
+.redbus-btn {
+
+    display: inline-block;
+
+    padding: 11px 22px;
+
+    border-radius: var(--radius, 12px);
+
+    background: linear-gradient(135deg, #F97316, #FB923C);
+
+    color: #ffffff;
+
+    font-weight: 700;
+
+    font-size: 14px;
+
+    text-decoration: none;
+
+    transition: transform 0.2s ease, filter 0.2s ease;
+
+}
+
+.redbus-btn:hover {
+
+    transform: translateY(-2px);
+
+    filter: brightness(1.05);
+
+}
+
+/* =====================================================
+   PREMIUM DAY-WISE ITINERARY
+===================================================== */
+
+.day-card {
+    margin: 24px 0;
+    padding: 0;
+    border-radius: 22px;
+    background: #ffffff;
+    border: 1px solid #eee7dc;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+}
+
+.day-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.09);
+}
+
+/* ---------- DAY HEADER ---------- */
+
+.day-card summary {
+    list-style: none;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    padding: 20px 24px;
+
+    background: linear-gradient(
+        135deg,
+        #fffaf2,
+        #ffffff
+    );
+
+    outline: none;
+}
+
+.day-card summary::-webkit-details-marker {
+    display: none;
+}
+
+.day-card-badge {
+    flex: 0 0 auto;
+
+    background: #c59b5f;
+    color: #ffffff;
+
+    padding: 8px 14px;
+    border-radius: 10px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+
+.day-card-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: #242424;
+    line-height: 1.4;
+}
+
+.day-card summary::after {
+    content: "⌄";
+
+    margin-left: auto;
+
+    font-size: 22px;
+    color: #9a7a4b;
+
+    transition: transform 0.25s ease;
+}
+
+.day-card[open] summary::after {
+    transform: rotate(180deg);
+}
+
+
+/* =====================================================
+   TIMELINE
+===================================================== */
+
+.day-timeline {
+    position: relative;
+
+    list-style: none;
+
+    margin: 0;
+    padding: 28px 30px 32px;
+}
+
+
+/* Vertical timeline line */
+
+.day-timeline::before {
+    content: "";
+
+    position: absolute;
+
+    left: 96px;
+    top: 35px;
+    bottom: 35px;
+
+    width: 2px;
+
+    background: #eadcc7;
+}
+
+
+/* =====================================================
+   TIMELINE ITEM
+===================================================== */
+
+.day-timeline li {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns: 70px 20px 1fr;
+
+    gap: 14px;
+
+    align-items: start;
+
+    min-height: 95px;
+
+    margin-bottom: 4px;
+
+    padding: 0;
+
+    background: transparent;
+
+    border: none;
+
+    font-size: inherit;
+}
+
+.day-timeline li:hover {
+    background: transparent;
+    transform: none;
+}
+
+
+/* =====================================================
+   TIME
+===================================================== */
+
+.day-timeline-time {
+    grid-column: 1;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    color: #9a7a4b;
+
+    padding-top: 5px;
+
+    text-align: right;
+
+    line-height: 1.4;
+}
+
+
+/* =====================================================
+   DOT
+===================================================== */
+
+.day-timeline-dot {
+    grid-column: 2;
+
+    position: relative;
+
+    width: 13px;
+    height: 13px;
+
+    margin-top: 5px;
+
+    border-radius: 50%;
+
+    background: #c59b5f;
+
+    border: 3px solid #ffffff;
+
+    box-shadow: 0 0 0 2px #c59b5f;
+
+    z-index: 2;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.day-timeline-content {
+    grid-column: 3;
+
+    background: #faf9f6;
+
+    border: 1px solid #eee7dc;
+
+    border-radius: 14px;
+
+    padding: 14px 16px;
+
+    margin-bottom: 16px;
+
+    transition: all 0.25s ease;
+}
+
+.day-timeline-content:hover {
+    background: #ffffff;
+
+    border-color: #d8c09d;
+
+    transform: translateX(4px);
+
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+
+/* =====================================================
+   PLACE NAME
+===================================================== */
+
+.day-timeline-place {
+    font-size: 16px;
+
+    font-weight: 700;
+
+    color: #242424;
+
+    line-height: 1.45;
+}
+
+
+/* =====================================================
+   TIME INSIDE CONTENT
+===================================================== */
+
+.day-timeline-content .day-timeline-time {
+    display: inline-block;
+
+    margin-top: 7px;
+
+    padding: 4px 8px;
+
+    border-radius: 7px;
+
+    background: #f1e7d8;
+
+    color: #8a693e;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-align: left;
+}
+
+
+/* =====================================================
+   ACTIVITY
+===================================================== */
+
+.day-timeline-activity {
+    margin-top: 7px;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    color: #666;
+}
+
+
+/* =====================================================
+   DURATION
+===================================================== */
+
+.day-timeline-duration {
+    display: inline-block;
+
+    margin-top: 9px;
+
+    padding: 5px 9px;
+
+    border-radius: 8px;
+
+    background: #f1e7d8;
+
+    color: #8a693e;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   PLACE ICON
+===================================================== */
+
+.day-timeline-place::first-letter {
+    color: #c59b5f;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .day-card summary {
+        padding: 16px;
+
+        gap: 10px;
+    }
+
+    .day-card-title {
+        font-size: 16px;
+    }
+
+    .day-card-badge {
+        padding: 7px 10px;
+
+        font-size: 11px;
+    }
+
+    .day-timeline {
+        padding: 24px 14px 26px;
+    }
+
+    .day-timeline::before {
+        left: 67px;
+    }
+
+    .day-timeline li {
+        grid-template-columns: 45px 18px 1fr;
+
+        gap: 9px;
+
+        min-height: 85px;
+    }
+
+    .day-timeline-time {
+        font-size: 10px;
+    }
+
+    .day-timeline-place {
+        font-size: 14px;
+    }
+
+    .day-timeline-activity {
+        font-size: 12px;
+    }
+
+    .day-timeline-content {
+        padding: 12px;
+    }
+
+}
+
+
+/* =====================================================
+   EXTRA SMALL MOBILE
+===================================================== */
+
+@media (max-width: 400px) {
+
+    .day-card summary {
+        align-items: flex-start;
+    }
+
+    .day-card-title {
+        font-size: 14px;
+    }
+
+    .day-card-badge {
+        font-size: 10px;
+        padding: 6px 9px;
+    }
+
+    .day-timeline {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .day-timeline::before {
+        left: 52px;
+    }
+
+    .day-timeline li {
+        grid-template-columns: 30px 14px 1fr;
+        gap: 7px;
+    }
+
+    .day-timeline-time {
+        display: none;
+    }
+
+}
