@@ -21,38 +21,40 @@ function EditPost() {
 
     useEffect(() => {
 
-        const fetchPost = async () => {
-
-            try {
-
-                const response = await api.get(
-                    `/api/posts/${id}`
-                );
-
-                setPost({
-
-                    title: response.data.post.title,
-                    description: response.data.post.description,
-                    image: response.data.post.image,
-                    location: response.data.post.location,
-                    country: response.data.post.country,
-                    category: response.data.post.category
-
-                });
-
-            }
-
-            catch (error) {
-
-                console.log("Fetch Post Error:", error);
-
-            }
-
-        };
-
         fetchPost();
 
-    }, [id]);
+    }, []);
+
+    const fetchPost = async () => {
+
+        try {
+
+            const response = await api.get(
+
+                `/api/posts/${id}`
+
+            );
+
+            setPost({
+
+                title: response.data.post.title,
+                description: response.data.post.description,
+                image: response.data.post.image,
+                location: response.data.post.location,
+                country: response.data.post.country,
+                category: response.data.post.category
+
+            });
+
+        }
+
+        catch (error) {
+
+            console.log(error);
+
+        }
+
+    };
 
     const handleChange = (e) => {
 
@@ -89,10 +91,7 @@ function EditPost() {
 
             console.log(error);
 
-            alert(
-                error.response?.data?.message ||
-                "Something went wrong"
-            );
+            alert(error.response?.data?.message || "Something went wrong");
 
         }
 
@@ -171,8 +170,10 @@ function EditPost() {
 
                 </select>
 
-                <button type="submit">
+                <button>
+
                     Update Post
+
                 </button>
 
             </form>

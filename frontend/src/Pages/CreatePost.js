@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import "../Css/CreatePost.css";
 
 function CreatePost() {
+
+    const navigate = useNavigate();
 
     const [post, setPost] = useState({
 
@@ -14,6 +17,7 @@ function CreatePost() {
         category: "Other"
 
     });
+
 
     const handleChange = (e) => {
 
@@ -32,16 +36,7 @@ function CreatePost() {
 
         try {
 
-            const user = JSON.parse(
-                localStorage.getItem("user") || "{}"
-            );
-
-            if (!user.id) {
-
-                alert("Please login first.");
-                return;
-
-            }
+            const user = JSON.parse(localStorage.getItem("user"));
 
             const response = await api.post(
 
@@ -50,15 +45,14 @@ function CreatePost() {
                 {
 
                     ...post,
+
                     user: user.id
 
                 }
 
             );
 
-            alert(
-                response.data.message || "Post created successfully!"
-            );
+            alert(response.data.message);
 
             setPost({
 
@@ -75,24 +69,15 @@ function CreatePost() {
 
         catch (error) {
 
-            console.log("Full Error:", error);
+    console.log("Full Error :", error);
 
-            console.log(
-                "Response:",
-                error.response
-            );
+    console.log("Response :", error.response);
 
-            console.log(
-                "Data:",
-                error.response?.data
-            );
+    console.log("Data :", error.response?.data);
 
-            alert(
-                error.response?.data?.message ||
-                "Something went wrong"
-            );
+    alert(error.response?.data?.message || "Something went wrong");
 
-        }
+}
 
     };
 
@@ -151,54 +136,29 @@ function CreatePost() {
                 />
 
                 <select
+
                     name="category"
+
                     value={post.category}
+
                     onChange={handleChange}
+
                 >
 
-                    <option value="Beach">
-                        Beach
-                    </option>
-
-                    <option value="Mountains">
-                        Mountains
-                    </option>
-
-                    <option value="Adventure">
-                        Adventure
-                    </option>
-
-                    <option value="Nature">
-                        Nature
-                    </option>
-
-                    <option value="City">
-                        City
-                    </option>
-
-                    <option value="Camping">
-                        Camping
-                    </option>
-
-                    <option value="Road Trip">
-                        Road Trip
-                    </option>
-
-                    <option value="Historical">
-                        Historical
-                    </option>
-
-                    <option value="Food">
-                        Food
-                    </option>
-
-                    <option value="Other">
-                        Other
-                    </option>
+                    <option>Beach</option>
+                    <option>Mountains</option>
+                    <option>Adventure</option>
+                    <option>Nature</option>
+                    <option>City</option>
+                    <option>Camping</option>
+                    <option>Road Trip</option>
+                    <option>Historical</option>
+                    <option>Food</option>
+                    <option>Other</option>
 
                 </select>
 
-                <button type="submit">
+                <button>
 
                     Create Post
 
