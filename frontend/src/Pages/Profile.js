@@ -1,5 +1,14 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import {
+    useCallback,
+    useEffect,
+    useState
+} from "react";
+
+import {
+    useParams,
+    useNavigate
+} from "react-router-dom";
+
 import api from "../api/axios";
 
 import "../Css/Profile.css";
@@ -8,28 +17,31 @@ import "../Css/Profile.css";
 function Profile() {
 
     const { id } = useParams();
+
     const navigate = useNavigate();
 
 
-    // LOGGED-IN USER
+    // ================= LOGGED-IN USER =================
+
     const localUser = JSON.parse(
         localStorage.getItem("user") || "{}"
     );
 
 
-    // 
-    // PROFILE ID
-    // 
+    // ================= PROFILE ID =================
 
-    const profileId = id || localUser.id || localUser._id;
+    const profileId =
+        id ||
+        localUser.id ||
+        localUser._id;
+
 
     const isOwner =
-        profileId === localUser.id;
+        profileId === localUser.id ||
+        profileId === localUser._id;
 
 
-    // 
-    // STATES
-    // 
+    // ================= STATES =================
 
     const [user, setUser] = useState({});
 
@@ -39,20 +51,169 @@ function Profile() {
 
     const [loading, setLoading] = useState(true);
 
-    const [showUsers, setShowUsers] = useState(false);
+    const [showUsers, setShowUsers] =
+        useState(false);
 
-    const [userListType, setUserListType] = useState("");
+    const [userListType, setUserListType] =
+        useState("");
 
-    const [isPrivate, setIsPrivate] = useState(false);
+    const [isPrivate, setIsPrivate] =
+        useState(false);
 
-    const [isFollowing, setIsFollowing] = useState(false);
+    const [isFollowing, setIsFollowing] =
+        useState(false);
 
-    const [requestSent, setRequestSent] = useState(false);
+    const [requestSent, setRequestSent] =
+        useState(false);
 
 
-    // 
+    // =================================================
     // FETCH PROFILE
-    // 
+    // =================================================
+
+    const fetchProfile = useCallback(
+        async () => {
+
+            try {
+
+                setLoading(true);
+
+
+                // ================= GET PROFILE =================
+
+                const response = await api.get(
+
+                    `/api/users/${profileId}?viewerId=${localUser.id || localUser._id || ""}`
+
+                );
+
+
+                const profileUser =
+                    response.data.user;
+
+
+                // ================= USER DATA =================
+
+                setUser(profileUser);
+
+
+                setPosts(
+                    response.data.posts || []
+                );
+
+
+                // ================= PRIVACY =================
+
+                setIsPrivate(
+                    response.data.private || false
+                );
+
+
+                // ================= FOLLOW STATUS =================
+
+                setIsFollowing(
+                    response.data.following || false
+                );
+
+
+                // ================= REQUEST STATUS =================
+
+                setRequestSent(
+                    response.data.requested || false
+                );
+
+
+                // ================= FETCH TRIPS =================
+
+                if (isOwner) {
+
+                    const currentUserId =
+                        localUser.id ||
+                        localUser._id;
+
+
+                    if (currentUserId) {
+
+                        const tripResponse =
+                            await api.get(
+
+                                `/api/trips/user/${currentUserId}`
+
+                            );
+
+
+                        setTrips(
+                            tripResponse.data.trips || []
+                        );
+
+                    }
+
+                }
+
+                else if (!response.data.private) {
+
+                    const tripResponse =
+                        await api.get(
+
+                            `/api/trips/user/${profileId}`
+
+                        );
+
+
+                    setTrips(
+                        tripResponse.data.trips || []
+                    );
+
+                }
+
+                else {
+
+                    setTrips([]);
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.log(
+                    "Profile Error:",
+                    error
+                );
+
+
+                if (
+                    error.response?.status === 404
+                ) {
+
+                    alert(
+                        "User not found"
+                    );
+
+                    navigate("/community");
+
+                }
+
+            }
+
+            finally {
+
+                setLoading(false);
+
+            }
+
+        },
+        [
+            profileId,
+            localUser.id,
+            localUser._id,
+            isOwner,
+            navigate
+        ]
+    );
+
+
+    // ================= USE EFFECT =================
 
     useEffect(() => {
 
@@ -66,169 +227,28 @@ function Profile() {
 
         fetchProfile();
 
-    }, [profileId]);
+    }, [
+        profileId,
+        fetchProfile
+    ]);
 
 
-    const fetchProfile = async () => {
-
-        try {
-
-            setLoading(true);
-
-
-            // =================================================
-            // GET USER PROFILE
-            // =================================================
-
-            const response = await api.get(
-
-                `/api/users/${profileId}?viewerId=${localUser.id}`
-
-            );
-
-
-            const profileUser =
-                response.data.user;
-
-
-            // =================================================
-            // SET USER DATA
-            // =================================================
-
-            setUser(profileUser);
-
-
-            setPosts(
-                response.data.posts || []
-            );
-
-
-            // =================================================
-            // PRIVACY
-            // =================================================
-
-            setIsPrivate(
-                response.data.private || false
-            );
-
-
-            // =================================================
-            // FOLLOW STATUS
-            // Backend directly sends following
-            // =================================================
-
-            setIsFollowing(
-                response.data.following || false
-            );
-
-
-            // =================================================
-            // REQUEST STATUS
-            // Backend directly sends requested
-            // =================================================
-
-            setRequestSent(
-                response.data.requested || false
-            );
-
-
-            // =================================================
-            // FETCH TRIPS
-            // =================================================
-
-            if (isOwner) {
-
-                // Owner can see own trips
-
-                const tripResponse =
-                    await api.get(
-
-                        `/api/trips/user/${localUser.id}`
-
-                    );
-
-
-                setTrips(
-                    tripResponse.data.trips || []
-                );
-
-            }
-
-            else if (!response.data.private) {
-
-                // Public profile trips
-
-                const tripResponse =
-                    await api.get(
-
-                        `/api/trips/user/${profileId}`
-
-                    );
-
-
-                setTrips(
-                    tripResponse.data.trips || []
-                );
-
-            }
-
-            else {
-
-                // Private profile
-
-                setTrips([]);
-
-            }
-
-
-        }
-
-        catch (error) {
-
-            console.log(
-                "Profile Error:",
-                error
-            );
-
-
-            // If backend returns 404
-
-            if (
-                error.response?.status === 404
-            ) {
-
-                alert(
-                    "User not found"
-                );
-
-                navigate("/community");
-
-            }
-
-        }
-
-        finally {
-
-            setLoading(false);
-
-        }
-
-    };
-
-
-    // 
+    // =================================================
     // FOLLOW / REQUEST / UNFOLLOW
-    // 
+    // =================================================
 
     const handleFollow = async () => {
 
         try {
 
-            // =================================================
-            // LOGIN CHECK
-            // =================================================
+            const currentUserId =
+                localUser.id ||
+                localUser._id;
 
-            if (!localUser.id) {
+
+            // ================= LOGIN CHECK =================
+
+            if (!currentUserId) {
 
                 alert(
                     "Please login first"
@@ -241,9 +261,7 @@ function Profile() {
             }
 
 
-            // =================================================
-            // UNFOLLOW
-            // =================================================
+            // ================= UNFOLLOW =================
 
             if (isFollowing) {
 
@@ -254,7 +272,7 @@ function Profile() {
                     {
 
                         userId:
-                            localUser.id,
+                            currentUserId,
 
                         targetUserId:
                             profileId
@@ -271,15 +289,12 @@ function Profile() {
 
                 fetchProfile();
 
-
                 return;
 
             }
 
 
-            // =================================================
-            // REQUEST ALREADY SENT
-            // =================================================
+            // ================= REQUEST ALREADY SENT =================
 
             if (requestSent) {
 
@@ -292,9 +307,7 @@ function Profile() {
             }
 
 
-            // =================================================
-            // FOLLOW / SEND REQUEST
-            // =================================================
+            // ================= FOLLOW =================
 
             const response =
                 await api.post(
@@ -304,7 +317,7 @@ function Profile() {
                     {
 
                         userId:
-                            localUser.id,
+                            currentUserId,
 
                         targetUserId:
                             profileId
@@ -314,9 +327,7 @@ function Profile() {
                 );
 
 
-            // =================================================
-            // PRIVATE ACCOUNT
-            // =================================================
+            // ================= PRIVATE ACCOUNT =================
 
             if (
                 response.data.requested
@@ -326,7 +337,6 @@ function Profile() {
 
                 setIsFollowing(false);
 
-
                 alert(
                     "Follow request sent."
                 );
@@ -334,9 +344,7 @@ function Profile() {
             }
 
 
-            // =================================================
-            // PUBLIC ACCOUNT
-            // =================================================
+            // ================= PUBLIC ACCOUNT =================
 
             else if (
                 response.data.following
@@ -348,8 +356,6 @@ function Profile() {
 
             }
 
-
-            // Refresh profile
 
             fetchProfile();
 
@@ -376,9 +382,9 @@ function Profile() {
     };
 
 
-    // 
+    // =================================================
     // DELETE TRIP
-    // 
+    // =================================================
 
     const deleteTrip = async (tripId) => {
 
@@ -388,8 +394,11 @@ function Profile() {
             );
 
 
-        if (!confirmDelete)
+        if (!confirmDelete) {
+
             return;
+
+        }
 
 
         try {
@@ -402,22 +411,21 @@ function Profile() {
 
 
             setTrips(
-
-                trips.filter(
-
-                    trip =>
-                        trip._id !== tripId
-
-                )
-
+                (currentTrips) =>
+                    currentTrips.filter(
+                        (trip) =>
+                            trip._id !== tripId
+                    )
             );
-
 
         }
 
         catch (error) {
 
-            console.log(error);
+            console.log(
+                "Delete Trip Error:",
+                error
+            );
 
 
             alert(
@@ -429,9 +437,9 @@ function Profile() {
     };
 
 
-    // 
+    // =================================================
     // OPEN FOLLOWERS / FOLLOWING
-    // 
+    // =================================================
 
     const openUserList = (type) => {
 
@@ -442,9 +450,9 @@ function Profile() {
     };
 
 
-    // 
+    // =================================================
     // LOADING
-    // 
+    // =================================================
 
     if (loading) {
 
@@ -461,23 +469,20 @@ function Profile() {
     }
 
 
-    // 
+    // =================================================
     // PROFILE PAGE
-    // 
+    // =================================================
 
     return (
 
         <div className="profile-page">
 
 
-            {/* =================================================
-                COVER
-            ================================================= */}
+            {/* ================= COVER ================= */}
 
             <div className="cover-section">
 
                 <img
-
                     className="cover-image"
 
                     src={
@@ -493,9 +498,7 @@ function Profile() {
             </div>
 
 
-            {/* =================================================
-                PROFILE HEADER
-            ================================================= */}
+            {/* ================= PROFILE HEADER ================= */}
 
             <div className="profile-header">
 
@@ -536,6 +539,7 @@ function Profile() {
 
                 </h3>
 
+
                 {/* COMMUNITY BADGE */}
 
                 <span className="community-badge">
@@ -569,9 +573,7 @@ function Profile() {
                 </p>
 
 
-                {/* =================================================
-                    BUTTONS
-                ================================================= */}
+                {/* ================= BUTTONS ================= */}
 
                 <div className="profile-buttons">
 
@@ -648,9 +650,7 @@ function Profile() {
                         onClick={() => {
 
                             navigator.clipboard.writeText(
-
                                 window.location.href
-
                             );
 
                             alert(
@@ -671,21 +671,17 @@ function Profile() {
             </div>
 
 
-            {/* =================================================
-                PRIVATE PROFILE MESSAGE
-            ================================================= */}
+            {/* ================= PRIVATE MESSAGE ================= */}
 
             {isPrivate && !isOwner && (
 
                 <div className="private-profile-message">
-
 
                     <h2>
 
                         🔒 This Account is Private
 
                     </h2>
-
 
                     <p>
 
@@ -694,15 +690,12 @@ function Profile() {
 
                     </p>
 
-
                 </div>
 
             )}
 
 
-            {/* =================================================
-                STATS
-            ================================================= */}
+            {/* ================= STATS ================= */}
 
             <div className="stats-section">
 
@@ -822,16 +815,12 @@ function Profile() {
 
                 </div>
 
-
             </div>
 
 
-            {/* =================================================
-                ABOUT
-            ================================================= */}
+            {/* ================= ABOUT ================= */}
 
             <div className="about-card">
-
 
                 <h2>
 
@@ -909,26 +898,25 @@ function Profile() {
 
                 </div>
 
-
             </div>
 
 
-            {/* =================================================
-                SAVED TRIPS
-            ================================================= */}
+            {/* ================= SAVED TRIPS ================= */}
 
             {(!isPrivate || isOwner) && (
 
                 <div className="posts-section">
-
 
                     <h2>
 
                         ✈{" "}
 
                         {isOwner
+
                             ? "My Saved Trips"
+
                             : `${user.firstName}'s Saved Trips`
+
                         }
 
                     </h2>
@@ -938,146 +926,141 @@ function Profile() {
 
                         <div className="saved-trip-grid">
 
+                            {trips.map(
+                                (trip) => (
 
-                            {trips.map(trip => (
+                                    <div
 
-                                <div
+                                        className="saved-trip-card"
 
-                                    className="saved-trip-card"
+                                        key={
+                                            trip._id
+                                        }
 
-                                    key={trip._id}
+                                    >
 
-                                >
+                                        <h3>
 
+                                            📍{" "}
 
-                                    <h3>
+                                            {trip.destination}
 
-                                        📍{" "}
-
-                                        {trip.destination}
-
-                                    </h3>
-
-
-                                    <p>
-
-                                        📅{" "}
-
-                                        {new Date(
-                                            trip.startDate
-                                        ).toLocaleDateString()}
-
-                                        {" - "}
-
-                                        {new Date(
-                                            trip.endDate
-                                        ).toLocaleDateString()}
-
-                                    </p>
+                                        </h3>
 
 
-                                    <p>
+                                        <p>
 
-                                        👥{" "}
+                                            📅{" "}
 
-                                        {trip.travelers}
+                                            {new Date(
+                                                trip.startDate
+                                            ).toLocaleDateString()}
 
-                                        {" "}Travelers
+                                            {" - "}
 
-                                    </p>
+                                            {new Date(
+                                                trip.endDate
+                                            ).toLocaleDateString()}
 
-
-                                    <p>
-
-                                        💰 ₹
-                                        {trip.budget}
-
-                                    </p>
+                                        </p>
 
 
-                                    <p>
+                                        <p>
 
-                                        🚗{" "}
+                                            👥{" "}
 
-                                        {trip.transport}
+                                            {trip.travelers}
 
-                                    </p>
+                                            {" "}Travelers
 
-
-                                    <p>
-
-                                        🏨{" "}
-
-                                        {trip.hotelType}
-
-                                    </p>
+                                        </p>
 
 
-                                    <p>
+                                        <p>
 
-                                        ❤️{" "}
+                                            💰 ₹
+                                            {trip.budget}
 
-                                        {trip.tripType}
-
-                                    </p>
-
-
-                                    <div className="trip-buttons">
+                                        </p>
 
 
-                                        {/* VIEW */}
+                                        <p>
 
-                                        <button
+                                            🚗{" "}
 
-                                            className="view-trip-btn"
+                                            {trip.transport}
 
-                                            onClick={() =>
-
-                                                navigate(
-
-                                                    `/trip-details/${trip._id}`
-
-                                                )
-
-                                            }
-
-                                        >
-
-                                            👁 View
-
-                                        </button>
+                                        </p>
 
 
-                                        {/* DELETE ONLY OWNER */}
+                                        <p>
 
-                                        {isOwner && (
+                                            🏨{" "}
+
+                                            {trip.hotelType}
+
+                                        </p>
+
+
+                                        <p>
+
+                                            ❤️{" "}
+
+                                            {trip.tripType}
+
+                                        </p>
+
+
+                                        <div className="trip-buttons">
+
+
+                                            {/* VIEW */}
 
                                             <button
 
-                                                className="delete-trip-btn"
+                                                className="view-trip-btn"
 
                                                 onClick={() =>
-                                                    deleteTrip(
-                                                        trip._id
+                                                    navigate(
+                                                        `/trip-details/${trip._id}`
                                                     )
                                                 }
 
                                             >
 
-                                                🗑 Delete
+                                                👁 View
 
                                             </button>
 
-                                        )}
 
+                                            {/* DELETE */}
+
+                                            {isOwner && (
+
+                                                <button
+
+                                                    className="delete-trip-btn"
+
+                                                    onClick={() =>
+                                                        deleteTrip(
+                                                            trip._id
+                                                        )
+                                                    }
+
+                                                >
+
+                                                    🗑 Delete
+
+                                                </button>
+
+                                            )}
+
+                                        </div>
 
                                     </div>
 
-
-                                </div>
-
-                            ))}
-
+                                )
+                            )}
 
                         </div>
 
@@ -1085,13 +1068,11 @@ function Profile() {
 
                         <div className="empty-posts">
 
-
                             <h3>
 
                                 🌍 No Trips Yet
 
                             </h3>
-
 
                             <p>
 
@@ -1105,25 +1086,20 @@ function Profile() {
 
                             </p>
 
-
                         </div>
 
                     )}
-
 
                 </div>
 
             )}
 
 
-            {/* =================================================
-                POSTS
-            ================================================= */}
+            {/* ================= POSTS ================= */}
 
             {(!isPrivate || isOwner) && (
 
                 <div className="posts-section">
-
 
                     <h2>
 
@@ -1144,92 +1120,86 @@ function Profile() {
 
                         <div className="post-grid">
 
+                            {posts.map(
+                                (post) => (
 
-                            {posts.map(post => (
+                                    <div
 
-                                <div
+                                        className="post-card"
 
-                                    className="post-card"
-
-                                    key={post._id}
-
-                                >
-
-
-                                    {/* IMAGE */}
-
-                                    <img
-
-                                        src={
-
-                                            post.image?.url ||
-
-                                            post.image ||
-
-                                            "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600"
-
-                                        }
-
-                                        alt={post.title}
-
-                                    />
-
-
-                                    {/* TITLE */}
-
-                                    <h4>
-
-                                        {post.title}
-
-                                    </h4>
-
-
-                                    {/* LOCATION */}
-
-                                    <p>
-
-                                        📍{" "}
-
-                                        {post.location}
-
-                                        {post.country
-
-                                            ? `, ${post.country}`
-
-                                            : ""
-
-                                        }
-
-                                    </p>
-
-
-                                    {/* DETAILS */}
-
-                                    <button
-
-                                        className="details-btn"
-
-                                        onClick={() =>
-
-                                            navigate(
-
-                                                `/post/${post._id}`
-
-                                            )
-
+                                        key={
+                                            post._id
                                         }
 
                                     >
 
-                                        See Details →
+                                        <img
 
-                                    </button>
+                                            src={
+
+                                                post.image?.url ||
+
+                                                post.image ||
+
+                                                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600"
+
+                                            }
+
+                                            alt={
+                                                post.title
+                                            }
+
+                                        />
 
 
-                                </div>
+                                        <h4>
 
-                            ))}
+                                            {post.title}
 
+                                        </h4>
+
+
+                                        <p>
+
+                                            📍{" "}
+
+                                            {post.location}
+
+                                            {post.country
+
+                                                ? `, ${post.country}`
+
+                                                : ""
+
+                                            }
+
+                                        </p>
+
+
+                                        <button
+
+                                            className="details-btn"
+
+                                            onClick={() =>
+
+                                                navigate(
+
+                                                    `/post/${post._id}`
+
+                                                )
+
+                                            }
+
+                                        >
+
+                                            See Details →
+
+                                        </button>
+
+                                    </div>
+
+                                )
+                            )}
 
                         </div>
 
@@ -1237,13 +1207,11 @@ function Profile() {
 
                         <div className="empty-posts">
 
-
                             <h3>
 
                                 📸 No Travel Posts Yet
 
                             </h3>
-
 
                             <p>
 
@@ -1257,20 +1225,16 @@ function Profile() {
 
                             </p>
 
-
                         </div>
 
                     )}
-
 
                 </div>
 
             )}
 
 
-            {/* =================================================
-                FOLLOWERS / FOLLOWING MODAL
-            ================================================= */}
+            {/* ================= FOLLOWERS / FOLLOWING MODAL ================= */}
 
             {showUsers && (
 
@@ -1284,22 +1248,19 @@ function Profile() {
 
                 >
 
-
                     <div
 
                         className="user-modal"
 
-                        onClick={e =>
+                        onClick={(e) =>
                             e.stopPropagation()
                         }
 
                     >
 
-
-                        {/* MODAL HEADER */}
+                        {/* HEADER */}
 
                         <div className="user-modal-header">
-
 
                             <h2>
 
@@ -1331,14 +1292,12 @@ function Profile() {
 
                             </button>
 
-
                         </div>
 
 
                         {/* USER LIST */}
 
                         <div className="user-list">
-
 
                             {(
 
@@ -1351,7 +1310,6 @@ function Profile() {
 
                             )?.length > 0 ? (
 
-
                                 (
 
                                     userListType ===
@@ -1361,100 +1319,95 @@ function Profile() {
 
                                         : user.following
 
-                                ).map(person => (
+                                ).map(
+                                    (person) => (
 
+                                        <div
 
-                                    <div
+                                            className="user-list-item"
 
-                                        className="user-list-item"
-
-                                        key={
-                                            person._id
-                                        }
-
-                                    >
-
-
-                                        {/* PROFILE IMAGE */}
-
-                                        <img
-
-                                            src={
-
-                                                person.profileImage ||
-
-                                                "https://i.pravatar.cc/100"
-
+                                            key={
+                                                person._id
                                             }
-
-                                            alt={
-                                                person.username
-                                            }
-
-                                        />
-
-
-                                        {/* USER INFO */}
-
-                                        <div className="user-list-info">
-
-
-                                            <h4>
-
-                                                {person.firstName}{" "}
-
-                                                {person.lastName}
-
-                                            </h4>
-
-
-                                            <p>
-
-                                                @
-                                                {person.username}
-
-                                            </p>
-
-
-                                        </div>
-
-
-                                        {/* VIEW PROFILE */}
-
-                                        <button
-
-                                            className="view-profile-btn"
-
-                                            onClick={() => {
-
-                                                setShowUsers(
-                                                    false
-                                                );
-
-                                                navigate(
-
-                                                    `/profile/${person._id}`
-
-                                                );
-
-                                            }}
 
                                         >
 
-                                            View
+                                            <img
 
-                                        </button>
+                                                src={
+
+                                                    person.profileImage ||
+
+                                                    "https://i.pravatar.cc/100"
+
+                                                }
+
+                                                alt={
+                                                    person.username
+                                                }
+
+                                            />
 
 
-                                    </div>
+                                            <div className="user-list-info">
 
-                                ))
+                                                <h4>
+
+                                                    {
+                                                        person.firstName
+                                                    }{" "}
+
+                                                    {
+                                                        person.lastName
+                                                    }
+
+                                                </h4>
+
+
+                                                <p>
+
+                                                    @
+                                                    {
+                                                        person.username
+                                                    }
+
+                                                </p>
+
+                                            </div>
+
+
+                                            <button
+
+                                                className="view-profile-btn"
+
+                                                onClick={() => {
+
+                                                    setShowUsers(
+                                                        false
+                                                    );
+
+                                                    navigate(
+
+                                                        `/profile/${person._id}`
+
+                                                    );
+
+                                                }}
+
+                                            >
+
+                                                View
+
+                                            </button>
+
+                                        </div>
+
+                                    )
+                                )
 
                             ) : (
 
-
                                 <div className="no-users">
-
 
                                     <p>
 
@@ -1469,14 +1422,11 @@ function Profile() {
 
                                     </p>
 
-
                                 </div>
 
                             )}
 
-
                         </div>
-
 
                     </div>
 
@@ -1484,12 +1434,10 @@ function Profile() {
 
             )}
 
-
         </div>
 
     );
 
 }
-
 
 export default Profile;
