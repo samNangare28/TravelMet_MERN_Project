@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import "../Css/CreatePost.css";
 
 function CreatePost() {
-
-    const navigate = useNavigate();
 
     const [post, setPost] = useState({
 
@@ -17,7 +14,6 @@ function CreatePost() {
         category: "Other"
 
     });
-
 
     const handleChange = (e) => {
 
@@ -43,11 +39,8 @@ function CreatePost() {
                 "/api/posts",
 
                 {
-
                     ...post,
-
                     user: user.id
-
                 }
 
             );
@@ -69,15 +62,16 @@ function CreatePost() {
 
         catch (error) {
 
-    console.log("Full Error :", error);
+            console.log("Full Error :", error);
+            console.log("Response :", error.response);
+            console.log("Data :", error.response?.data);
 
-    console.log("Response :", error.response);
+            alert(
+                error.response?.data?.message ||
+                "Something went wrong"
+            );
 
-    console.log("Data :", error.response?.data);
-
-    alert(error.response?.data?.message || "Something went wrong");
-
-}
+        }
 
     };
 
@@ -123,7 +117,6 @@ function CreatePost() {
                     placeholder="Location"
                     value={post.location}
                     onChange={handleChange}
-                    required
                 />
 
                 <input
@@ -136,13 +129,9 @@ function CreatePost() {
                 />
 
                 <select
-
                     name="category"
-
                     value={post.category}
-
                     onChange={handleChange}
-
                 >
 
                     <option>Beach</option>
@@ -158,10 +147,8 @@ function CreatePost() {
 
                 </select>
 
-                <button>
-
+                <button type="submit">
                     Create Post
-
                 </button>
 
             </form>
