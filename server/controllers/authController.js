@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const sendWelcomeEmail = require("../utils/sendEmail");
 
 const registerUser = async (req, res) => {
     try {
@@ -43,7 +44,15 @@ const registerUser = async (req, res) => {
         });
 
         await newUser.save();
-
+        // Send welcome email
+        try {
+            await sendWelcomeEmail(
+                newUser.email,
+                newUser.firstName
+            );
+        } catch (emailError) {
+            console.log("Welcome Email Error:", emailError.message);
+        }
         res.status(201).json({
             success: true,
             message: "Registration Successful"

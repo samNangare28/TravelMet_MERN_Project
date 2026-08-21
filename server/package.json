@@ -21,6 +21,7 @@
     "groq-sdk": "^1.4.1",
     "jsonwebtoken": "^9.0.3",
     "mapbox-gl": "^3.28.1",
-    "mongoose": "^9.8.0"
+    "mongoose": "^9.8.0",
+    "nodemailer": "^9.0.5"
   }
 }
