@@ -3,36 +3,169 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
-const connectDB = require("./config/db");
+const connectDB =
+    require("./config/db");
 
-const authRoutes = require("./routes/authRoutes");
-const userRoutes = require("./routes/userRoutes");
-const postRoutes = require("./routes/postRoutes");
-const tripRoutes = require("./routes/tripRoutes");
-const aiRoutes = require("./routes/aiRoutes");
-const notificationRoutes = require("./routes/notificationRoutes");
-const placesRoutes = require("./routes/placesRoutes");
-const blogRoutes = require("./routes/blogRoutes");
 
-const app = express();
+const authRoutes =
+    require("./routes/authRoutes");
+
+const userRoutes =
+    require("./routes/userRoutes");
+
+const postRoutes =
+    require("./routes/postRoutes");
+
+const tripRoutes =
+    require("./routes/tripRoutes");
+
+const aiRoutes =
+    require("./routes/aiRoutes");
+
+const notificationRoutes =
+    require("./routes/notificationRoutes");
+
+const placesRoutes =
+    require("./routes/placesRoutes");
+
+const blogRoutes =
+    require("./routes/blogRoutes");
+
+
+const app =
+    express();
+
+
+// DATABASE
 
 connectDB();
 
-app.use(cors());
-app.use(express.json());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/posts", postRoutes);
-app.use("/api/trips", tripRoutes);
-app.use("/api/ai", aiRoutes);
-app.use("/api/notifications", notificationRoutes);
-app.use("/api/places", placesRoutes);
-app.use("/api/blogs", blogRoutes);
+// MIDDLEWARE
 
-app.get("/", (req, res) => {
-    res.send("TravelMet Backend Running");
-});
+app.use(
+    cors({
+        origin: true,
+        credentials: true
+    })
+);
+
+app.use(
+    express.json()
+);
 
 
-app.listen(process.env.PORT || 5000);
+// ROUTES
+
+app.use(
+    "/api/auth",
+    authRoutes
+);
+
+app.use(
+    "/api/users",
+    userRoutes
+);
+
+app.use(
+    "/api/posts",
+    postRoutes
+);
+
+app.use(
+    "/api/trips",
+    tripRoutes
+);
+
+app.use(
+    "/api/ai",
+    aiRoutes
+);
+
+app.use(
+    "/api/notifications",
+    notificationRoutes
+);
+
+app.use(
+    "/api/places",
+    placesRoutes
+);
+
+app.use(
+    "/api/blogs",
+    blogRoutes
+);
+
+
+// HEALTH CHECK
+
+app.get(
+    "/",
+    (req, res) => {
+
+        res.status(200).send(
+            "TravelMet Backend Running 🚀"
+        );
+
+    }
+);
+
+
+// 404
+
+app.use(
+    (req, res) => {
+
+        res.status(404).json({
+
+            success: false,
+
+            message:
+                "API route not found"
+
+        });
+
+    }
+);
+
+
+// ERROR HANDLER
+
+app.use(
+    (err, req, res, next) => {
+
+        console.error(
+            "SERVER ERROR:",
+            err
+        );
+
+        res.status(500).json({
+
+            success: false,
+
+            message:
+                "Internal Server Error"
+
+        });
+
+    }
+);
+
+
+// START SERVER
+
+const PORT =
+    process.env.PORT || 5000;
+
+
+app.listen(
+    PORT,
+    () => {
+
+        console.log(
+            `🚀 TravelMet Backend running on port ${PORT}`
+        );
+
+    }
+);

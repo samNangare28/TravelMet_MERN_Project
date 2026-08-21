@@ -15,7 +15,7 @@ function Login() {
 
         e.preventDefault();
 
-        if (!email || !password) {
+        if (!email.trim() || !password.trim()) {
             alert("Please fill all fields");
             return;
         }
@@ -27,8 +27,11 @@ function Login() {
             const response = await api.post(
                 "/api/auth/login",
                 {
-                    email,
+                    email: email.trim().toLowerCase(),
                     password
+                },
+                {
+                    timeout: 15000
                 }
             );
 
@@ -45,12 +48,6 @@ function Login() {
 
             const loggedInUser = response.data.user;
 
-            /*
-                MongoDB user usually has _id.
-                Our frontend uses id in many places.
-                So we create a common id field.
-            */
-
             const userData = {
                 ...loggedInUser,
                 id: loggedInUser.id || loggedInUser._id
@@ -61,34 +58,40 @@ function Login() {
                 JSON.stringify(userData)
             );
 
-            console.log(
-                "SAVED USER:",
-                userData
-            );
+            console.log("SAVED USER:", userData);
 
             alert(
                 response.data.message ||
                 "Login Successful"
             );
 
-            // ================= REDIRECT =================
-
             navigate("/profile");
 
-        }
+        } catch (error) {
 
-        catch (error) {
+            console.error("LOGIN ERROR:", error);
 
-            console.log(
-                "Login Error:",
-                error
-            );
-
-            if (error.response) {
+            if (error.code === "ECONNABORTED") {
 
                 alert(
-                    error.response.data.message ||
+                    "Server is taking too long to respond."
+                );
+
+            }
+
+            else if (error.response) {
+
+                alert(
+                    error.response.data?.message ||
                     "Login failed"
+                );
+
+            }
+
+            else if (error.request) {
+
+                alert(
+                    "Unable to connect to server."
                 );
 
             }
@@ -96,19 +99,16 @@ function Login() {
             else {
 
                 alert(
-                    "Server Error. Please try again."
+                    "Something went wrong. Please try again."
                 );
 
             }
 
-        }
-
-        finally {
+        } finally {
 
             setLoading(false);
 
         }
-
     };
 
     return (
@@ -131,6 +131,7 @@ function Login() {
                     onChange={(e) =>
                         setEmail(e.target.value)
                     }
+                    disabled={loading}
                 />
 
                 <input
@@ -140,6 +141,7 @@ function Login() {
                     onChange={(e) =>
                         setPassword(e.target.value)
                     }
+                    disabled={loading}
                 />
 
                 <button
@@ -149,7 +151,8 @@ function Login() {
 
                     {loading
                         ? "Logging In..."
-                        : "Login"}
+                        : "Login"
+                    }
 
                 </button>
 
@@ -160,7 +163,6 @@ function Login() {
             </form>
 
         </div>
-
     );
 }
 

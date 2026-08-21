@@ -2,16 +2,17 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
     {
+
         firstName: {
             type: String,
             required: true,
-            trim: true,
+            trim: true
         },
 
         lastName: {
             type: String,
             required: true,
-            trim: true,
+            trim: true
         },
 
         username: {
@@ -19,7 +20,7 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true,
             trim: true,
-            lowercase: true,
+            lowercase: true
         },
 
         email: {
@@ -27,115 +28,90 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true,
             trim: true,
-            lowercase: true,
+            lowercase: true
         },
 
         password: {
             type: String,
-            required: true,
+            required: true
         },
 
         profileImage: {
             type: String,
-            default: "",
+            default: ""
         },
 
         coverImage: {
             type: String,
-            default: "",
+            default: ""
         },
 
         bio: {
             type: String,
             default: "",
-            maxlength: 200,
+            maxlength: 200
         },
 
         location: {
             type: String,
-            default: "",
+            default: ""
         },
-
-        // =========================
-        // PROFILE PRIVACY
-        // =========================
 
         privacy: {
             type: String,
             enum: ["public", "private"],
-            default: "public",
+            default: "public"
         },
-
-        // =========================
-        // SAVED PLACES
-        // =========================
 
         savedPlaces: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "Destination",
-            },
+                ref: "Destination"
+            }
         ],
-
-        // =========================
-        // TRIPS
-        // =========================
 
         trips: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "Trip",
-            },
+                ref: "Trip"
+            }
         ],
-
-        // =========================
-        // FOLLOWERS
-        // =========================
 
         followers: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "User",
-            },
+                ref: "User"
+            }
         ],
-
-        // =========================
-        // FOLLOWING
-        // =========================
 
         following: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "User",
-            },
+                ref: "User"
+            }
         ],
-
-        // =========================
-        // RECEIVED FOLLOW REQUESTS
-        // =========================
 
         followRequests: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "User",
-            },
+                ref: "User"
+            }
         ],
-
-        // =========================
-        // SENT FOLLOW REQUESTS
-        // =========================
 
         sentFollowRequests: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "User",
-            },
-        ],
+                ref: "User"
+            }
+        ]
+
     },
 
     {
-        timestamps: true,
+        timestamps: true
     }
 );
 
-module.exports = mongoose.model("User", userSchema);
+
+module.exports =
+    mongoose.model("User", userSchema);

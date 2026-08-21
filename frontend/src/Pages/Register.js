@@ -4,96 +4,117 @@ import api from "../api/axios";
 import "../Css/Register.css";
 
 function Register() {
-
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
 
     const [user, setUser] = useState({
-
         firstName: "",
         lastName: "",
         username: "",
         email: "",
         password: ""
-
     });
 
     const handleChange = (e) => {
-
         setUser({
-
             ...user,
             [e.target.name]: e.target.value
-
         });
-
     };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
         if (
-            !user.firstName ||
-            !user.lastName ||
-            !user.username ||
-            !user.email ||
-            !user.password
+            !user.firstName.trim() ||
+            !user.lastName.trim() ||
+            !user.username.trim() ||
+            !user.email.trim() ||
+            !user.password.trim()
         ) {
-
             alert("Please fill all fields");
             return;
+        }
 
+        if (user.password.length < 6) {
+            alert("Password must be at least 6 characters");
+            return;
         }
 
         try {
-
             setLoading(true);
 
+            console.log("REGISTER REQUEST:", user);
+
             const response = await api.post(
-
                 "/api/auth/register",
-
-                user
-
+                {
+                    firstName: user.firstName.trim(),
+                    lastName: user.lastName.trim(),
+                    username: user.username.trim(),
+                    email: user.email.trim().toLowerCase(),
+                    password: user.password
+                },
+                {
+                    timeout: 15000
+                }
             );
 
-            alert(response.data.message);
+            console.log("REGISTER RESPONSE:", response.data);
+
+            alert(
+                response.data.message ||
+                "Registration Successful"
+            );
+
+            setUser({
+                firstName: "",
+                lastName: "",
+                username: "",
+                email: "",
+                password: ""
+            });
 
             navigate("/login");
 
-        }
+        } catch (error) {
+            console.error("REGISTER ERROR:", error);
 
-        catch (error) {
+            if (error.code === "ECONNABORTED") {
+                alert(
+                    "Server is taking too long to respond. Please check your backend."
+                );
+            }
 
-            if (error.response) {
+            else if (error.response) {
+                alert(
+                    error.response.data?.message ||
+                    "Registration failed"
+                );
+            }
 
-                alert(error.response.data.message);
-
+            else if (error.request) {
+                alert(
+                    "Unable to connect to server. Please check your backend URL."
+                );
             }
 
             else {
-
-                alert("Server Error");
-
+                alert("Something went wrong. Please try again.");
             }
 
-        }
-
-        finally {
-
+        } finally {
             setLoading(false);
-
         }
-
     };
 
     return (
-
         <div className="register-page">
 
-            <h1>Create Your TravelMet Account</h1>
+            <h1>
+                Create Your TravelMet Account
+            </h1>
 
             <form
                 className="register-form"
@@ -101,91 +122,64 @@ function Register() {
             >
 
                 <input
-
                     type="text"
-
                     name="firstName"
-
                     placeholder="First Name"
-
                     value={user.firstName}
-
                     onChange={handleChange}
-
+                    disabled={loading}
                 />
 
                 <input
-
                     type="text"
-
                     name="lastName"
-
                     placeholder="Last Name"
-
                     value={user.lastName}
-
                     onChange={handleChange}
-
+                    disabled={loading}
                 />
 
                 <input
-
                     type="text"
-
                     name="username"
-
                     placeholder="Username"
-
                     value={user.username}
-
                     onChange={handleChange}
-
+                    disabled={loading}
                 />
 
                 <input
-
                     type="email"
-
                     name="email"
-
                     placeholder="Email"
-
                     value={user.email}
-
                     onChange={handleChange}
-
+                    disabled={loading}
                 />
 
                 <input
-
                     type="password"
-
                     name="password"
-
                     placeholder="Password"
-
                     value={user.password}
-
                     onChange={handleChange}
-
+                    disabled={loading}
                 />
 
-                <button type="submit">
-
-                    {
-                        loading
-                            ? "Creating Account..."
-                            : "Register"
+                <button
+                    type="submit"
+                    disabled={loading}
+                >
+                    {loading
+                        ? "Creating Account..."
+                        : "Register"
                     }
-
                 </button>
 
             </form>
 
         </div>
-
     );
-
 }
 
 export default Register;
