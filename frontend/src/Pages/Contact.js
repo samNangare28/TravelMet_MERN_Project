@@ -1,8 +1,63 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 import "../Css/Contact.css";
 
 function Contact() {
+
   const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+
+  const [sending, setSending] = useState(false);
+
+  const handleChange = (e) => {
+
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+
+  };
+
+  const handleSubmit = async (e) => {
+
+    e.preventDefault();
+
+    if (!formData.name || !formData.email || !formData.message) {
+      alert("Please fill your name, email and message.");
+      return;
+    }
+
+    setSending(true);
+
+    try {
+
+      await api.post("/api/contact", formData);
+
+      navigate("/message-success");
+
+    } catch (error) {
+
+      console.log("Contact Form Error:", error);
+
+      alert(
+        error.response?.data?.message ||
+        "Unable to send message. Please try again."
+      );
+
+    } finally {
+
+      setSending(false);
+
+    }
+
+  };
 
   return (
 
@@ -81,29 +136,48 @@ function Contact() {
 
             </h2>
 
-            <input
-                type="text"
-                placeholder="Your Name"
-            />
+            <form onSubmit={handleSubmit}>
 
-            <input
-                type="email"
-                placeholder="Your Email"
-            />
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Your Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                />
 
-            <input
-                type="text"
-                placeholder="Subject"
-            />
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Your Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                />
 
-            <textarea
-                rows="6"
-                placeholder="Write your message..."
-            ></textarea>
+                <input
+                    type="text"
+                    name="subject"
+                    placeholder="Subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                />
 
-            <button onClick={() => navigate("/message-success")}>
-              Send Message ✈️
-            </button>
+                <textarea
+                    name="message"
+                    rows="6"
+                    placeholder="Write your message..."
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                ></textarea>
+
+                <button type="submit" disabled={sending}>
+                  {sending ? "Sending..." : "Send Message ✈️"}
+                </button>
+
+            </form>
 
         </div>
 

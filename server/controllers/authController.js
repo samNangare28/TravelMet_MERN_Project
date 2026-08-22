@@ -1,8 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const sendWelcomeEmail = require("../utils/sendEmail");
-
+const { sendWelcomeEmail } = require("../utils/sendEmail");
 
 // =====================================================
 // REGISTER USER

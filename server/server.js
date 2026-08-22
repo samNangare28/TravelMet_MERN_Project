@@ -31,6 +31,8 @@ const placesRoutes =
 const blogRoutes =
     require("./routes/blogRoutes");
 
+const contactRoutes = require("./routes/contactRoutes");
+
 
 const app =
     express();
@@ -96,7 +98,7 @@ app.use(
     "/api/blogs",
     blogRoutes
 );
-
+app.use("/api/contact", contactRoutes);
 
 // HEALTH CHECK
 

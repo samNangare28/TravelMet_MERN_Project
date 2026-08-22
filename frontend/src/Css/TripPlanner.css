@@ -89,6 +89,8 @@
 
     box-shadow:
         0 20px 55px rgba(16, 24, 40, 0.08);
+
+    box-sizing: border-box;
 }
 
 
@@ -262,16 +264,23 @@
 
 
 /* ========================================
-   TRAVELERS
+   TRAVELLERS
+   The +/- buttons and the count live inside
+   .traveller-box — this wrapper needs its own
+   flex layout for them to sit in a row.
 ======================================== */
 
-/*
-   This styles the + / - buttons and
-   the traveller count directly inside
-   the form.
-*/
+.traveller-box {
+    display: flex;
 
-.trip-form > button[type="button"] {
+    align-items: center;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
+.traveller-box button[type="button"] {
     width: 42px;
 
     height: 42px;
@@ -298,7 +307,7 @@
         transform 0.2s ease;
 }
 
-.trip-form > button[type="button"]:hover {
+.traveller-box button[type="button"]:hover {
     background: #f2f4f7;
 
     border-color: #98a2b3;
@@ -311,7 +320,7 @@
    The traveller count itself.
 */
 
-.trip-form > span {
+.traveller-box span {
     min-width: 135px;
 
     height: 42px;
@@ -335,6 +344,23 @@
     font-size: 13px;
 
     font-weight: 600;
+}
+
+
+/* ========================================
+   CARD OPTIONS WRAPPER
+   Budget / Transport / Hotel / Trip Type
+   groups all use this wrapper — it needs to
+   be a flex container for .option-card's
+   flex-basis rules to actually do anything.
+======================================== */
+
+.card-options {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
 }
 
 
@@ -368,6 +394,10 @@
     cursor: pointer;
 
     user-select: none;
+
+    text-align: center;
+
+    box-sizing: border-box;
 
     transition:
         border-color 0.25s ease,
@@ -417,31 +447,13 @@
 }
 
 
-/* ========================================
-   OPTION GRID
-======================================== */
-
 /*
-   Your JSX does not have separate wrapper
-   classes around budget, transport, hotel
-   and trip options.
-
-   This makes the option cards arrange
-   themselves nicely.
+   Each option card gets equal space when
+   multiple cards are displayed.
 */
 
-.option-card {
-    margin-bottom: 0;
-}
-
-
-/*
-   Use CSS grid automatically for consecutive
-   option cards.
-*/
-
-.trip-form .option-card {
-    display: inline-flex;
+.card-options .option-card {
+    flex: 1 1 180px;
 }
 
 
@@ -499,31 +511,6 @@
 
 .trip-form > button[type="submit"]:active {
     transform: translateY(0);
-}
-
-
-/* ========================================
-   OPTION CARD GROUPING
-======================================== */
-
-/*
-   Because the current JSX doesn't have
-   wrappers around the option cards,
-   we use flex wrapping on the form.
-*/
-
-.trip-form {
-    align-items: stretch;
-}
-
-
-/*
-   Each option card gets equal space when
-   multiple cards are displayed.
-*/
-
-.trip-form .option-card {
-    flex: 1 1 180px;
 }
 
 
@@ -592,14 +579,45 @@
     }
 
 
+    /* TRAVELLER BOX */
+
+    .traveller-box {
+        gap: 10px;
+    }
+
+    .traveller-box button[type="button"] {
+        width: 38px;
+
+        height: 38px;
+
+        font-size: 18px;
+    }
+
+    .traveller-box span {
+        min-width: 0;
+
+        flex: 1;
+
+        height: 38px;
+
+        font-size: 12px;
+    }
+
+
     /* OPTION CARDS */
 
-    .trip-form .option-card {
+    .card-options {
+        gap: 8px;
+    }
+
+    .card-options .option-card {
         flex: 1 1 calc(50% - 8px);
 
         min-height: 52px;
 
         font-size: 12px;
+
+        padding: 0 10px;
     }
 
 
@@ -635,11 +653,14 @@
         font-size: 12px;
     }
 
-    .trip-form .option-card {
+    .card-options .option-card {
         flex: 1 1 100%;
 
         min-height: 48px;
     }
 
-}
+    .traveller-box {
+        flex-wrap: nowrap;
+    }
 
+}

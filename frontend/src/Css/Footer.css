@@ -226,3 +226,15 @@
     }
 
 }
+/* ========================================
+   MOBILE: leave room for the fixed bottom nav
+   so the footer's last line isn't hidden behind it
+======================================== */
+
+@media (max-width: 768px) {
+
+    .footer {
+        padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+    }
+
+}

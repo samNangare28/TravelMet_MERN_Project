@@ -47,4 +47,47 @@ async function sendWelcomeEmail(data) {
     }
 }
 
-module.exports = sendWelcomeEmail;
+async function sendContactMessage(data) {
+
+    const { name, email, subject, message } = data;
+
+    if (!process.env.BREVO_API_KEY) {
+        console.log("⚠️ BREVO_API_KEY missing");
+        return;
+    }
+
+    try {
+        console.log("📧 Sending contact message from:", email);
+
+        const result = await brevo.transactionalEmails.sendTransacEmail({
+            sender: {
+                name: "TravelMet Contact Form 📬",
+                email: "samnangare28@gmail.com"
+            },
+            to: [{ email: "samnangare28@gmail.com", name: "TravelMet Admin" }],
+            replyTo: { email, name },
+            subject: `📬 New Contact Message: ${subject || "No Subject"}`,
+            htmlContent: `
+                <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:30px; color:#333;">
+                    <h2>📬 New message from TravelMet Contact Form</h2>
+                    <p><strong>Name:</strong> ${name}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Subject:</strong> ${subject || "N/A"}</p>
+                    <hr />
+                    <p><strong>Message:</strong></p>
+                    <p style="white-space: pre-wrap;">${message}</p>
+                </div>
+            `
+        });
+
+        console.log("✅ CONTACT EMAIL SENT!", result.messageId);
+        return result;
+
+    } catch (error) {
+        console.log("❌ SEND CONTACT EMAIL ERROR:", error.message);
+        throw error;
+    }
+}
+
+module.exports = { sendWelcomeEmail, sendContactMessage };
+
