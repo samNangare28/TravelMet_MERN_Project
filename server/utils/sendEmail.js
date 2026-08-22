@@ -1,88 +1,23 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-
-// CREATE TRANSPORTER
-
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,        
-    requireTLS: true,     
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    },
-    family: 4,
-    connectionTimeout: 20000,   
-    greetingTimeout: 20000,
-    socketTimeout: 20000
-});
-
-transporter.verify((error) => {
-
-    if (error) {
-
-        console.log(
-            "❌ Email Configuration Error:",
-            error.message
-        );
-
-    }
-
-    else {
-
-        console.log(
-            "✅ Email Server Ready"
-        );
-
-    }
-
-});
-
-
-// SEND WELCOME EMAIL
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendWelcomeEmail(data) {
 
-    const {
-        name,
-        email
-    } = data;
+    const { name, email } = data;
 
-
-    if (
-        !process.env.EMAIL_USER ||
-        !process.env.EMAIL_PASS
-    ) {
-
-        console.log(
-            "⚠️ EMAIL_USER or EMAIL_PASS missing"
-        );
-
+    if (!process.env.RESEND_API_KEY) {
+        console.log("⚠️ RESEND_API_KEY missing");
         return;
-
     }
 
-
     try {
+        console.log("📧 Sending welcome email to:", email);
 
-        console.log(
-            "📧 Sending welcome email to:",
-            email
-        );
-
-
-        const mailOptions = {
-
-            from:
-                `"TravelMet 🌍" <${process.env.EMAIL_USER}>`,
-
-            to:
-                email,
-
-            subject:
-                `🎒 Your TravelMet journey starts here, ${name}! 🌍✨`,
-
+        const info = await resend.emails.send({
+            from: "TravelMet 🌍 <onboarding@resend.dev>",
+            to: email,
+            subject: `🎒 Your TravelMet journey starts here, ${name}! 🌍✨`,
             html: `
 
                 <div style="
@@ -159,42 +94,16 @@ async function sendWelcomeEmail(data) {
                 </div>
 
             `
-        };
+        });
 
-
-        const info =
-            await transporter.sendMail(
-                mailOptions
-            );
-
-
-        console.log(
-            "✅ EMAIL SENT SUCCESSFULLY!"
-        );
-
-        console.log(
-            "📨 Message ID:",
-            info.messageId
-        );
-
-
+        console.log("✅ EMAIL SENT SUCCESSFULLY!", info.data?.id);
         return info;
 
-    }
-
-    catch (error) {
-
-        console.log(
-            "❌ SEND EMAIL ERROR:",
-            error.message
-        );
-
+    } catch (error) {
+        console.log("❌ SEND EMAIL ERROR:", error.message);
         throw error;
-
     }
-
 }
 
+module.exports = sendWelcomeEmail;
 
-module.exports =
-    sendWelcomeEmail;
