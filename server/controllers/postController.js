@@ -49,60 +49,41 @@ const createPost = async (req, res) => {
 
 
 // ================= GET ALL POSTS =================
-
-
 const getAllPosts = async (req, res) => {
 
     try {
 
+        const { page = 1, limit = 9 } = req.query;
+
         const posts = await Post.find()
-
-            // Get post owner
-            .populate(
-                "user",
-                "firstName lastName username profileImage privacy"
-            )
-
-            .sort({
-                createdAt: -1
-            });
-
-
-        // =================================================
-        // ONLY PUBLIC USER POSTS
-        // =================================================
+            .populate("user", "firstName lastName username profileImage privacy")
+            .sort({ createdAt: -1 });
 
         const publicPosts = posts.filter(
-            post =>
-                post.user &&
-                post.user.privacy === "public"
+            post => post.user && post.user.privacy === "public"
         );
 
+        const totalPosts = publicPosts.length;
+        const startIndex = (Number(page) - 1) * Number(limit);
+        const paginatedPosts = publicPosts.slice(startIndex, startIndex + Number(limit));
 
         res.status(200).json({
-
             success: true,
-
-            posts: publicPosts
-
+            posts: paginatedPosts,
+            currentPage: Number(page),
+            totalPages: Math.ceil(totalPosts / Number(limit)),
+            totalPosts
         });
 
     }
 
     catch (error) {
 
-        console.log(
-            "Get All Posts Error:",
-            error
-        );
-
+        console.log("Get All Posts Error:", error);
 
         res.status(500).json({
-
             success: false,
-
             message: error.message
-
         });
 
     }

@@ -11,7 +11,8 @@ const {
     unfollowUser,
     acceptFollowRequest,
     rejectFollowRequest,
-    searchUsers
+    searchUsers,
+    deleteAccount
 } = require("../controllers/userController");
 
 
@@ -67,6 +68,8 @@ router.post(
     protect,
     rejectFollowRequest
 );
+
+router.delete("/:id", protect, deleteAccount);
 
 
 module.exports = router;

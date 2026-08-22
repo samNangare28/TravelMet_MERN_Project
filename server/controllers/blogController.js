@@ -90,12 +90,11 @@ const createBlog = async (req, res) => {
 // Supports optional ?search=&category=&destination= for
 // the magazine listing page's filter bar.
 // =====================================================
-
 const getAllBlogs = async (req, res) => {
 
     try {
 
-        const { search, category, destination } = req.query;
+        const { search, category, destination, page = 1, limit = 9 } = req.query;
 
         const filter = { published: true };
 
@@ -115,13 +114,20 @@ const getAllBlogs = async (req, res) => {
             ];
         }
 
+        const totalBlogs = await Blog.countDocuments(filter);
+
         const blogs = await Blog.find(filter)
             .populate("user", "firstName lastName username profileImage")
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .skip((Number(page) - 1) * Number(limit))
+            .limit(Number(limit));
 
         res.status(200).json({
             success: true,
-            blogs
+            blogs,
+            currentPage: Number(page),
+            totalPages: Math.ceil(totalBlogs / Number(limit)),
+            totalBlogs
         });
 
     }
@@ -136,8 +142,6 @@ const getAllBlogs = async (req, res) => {
     }
 
 };
-
-
 // =====================================================
 // GET SINGLE BLOG
 // GET /api/blogs/:id

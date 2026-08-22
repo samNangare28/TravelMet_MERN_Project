@@ -8,6 +8,9 @@ function Community() {
 
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
 
     const navigate = useNavigate();
 
@@ -16,12 +19,13 @@ function Community() {
 
     useEffect(() => {
 
-        fetchPosts();
+        fetchPosts(1);
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
-    const fetchPosts = async () => {
+    const fetchPosts = async (pageNum) => {
 
         try {
 
@@ -30,10 +34,17 @@ function Community() {
             );
 
             const response = await api.get(
-                `/api/posts?viewerId=${user.id || ""}`
+                `/api/posts?viewerId=${user.id || ""}&page=${pageNum}&limit=9`
             );
 
-            setPosts(response.data.posts);
+            if (pageNum === 1) {
+                setPosts(response.data.posts);
+            } else {
+                setPosts((prev) => [...prev, ...response.data.posts]);
+            }
+
+            setHasMore(pageNum < response.data.totalPages);
+            setPage(pageNum);
 
         }
 
@@ -46,8 +57,17 @@ function Community() {
         finally {
 
             setLoading(false);
+            setLoadingMore(false);
 
         }
+
+    };
+
+
+    const handleLoadMore = () => {
+
+        setLoadingMore(true);
+        fetchPosts(page + 1);
 
     };
 
@@ -358,6 +378,32 @@ function Community() {
                         )
 
                 }
+
+                {/* ================= LOAD MORE ================= */}
+
+                {hasMore && !loading && posts.length > 0 && (
+
+                    <button
+                        className="load-more-btn"
+                        onClick={handleLoadMore}
+                        disabled={loadingMore}
+                        style={{
+                            margin: "30px auto 0",
+                            display: "block",
+                            padding: "12px 28px",
+                            border: "1px solid #d0d5dd",
+                            borderRadius: 10,
+                            background: "#ffffff",
+                            color: "#101828",
+                            fontWeight: 600,
+                            fontSize: 13,
+                            cursor: "pointer"
+                        }}
+                    >
+                        {loadingMore ? "Loading..." : "Load More"}
+                    </button>
+
+                )}
 
             </section>
 

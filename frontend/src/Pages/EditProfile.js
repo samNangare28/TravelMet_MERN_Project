@@ -7,6 +7,36 @@ function EditProfile() {
 
     const navigate = useNavigate();
 
+    const handleDeleteAccount = async () => {
+
+    const confirmed = window.confirm(
+        "Are you sure you want to permanently delete your account? This cannot be undone — all your posts, blogs and data will be lost."
+    );
+
+        if (!confirmed) return;
+
+        try {
+
+            const localUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+            await api.delete(`/api/users/${localUser.id}`);
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+
+            alert("Your account has been deleted.");
+
+            navigate("/register");
+
+        } catch (error) {
+
+            console.log("Delete Account Error:", error);
+            alert(error.response?.data?.message || "Unable to delete account");
+
+        }
+
+    };
+
     const [formData, setFormData] = useState({
         bio: "",
         location: "",
@@ -243,10 +273,32 @@ function EditProfile() {
                         to approved followers.
                     </small>
 
+                    
                 </div>
 
                 <button type="submit">Save Changes</button>
 
+                <div style={{ marginTop: 40, paddingTop: 20, borderTop: "1px solid #eaecf0" }}>
+                    <h3 style={{ color: "#b42318", fontSize: 15 }}>Danger Zone</h3>
+                    <p style={{ fontSize: 12, color: "#667085", marginBottom: 12 }}>
+                        Deleting your account is permanent and cannot be undone.
+                    </p>
+                    <button
+                        type="button"
+                        onClick={handleDeleteAccount}
+                        style={{
+                            background: "#fef3f2",
+                            color: "#b42318",
+                            border: "1px solid #fda29b",
+                            padding: "10px 16px",
+                            borderRadius: 8,
+                            cursor: "pointer",
+                            fontWeight: 600
+                        }}
+                    >
+                        Delete My Account
+                    </button>
+                </div>
             </form>
 
         </div>

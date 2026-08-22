@@ -1,7 +1,10 @@
 require("dotenv").config();
 
 const express = require("express");
+const { generalLimiter } = require("./middleware/rateLimiter");
+
 const cors = require("cors");
+app.use(generalLimiter);
 
 const connectDB =
     require("./config/db");
@@ -99,6 +102,7 @@ app.use(
     blogRoutes
 );
 app.use("/api/contact", contactRoutes);
+
 
 // HEALTH CHECK
 

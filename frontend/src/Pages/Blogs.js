@@ -30,18 +30,24 @@ function Blogs() {
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
 
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+
     useEffect(() => {
 
-        fetchBlogs();
+        fetchBlogs(1);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [category]);
 
-    const fetchBlogs = async () => {
+    const fetchBlogs = async (pageNum) => {
 
         try {
 
-            setLoading(true);
+            if (pageNum === 1) {
+                setLoading(true);
+            }
 
             const params = new URLSearchParams();
 
@@ -53,11 +59,21 @@ function Blogs() {
                 params.set("search", search.trim());
             }
 
+            params.set("page", pageNum);
+            params.set("limit", 9);
+
             const response = await api.get(
                 `/api/blogs?${params.toString()}`
             );
 
-            setBlogs(response.data.blogs || []);
+            if (pageNum === 1) {
+                setBlogs(response.data.blogs || []);
+            } else {
+                setBlogs((prev) => [...prev, ...(response.data.blogs || [])]);
+            }
+
+            setHasMore(pageNum < response.data.totalPages);
+            setPage(pageNum);
 
         }
 
@@ -70,15 +86,23 @@ function Blogs() {
         finally {
 
             setLoading(false);
+            setLoadingMore(false);
 
         }
+
+    };
+
+    const handleLoadMore = () => {
+
+        setLoadingMore(true);
+        fetchBlogs(page + 1);
 
     };
 
     const handleSearchSubmit = (e) => {
 
         e.preventDefault();
-        fetchBlogs();
+        fetchBlogs(1);
 
     };
 
@@ -289,6 +313,32 @@ function Blogs() {
                     ) : null}
 
                 </div>
+
+                {/* ================= LOAD MORE ================= */}
+
+                {hasMore && !loading && blogs.length > 0 && (
+
+                    <button
+                        className="blog-load-more-btn"
+                        onClick={handleLoadMore}
+                        disabled={loadingMore}
+                        style={{
+                            margin: "30px auto 0",
+                            display: "block",
+                            padding: "12px 28px",
+                            border: "1px solid #d0d5dd",
+                            borderRadius: 10,
+                            background: "#ffffff",
+                            color: "#101828",
+                            fontWeight: 600,
+                            fontSize: 13,
+                            cursor: "pointer"
+                        }}
+                    >
+                        {loadingMore ? "Loading..." : "Load More"}
+                    </button>
+
+                )}
 
             </section>
 

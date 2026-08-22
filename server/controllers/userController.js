@@ -2,6 +2,8 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const { createNotification } = require("../services/notificationService");
 const fileToBase64 = require("../utils/fileToBase64");
+const Blog = require("../models/Blog");
+const Notification = require("../models/Notification");
 // =====================================================
 // GET PROFILE
 // =====================================================
@@ -818,6 +820,85 @@ const searchUsers = async (req, res) => {
 
 };
 
+// =====================================================
+// DELETE ACCOUNT
+// DELETE /api/users/:id
+// =====================================================
+
+const deleteAccount = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        if (req.user.id !== id) {
+
+            return res.status(403).json({
+                success: false,
+                message: "You can only delete your own account"
+            });
+
+        }
+
+        const user = await User.findById(id);
+
+        if (!user) {
+
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+
+        }
+
+        // या user चे स्वतःचे posts/blogs delete करा
+        await Post.deleteMany({ user: id });
+        await Blog.deleteMany({ user: id });
+
+        // या user शी संबंधित notifications delete करा
+        await Notification.deleteMany({
+            $or: [{ recipient: id }, { sender: id }]
+        });
+
+        // बाकीच्या users च्या followers/following/likes
+        // यादीतून हा user काढून टाका
+        await User.updateMany(
+            {},
+            {
+                $pull: {
+                    followers: id,
+                    following: id,
+                    followRequests: id,
+                    sentFollowRequests: id
+                }
+            }
+        );
+
+        await Post.updateMany({}, { $pull: { likes: id } });
+        await Blog.updateMany({}, { $pull: { likes: id } });
+
+        await User.findByIdAndDelete(id);
+
+        res.status(200).json({
+            success: true,
+            message: "Account deleted successfully"
+        });
+
+    }
+
+    catch (error) {
+
+        console.log("Delete Account Error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+
+};
+
 
 // =====================================================
 // EXPORTS
@@ -837,6 +918,8 @@ module.exports = {
 
     rejectFollowRequest,
 
-    searchUsers
+    searchUsers,
+    
+    deleteAccount
 
 };
