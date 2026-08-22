@@ -1,13 +1,10 @@
 const nodemailer = require("nodemailer");
 
 
-// =====================================================
 // CREATE TRANSPORTER
-// =====================================================
 
 const transporter =
     nodemailer.createTransport({
-
         service: "gmail",
 
         auth: {
@@ -24,14 +21,13 @@ const transporter =
 
         greetingTimeout: 10000,
 
-        socketTimeout: 15000
+        socketTimeout: 15000,
+        family: 4 
 
     });
 
 
-// =====================================================
 // CHECK EMAIL CONFIGURATION
-// =====================================================
 
 transporter.verify((error) => {
 
@@ -55,9 +51,7 @@ transporter.verify((error) => {
 });
 
 
-// =====================================================
 // SEND WELCOME EMAIL
-// =====================================================
 
 async function sendWelcomeEmail(data) {
 
