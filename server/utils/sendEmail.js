@@ -18,9 +18,6 @@ const transporter = nodemailer.createTransport({
     socketTimeout: 20000
 });
 
-
-// CHECK EMAIL CONFIGURATION
-
 transporter.verify((error) => {
 
     if (error) {
