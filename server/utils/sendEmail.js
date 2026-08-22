@@ -1,24 +1,35 @@
-const { Resend } = require("resend");
+const brevo = require("@getbrevo/brevo");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const apiInstance = new brevo.TransactionalEmailsApi();
+apiInstance.setApiKey(
+    brevo.TransactionalEmailsApiApiKeys.apiKey,
+    process.env.BREVO_API_KEY
+);
 
 async function sendWelcomeEmail(data) {
 
     const { name, email } = data;
 
-    if (!process.env.RESEND_API_KEY) {
-        console.log("⚠️ RESEND_API_KEY missing");
+    if (!process.env.BREVO_API_KEY) {
+        console.log("⚠️ BREVO_API_KEY missing");
         return;
     }
 
     try {
         console.log("📧 Sending welcome email to:", email);
 
-        const info = await resend.emails.send({
-            from: "TravelMet 🌍 <onboarding@resend.dev>",
-            to: email,
-            subject: `🎒 Your TravelMet journey starts here, ${name}! 🌍✨`,
-            html: `
+        const sendSmtpEmail = new brevo.SendSmtpEmail();
+
+        sendSmtpEmail.sender = {
+            name: "TravelMet 🌍",
+            email: "samnangare28@gmail.com"   // 👈 Brevo मध्ये verify केलेला sender
+        };
+
+        sendSmtpEmail.to = [{ email, name }];
+
+        sendSmtpEmail.subject = `🎒 Your TravelMet journey starts here, ${name}! 🌍✨`;
+
+        sendSmtpEmail.htmlContent =`
 
                 <div style="
                     font-family: Arial, sans-serif;
@@ -93,10 +104,11 @@ async function sendWelcomeEmail(data) {
 
                 </div>
 
-            `
-        });
+            `;
 
-        console.log("✅ EMAIL SENT SUCCESSFULLY!", info.data?.id);
+        const info = await apiInstance.sendTransacEmail(sendSmtpEmail);
+
+        console.log("✅ EMAIL SENT SUCCESSFULLY!", info.body?.messageId);
         return info;
 
     } catch (error) {
@@ -106,4 +118,3 @@ async function sendWelcomeEmail(data) {
 }
 
 module.exports = sendWelcomeEmail;
-
