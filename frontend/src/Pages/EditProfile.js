@@ -15,6 +15,9 @@ function EditProfile() {
         privacy: "public"
     });
 
+    const [profileImageFile, setProfileImageFile] = useState(null);
+    const [coverImageFile, setCoverImageFile] = useState(null);
+
     useEffect(() => {
 
         const fetchUser = async () => {
@@ -45,10 +48,7 @@ function EditProfile() {
 
             } catch (error) {
 
-                console.log(
-                    "Fetch User Error:",
-                    error
-                );
+                console.log("Fetch User Error:", error);
 
             }
 
@@ -67,6 +67,28 @@ function EditProfile() {
 
     };
 
+    const handleImageChange = (e) => {
+
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        const previewUrl = URL.createObjectURL(file);
+
+        if (e.target.name === "profileImage") {
+
+            setProfileImageFile(file);
+            setFormData({ ...formData, profileImage: previewUrl });
+
+        } else {
+
+            setCoverImageFile(file);
+            setFormData({ ...formData, coverImage: previewUrl });
+
+        }
+
+    };
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -77,36 +99,43 @@ function EditProfile() {
                 localStorage.getItem("user") || "{}"
             );
 
-            await api.put(
+            const data = new FormData();
+
+            data.append("bio", formData.bio);
+            data.append("location", formData.location);
+            data.append("privacy", formData.privacy);
+
+            if (profileImageFile) {
+                data.append("profileImage", profileImageFile);
+            }
+
+            if (coverImageFile) {
+                data.append("coverImage", coverImageFile);
+            }
+
+            const response = await api.put(
                 `/api/users/${localUser.id}`,
-                formData
+                data,
+                { headers: { "Content-Type": "multipart/form-data" } }
             );
 
-            // Update localStorage also
-            const oldUser = JSON.parse(
-                localStorage.getItem("user") || "{}"
-            );
+            const updatedUser = response.data.user;
 
             localStorage.setItem(
                 "user",
                 JSON.stringify({
-                    ...oldUser,
-                    ...formData
+                    ...localUser,
+                    ...updatedUser
                 })
             );
 
-            alert(
-                "Profile Updated Successfully"
-            );
+            alert("Profile Updated Successfully");
 
             navigate("/profile");
 
         } catch (error) {
 
-            console.log(
-                "Update Profile Error:",
-                error
-            );
+            console.log("Update Profile Error:", error);
 
             alert(
                 error.response?.data?.message ||
@@ -121,27 +150,64 @@ function EditProfile() {
 
         <div className="edit-profile-page">
 
-            <h1>
-                Edit Profile
-            </h1>
+            <h1>Edit Profile</h1>
 
             <form onSubmit={handleSubmit}>
 
-                <input
-                    type="text"
-                    name="profileImage"
-                    placeholder="Profile Image URL"
-                    value={formData.profileImage}
-                    onChange={handleChange}
-                />
+                <div className="form-group">
 
-                <input
-                    type="text"
-                    name="coverImage"
-                    placeholder="Cover Image URL"
-                    value={formData.coverImage}
-                    onChange={handleChange}
-                />
+                    <label>Profile Image</label>
+
+                    {formData.profileImage && (
+                        <img
+                            src={formData.profileImage}
+                            alt="profile preview"
+                            style={{
+                                width: 100,
+                                height: 100,
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                                display: "block",
+                                marginBottom: 8
+                            }}
+                        />
+                    )}
+
+                    <input
+                        type="file"
+                        name="profileImage"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                    />
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>Cover Image</label>
+
+                    {formData.coverImage && (
+                        <img
+                            src={formData.coverImage}
+                            alt="cover preview"
+                            style={{
+                                width: "100%",
+                                maxHeight: 150,
+                                objectFit: "cover",
+                                display: "block",
+                                marginBottom: 8
+                            }}
+                        />
+                    )}
+
+                    <input
+                        type="file"
+                        name="coverImage"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                    />
+
+                </div>
 
                 <input
                     type="text"
@@ -158,28 +224,17 @@ function EditProfile() {
                     onChange={handleChange}
                 />
 
-                {/* ================= PRIVACY ================= */}
-
                 <div className="form-group">
 
-                    <label>
-                        Profile Privacy
-                    </label>
+                    <label>Profile Privacy</label>
 
                     <select
                         name="privacy"
                         value={formData.privacy}
                         onChange={handleChange}
                     >
-
-                        <option value="public">
-                            🌍 Public
-                        </option>
-
-                        <option value="private">
-                            🔒 Private
-                        </option>
-
+                        <option value="public">🌍 Public</option>
+                        <option value="private">🔒 Private</option>
                     </select>
 
                     <small>
@@ -190,9 +245,7 @@ function EditProfile() {
 
                 </div>
 
-                <button type="submit">
-                    Save Changes
-                </button>
+                <button type="submit">Save Changes</button>
 
             </form>
 

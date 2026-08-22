@@ -5,6 +5,16 @@ import "../Css/CreatePost.css";
 
 function EditPost() {
 
+    const [imageFile, setImageFile] = useState(null);
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImageFile(file);
+            setPost({ ...post, image: URL.createObjectURL(file) });
+        }
+    };
+
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -73,14 +83,19 @@ function EditPost() {
 
         try {
 
+            const data = new FormData();
+            data.append("title", post.title);
+            data.append("description", post.description);
+            data.append("location", post.location);
+            data.append("country", post.country);
+            data.append("category", post.category);
+            if (imageFile) data.append("image", imageFile);
+
             const response = await api.put(
-
                 `/api/posts/${id}`,
-
-                post
-
+                data,
+                { headers: { "Content-Type": "multipart/form-data" } }
             );
-
             alert(response.data.message);
 
             navigate(`/post/${id}`);
@@ -125,13 +140,19 @@ function EditPost() {
                     required
                 />
 
-                <input
-                    type="text"
-                    name="image"
-                    placeholder="Image URL"
-                    value={post.image}
-                    onChange={handleChange}
+                {post.image && (
+                <img
+                    src={post.image}
+                    alt="preview"
+                    style={{ width: "100%", maxHeight: 200, objectFit: "cover" }}
                 />
+            )}
+
+            <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+            />
 
                 <input
                     type="text"

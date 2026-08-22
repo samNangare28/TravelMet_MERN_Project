@@ -1,21 +1,15 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
 const { createNotification } = require("../services/notificationService");
-
+const fileToBase64 = require("../utils/fileToBase64");
 // ================= CREATE POST =================
 
 const createPost = async (req, res) => {
 
     try {
 
-        const {
-            title,
-            description,
-            image,
-            location,
-            country,
-            category
-        } = req.body;
+        const { title, description, location, country, category } = req.body;
+        const image = req.file ? fileToBase64(req.file) : req.body.image;
 
         // The post always belongs to the authenticated
         // user — never to whatever "user" id the client
@@ -217,6 +211,9 @@ const updatePost = async (req, res) => {
 
         // Never let the client overwrite ownership via body.
         const { user: _ignoreUser, ...safeUpdates } = req.body;
+        if (req.file) {
+            safeUpdates.image = fileToBase64(req.file);
+        }
 
         const updatedPost = await Post.findByIdAndUpdate(
             id,

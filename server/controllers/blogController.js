@@ -1,6 +1,6 @@
 const Blog = require("../models/Blog");
 const User = require("../models/User");
-
+const fileToBase64 = require("../utils/fileToBase64");
 // A very rough words-per-minute estimate so the create
 // form doesn't have to ask the author to guess a number.
 const estimateReadTime = (content = "") => {
@@ -24,16 +24,8 @@ const createBlog = async (req, res) => {
 
     try {
 
-        const {
-            title,
-            coverImage,
-            destination,
-            shortDescription,
-            content,
-            travelTips,
-            category,
-            tags
-        } = req.body;
+        const { title, destination, shortDescription, content, travelTips, category, tags } = req.body;
+        const coverImage = req.file ? fileToBase64(req.file) : req.body.coverImage;
 
         if (!title || !destination || !shortDescription || !content) {
 
@@ -261,6 +253,9 @@ const updateBlog = async (req, res) => {
 
         // Never let the client overwrite ownership via body.
         const { user: _ignoreUser, tags, content, ...safeUpdates } = req.body;
+        if (req.file) {
+            safeUpdates.coverImage = fileToBase64(req.file);
+        }
 
         if (tags !== undefined) {
 

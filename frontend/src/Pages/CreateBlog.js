@@ -29,7 +29,6 @@ function CreateBlog() {
     const [blog, setBlog] = useState({
 
         title: "",
-        coverImage: "",
         destination: "",
         shortDescription: "",
         content: "",
@@ -38,6 +37,9 @@ function CreateBlog() {
         tags: ""
 
     });
+
+    const [coverImageFile, setCoverImageFile] = useState(null);
+    const [coverImagePreview, setCoverImagePreview] = useState("");
 
     const [submitting, setSubmitting] = useState(false);
 
@@ -50,6 +52,17 @@ function CreateBlog() {
 
     };
 
+    const handleCoverImageChange = (e) => {
+
+        const file = e.target.files[0];
+
+        if (file) {
+            setCoverImageFile(file);
+            setCoverImagePreview(URL.createObjectURL(file));
+        }
+
+    };
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -58,7 +71,25 @@ function CreateBlog() {
 
         try {
 
-            const response = await api.post("/api/blogs", blog);
+            const data = new FormData();
+
+            data.append("title", blog.title);
+            data.append("destination", blog.destination);
+            data.append("shortDescription", blog.shortDescription);
+            data.append("content", blog.content);
+            data.append("travelTips", blog.travelTips);
+            data.append("category", blog.category);
+            data.append("tags", blog.tags);
+
+            if (coverImageFile) {
+                data.append("coverImage", coverImageFile);
+            }
+
+            const response = await api.post(
+                "/api/blogs",
+                data,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            );
 
             await Swal.fire({
                 icon: "success",
@@ -152,25 +183,23 @@ function CreateBlog() {
 
                     <div className="blog-form-group">
 
-                        <label>Cover Image URL</label>
+                        <label>Cover Image</label>
 
-                        <input
-                            type="text"
-                            name="coverImage"
-                            placeholder="https://..."
-                            value={blog.coverImage}
-                            onChange={handleChange}
-                        />
-
-                        {blog.coverImage && (
+                        {coverImagePreview && (
 
                             <img
                                 className="blog-cover-preview"
-                                src={blog.coverImage}
+                                src={coverImagePreview}
                                 alt="cover preview"
                             />
 
                         )}
+
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleCoverImageChange}
+                        />
 
                     </div>
 

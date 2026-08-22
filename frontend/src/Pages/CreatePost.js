@@ -8,25 +8,33 @@ function CreatePost() {
     const navigate = useNavigate();
 
     const [post, setPost] = useState({
-
         title: "",
         description: "",
-        image: "",
         location: "",
         country: "",
         category: "Other"
-
     });
 
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState("");
 
     const handleChange = (e) => {
 
         setPost({
-
             ...post,
             [e.target.name]: e.target.value
-
         });
+
+    };
+
+    const handleImageChange = (e) => {
+
+        const file = e.target.files[0];
+
+        if (file) {
+            setImageFile(file);
+            setImagePreview(URL.createObjectURL(file));
+        }
 
     };
 
@@ -36,48 +44,43 @@ function CreatePost() {
 
         try {
 
-            const user = JSON.parse(localStorage.getItem("user"));
+            const data = new FormData();
+
+            data.append("title", post.title);
+            data.append("description", post.description);
+            data.append("location", post.location);
+            data.append("country", post.country);
+            data.append("category", post.category);
+
+            if (imageFile) {
+                data.append("image", imageFile);
+            }
 
             const response = await api.post(
-
                 "/api/posts",
-
-                {
-
-                    ...post,
-
-                    user: user.id
-
-                }
-
+                data,
+                { headers: { "Content-Type": "multipart/form-data" } }
             );
 
             alert(response.data.message);
 
             setPost({
-
                 title: "",
                 description: "",
-                image: "",
                 location: "",
                 country: "",
                 category: "Other"
-
             });
 
+            setImageFile(null);
+            setImagePreview("");
+
+        } catch (error) {
+
+            console.log("Full Error :", error);
+            alert(error.response?.data?.message || "Something went wrong");
+
         }
-
-        catch (error) {
-
-    console.log("Full Error :", error);
-
-    console.log("Response :", error.response);
-
-    console.log("Data :", error.response?.data);
-
-    alert(error.response?.data?.message || "Something went wrong");
-
-}
 
     };
 
@@ -87,10 +90,7 @@ function CreatePost() {
 
             <h1>Create Travel Post</h1>
 
-            <form
-                className="create-post-form"
-                onSubmit={handleSubmit}
-            >
+            <form className="create-post-form" onSubmit={handleSubmit}>
 
                 <input
                     type="text"
@@ -109,12 +109,18 @@ function CreatePost() {
                     required
                 />
 
+                {imagePreview && (
+                    <img
+                        src={imagePreview}
+                        alt="preview"
+                        style={{ width: "100%", maxHeight: 200, objectFit: "cover" }}
+                    />
+                )}
+
                 <input
-                    type="text"
-                    name="image"
-                    placeholder="Image URL"
-                    value={post.image}
-                    onChange={handleChange}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
                 />
 
                 <input
@@ -135,16 +141,7 @@ function CreatePost() {
                     required
                 />
 
-                <select
-
-                    name="category"
-
-                    value={post.category}
-
-                    onChange={handleChange}
-
-                >
-
+                <select name="category" value={post.category} onChange={handleChange}>
                     <option>Beach</option>
                     <option>Mountains</option>
                     <option>Adventure</option>
@@ -155,14 +152,9 @@ function CreatePost() {
                     <option>Historical</option>
                     <option>Food</option>
                     <option>Other</option>
-
                 </select>
 
-                <button>
-
-                    Create Post
-
-                </button>
+                <button>Create Post</button>
 
             </form>
 

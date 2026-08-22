@@ -1,8 +1,8 @@
 const express = require("express");
-
 const router = express.Router();
 
 const { protect } = require("../middleware/authMiddleware");
+const upload = require("../middleware/upload");
 
 const {
     createPost,
@@ -16,7 +16,9 @@ const {
     deleteComment
 } = require("../controllers/postController");
 
-router.post("/", protect, createPost);
+
+router.post("/", protect, upload.single("image"), createPost);
+router.put("/:id", protect, upload.single("image"), updatePost);
 
 router.get("/", getAllPosts);
 
@@ -24,7 +26,7 @@ router.get("/user/:id", getUserPosts);
 
 router.get("/:id", getSinglePost);
 
-router.put("/:id", protect, updatePost);
+
 
 router.put("/:id/like", protect, toggleLike);
 

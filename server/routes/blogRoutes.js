@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const { protect } = require("../middleware/authMiddleware");
+const upload = require("../middleware/upload");
 
 const {
     createBlog,
@@ -16,18 +17,7 @@ const {
 } = require("../controllers/blogController");
 
 
-// =====================================================
-// CREATE BLOG
-// POST /api/blogs
-// =====================================================
 
-router.post("/", protect, createBlog);
-
-
-// =====================================================
-// GET ALL BLOGS
-// GET /api/blogs
-// =====================================================
 
 router.get("/", getAllBlogs);
 
@@ -48,12 +38,8 @@ router.get("/user/:id", getUserBlogs);
 router.get("/:id", getSingleBlog);
 
 
-// =====================================================
-// UPDATE BLOG
-// PUT /api/blogs/:id
-// =====================================================
-
-router.put("/:id", protect, updateBlog);
+router.post("/", protect, upload.single("coverImage"), createBlog);
+router.put("/:id", protect, upload.single("coverImage"), updateBlog);
 
 
 // =====================================================

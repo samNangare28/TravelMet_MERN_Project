@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const Post = require("../models/Post");
 const { createNotification } = require("../services/notificationService");
-
+const fileToBase64 = require("../utils/fileToBase64");
 // =====================================================
 // GET PROFILE
 // =====================================================
@@ -177,31 +177,26 @@ const updateProfile = async (req, res) => {
             });
         }
 
-        const {
-            bio,
-            location,
-            profileImage,
-            coverImage,
-            privacy
-        } = req.body;
+        const { bio, location, privacy } = req.body;
+
+        const newProfileImage = req.files?.profileImage?.[0]
+            ? fileToBase64(req.files.profileImage[0])
+            : req.body.profileImage;
+
+        const newCoverImage = req.files?.coverImage?.[0]
+            ? fileToBase64(req.files.coverImage[0])
+            : req.body.coverImage;
 
         const user = await User.findByIdAndUpdate(
-
             id,
-
             {
                 bio,
                 location,
-                profileImage,
-                coverImage,
+                profileImage: newProfileImage,
+                coverImage: newCoverImage,
                 privacy
             },
-
-            {
-                new: true,
-                runValidators: true
-            }
-
+            { new: true, runValidators: true }
         ).select("-password");
 
         if (!user) {

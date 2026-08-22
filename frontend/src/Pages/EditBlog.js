@@ -28,7 +28,6 @@ function EditBlog() {
     const [blog, setBlog] = useState({
 
         title: "",
-        coverImage: "",
         destination: "",
         shortDescription: "",
         content: "",
@@ -37,6 +36,9 @@ function EditBlog() {
         tags: ""
 
     });
+
+    const [coverImageFile, setCoverImageFile] = useState(null);
+    const [coverImagePreview, setCoverImagePreview] = useState("");
 
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -59,7 +61,6 @@ function EditBlog() {
             setBlog({
 
                 title: data.title,
-                coverImage: data.coverImage,
                 destination: data.destination,
                 shortDescription: data.shortDescription,
                 content: data.content,
@@ -68,6 +69,8 @@ function EditBlog() {
                 tags: (data.tags || []).join(", ")
 
             });
+
+            setCoverImagePreview(data.coverImage || "");
 
         }
 
@@ -94,6 +97,17 @@ function EditBlog() {
 
     };
 
+    const handleCoverImageChange = (e) => {
+
+        const file = e.target.files[0];
+
+        if (file) {
+            setCoverImageFile(file);
+            setCoverImagePreview(URL.createObjectURL(file));
+        }
+
+    };
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -102,7 +116,25 @@ function EditBlog() {
 
         try {
 
-            const response = await api.put(`/api/blogs/${id}`, blog);
+            const data = new FormData();
+
+            data.append("title", blog.title);
+            data.append("destination", blog.destination);
+            data.append("shortDescription", blog.shortDescription);
+            data.append("content", blog.content);
+            data.append("travelTips", blog.travelTips);
+            data.append("category", blog.category);
+            data.append("tags", blog.tags);
+
+            if (coverImageFile) {
+                data.append("coverImage", coverImageFile);
+            }
+
+            const response = await api.put(
+                `/api/blogs/${id}`,
+                data,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            );
 
             await Swal.fire({
                 icon: "success",
@@ -180,24 +212,23 @@ function EditBlog() {
 
                     <div className="blog-form-group">
 
-                        <label>Cover Image URL</label>
+                        <label>Cover Image</label>
 
-                        <input
-                            type="text"
-                            name="coverImage"
-                            value={blog.coverImage}
-                            onChange={handleChange}
-                        />
-
-                        {blog.coverImage && (
+                        {coverImagePreview && (
 
                             <img
                                 className="blog-cover-preview"
-                                src={blog.coverImage}
+                                src={coverImagePreview}
                                 alt="cover preview"
                             />
 
                         )}
+
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleCoverImageChange}
+                        />
 
                     </div>
 
