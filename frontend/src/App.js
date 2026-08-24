@@ -28,6 +28,8 @@ import Blogs from "./Pages/Blogs";
 import BlogDetails from "./Pages/BlogDetails";
 import CreateBlog from "./Pages/CreateBlog";
 import EditBlog from "./Pages/EditBlog";
+import ForgotPassword from "./Pages/ForgotPassword";
+import ResetPassword from "./Pages/ResetPassword";
 
 function App() {
     return (
@@ -124,7 +126,8 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:token" element={<ResetPassword />} />
             </Routes>
 
             <Footer />

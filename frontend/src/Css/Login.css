@@ -1,4 +1,3 @@
-
 /* ========================================
    LOGIN PAGE
 ======================================== */
@@ -28,6 +27,8 @@
     position: relative;
 
     overflow: hidden;
+
+    box-sizing: border-box;
 }
 
 
@@ -106,6 +107,8 @@
 
     padding: 38px;
 
+    box-sizing: border-box;
+
     display: flex;
 
     flex-direction: column;
@@ -123,6 +126,29 @@
 
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+}
+
+
+/* ========================================
+   SUBTEXT / HELPER PARAGRAPH
+   Used on Forgot/Reset Password pages to
+   explain what the form does.
+======================================== */
+
+.login-subtext {
+    margin: -4px 0 4px;
+
+    text-align: center;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+    color: #667085;
+}
+
+.login-subtext strong {
+    color: #344054;
 }
 
 
@@ -174,6 +200,37 @@
 
     box-shadow:
         0 0 0 3px rgba(16, 24, 40, 0.06);
+}
+
+.login-form input:disabled {
+    background: #f9fafb;
+
+    color: #98a2b3;
+
+    cursor: not-allowed;
+}
+
+
+/* ========================================
+   FORGOT PASSWORD ROW
+   Sits right under the password input,
+   right-aligned link.
+======================================== */
+
+.login-forgot-row {
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: -6px;
+}
+
+.login-forgot-row a {
+    margin: 0;
+
+    text-align: right;
+
+    font-size: 12px;
 }
 
 
@@ -237,7 +294,7 @@
 
 
 /* ========================================
-   REGISTER LINK
+   LINKS (Register / Back to Login)
 ======================================== */
 
 .login-form a {
@@ -261,6 +318,41 @@
     color: #101828;
 
     text-decoration: underline;
+}
+
+
+/* ========================================
+   SUCCESS STATE
+   Shown on Forgot Password after the email
+   has been sent.
+======================================== */
+
+.login-success-icon {
+    display: block;
+
+    margin: 0 auto 6px;
+
+    font-size: 40px;
+
+    text-align: center;
+}
+
+.login-success-text {
+    margin: 0 0 6px;
+
+    text-align: center;
+
+    font-size: 13px;
+
+    line-height: 1.8;
+
+    color: #344054;
+}
+
+.login-success-text strong {
+    color: #101828;
+
+    word-break: break-all;
 }
 
 
@@ -293,6 +385,10 @@
         height: 48px;
     }
 
+    .login-subtext {
+        font-size: 12.5px;
+    }
+
 }
 
 
@@ -310,5 +406,8 @@
         padding: 24px 18px;
     }
 
-}
+    .login-success-icon {
+        font-size: 34px;
+    }
 
+}

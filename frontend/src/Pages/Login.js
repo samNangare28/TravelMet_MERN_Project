@@ -144,6 +144,12 @@ function Login() {
                     disabled={loading}
                 />
 
+                <div className="login-forgot-row">
+                    <Link to="/forgot-password">
+                        Forgot Password?
+                    </Link>
+                </div>
+
                 <button
                     type="submit"
                     disabled={loading}

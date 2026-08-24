@@ -89,5 +89,47 @@ async function sendContactMessage(data) {
     }
 }
 
-module.exports = { sendWelcomeEmail, sendContactMessage };
+async function sendPasswordResetEmail(data) {
 
+    const { name, email, resetLink } = data;
+
+    if (!process.env.BREVO_API_KEY) {
+        console.log("⚠️ BREVO_API_KEY missing");
+        return;
+    }
+
+    try {
+        console.log("📧 Sending password reset email to:", email);
+
+        const result = await brevo.transactionalEmails.sendTransacEmail({
+            sender: {
+                name: "TravelMet 🌍",
+                email: "samnangare28@gmail.com"
+            },
+            to: [{ email, name }],
+            subject: "🔑 Reset your TravelMet password",
+            htmlContent: `
+                <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:30px; color:#333;">
+                    <h1 style="text-align:center;">🔑 Reset Your Password</h1>
+                    <p>Hey ${name},</p>
+                    <p>We received a request to reset your TravelMet password. Click the button below to set a new one. This link is valid for 15 minutes.</p>
+                    <div style="text-align:center; margin: 30px 0;">
+                        <a href="${resetLink}" style="background:#F97316; color:#fff; padding:14px 28px; border-radius:8px; text-decoration:none; font-weight:bold;">
+                            Reset Password
+                        </a>
+                    </div>
+                    <p>If you didn't request this, you can safely ignore this email — your password will remain unchanged.</p>
+                    <p style="color:#888; font-size:12px;">If the button doesn't work, copy and paste this link into your browser:<br>${resetLink}</p>
+                </div>
+            `
+        });
+
+        console.log("✅ RESET EMAIL SENT!", result.messageId);
+        return result;
+
+    } catch (error) {
+        console.log("❌ SEND RESET EMAIL ERROR:", error.message);
+        throw error;
+    }
+}
+module.exports = { sendWelcomeEmail, sendContactMessage, sendPasswordResetEmail };

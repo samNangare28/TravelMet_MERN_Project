@@ -1,4 +1,3 @@
-
 /* ========================================
    REGISTER PAGE
 ======================================== */
@@ -28,6 +27,18 @@
     position: relative;
 
     overflow: hidden;
+
+    box-sizing: border-box;
+}
+
+/* Border-box everywhere inside the register page so that
+   width: 100% + padding combinations (the form, its inputs)
+   never add up to more than their container — this was
+   causing horizontal overflow on screens narrower than the
+   form's max-width. */
+.register-page,
+.register-page * {
+    box-sizing: border-box;
 }
 
 
@@ -90,7 +101,10 @@
     line-height: 1.25;
 
     color: #101828;
+
     padding-top: 50px;
+
+    max-width: 420px;
 }
 
 
@@ -133,12 +147,11 @@
    INPUTS
 ======================================== */
 
-.register-form input {
+.register-form input,
+.register-form select {
     width: 100%;
 
     height: 49px;
-
-    box-sizing: border-box;
 
     padding: 0 15px;
 
@@ -166,17 +179,47 @@
     color: #98a2b3;
 }
 
-.register-form input:hover {
+.register-form input:hover,
+.register-form select:hover {
     border-color: #98a2b3;
 }
 
-.register-form input:focus {
+.register-form input:focus,
+.register-form select:focus {
     border-color: #344054;
 
     background: #ffffff;
 
     box-shadow:
         0 0 0 3px rgba(16, 24, 40, 0.06);
+}
+
+.register-form input:disabled {
+    background: #f9fafb;
+
+    color: #98a2b3;
+
+    cursor: not-allowed;
+}
+
+
+/* ========================================
+   NAME ROW
+   If the form pairs first/last name in one
+   row on wider screens, this keeps them
+   from ever overflowing their container.
+======================================== */
+
+.register-name-row {
+    display: flex;
+
+    gap: 12px;
+}
+
+.register-name-row input {
+    min-width: 0;
+
+    flex: 1;
 }
 
 
@@ -240,6 +283,52 @@
 
 
 /* ========================================
+   LOGIN LINK
+======================================== */
+
+.register-form a {
+    margin-top: 5px;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    color: #667085;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    transition: color 0.2s ease;
+}
+
+.register-form a:hover {
+    color: #101828;
+
+    text-decoration: underline;
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 700px) {
+
+    .register-page {
+        padding: 40px 18px;
+    }
+
+    .register-form {
+        max-width: 420px;
+
+        padding: 32px;
+    }
+
+}
+
+
+/* ========================================
    MOBILE
 ======================================== */
 
@@ -255,6 +344,8 @@
         margin-bottom: 22px;
 
         font-size: 26px;
+
+        padding-top: 30px;
     }
 
     .register-form {
@@ -266,8 +357,15 @@
     }
 
     .register-form input,
+    .register-form select,
     .register-form button {
         height: 48px;
+    }
+
+    .register-name-row {
+        flex-direction: column;
+
+        gap: 15px;
     }
 
 }
@@ -281,6 +379,8 @@
 
     .register-page h1 {
         font-size: 23px;
+
+        padding-top: 22px;
     }
 
     .register-form {
@@ -290,6 +390,7 @@
     }
 
     .register-form input,
+    .register-form select,
     .register-form button {
         height: 46px;
     }

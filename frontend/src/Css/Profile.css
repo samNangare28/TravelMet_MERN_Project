@@ -9,7 +9,22 @@
     color: #1d2939;
     font-family: "Poppins", sans-serif;
     padding-bottom: 60px;
+    overflow-x: hidden;
 }
+
+/* Applying border-box to every element inside the profile
+   page so that width: calc(100% - Npx) + padding combos in
+   the breakpoints below never push content wider than its
+   container (which was causing horizontal overflow). */
+.profile-page,
+.profile-page *,
+.profile-page *::before,
+.profile-page *::after,
+.user-modal-overlay,
+.user-modal-overlay * {
+    box-sizing: border-box;
+}
+
 
 /* ========================================
    USER LIST MODAL
@@ -35,13 +50,16 @@
     width: 100%;
     max-width: 450px;
 
-    max-height: 600px;
+    max-height: min(600px, 85vh);
 
     background: #ffffff;
 
     border-radius: 18px;
 
     overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
 
     box-shadow:
         0 20px 60px rgba(0, 0, 0, 0.2);
@@ -72,6 +90,8 @@
     padding: 18px 20px;
 
     border-bottom: 1px solid #eaecf0;
+
+    flex-shrink: 0;
 }
 
 .user-modal-header h2 {
@@ -85,6 +105,8 @@
 .close-modal-btn {
     width: 34px;
     height: 34px;
+
+    flex-shrink: 0;
 
     border: none;
 
@@ -106,7 +128,7 @@
 .user-list {
     padding: 10px 0;
 
-    max-height: 500px;
+    flex: 1;
 
     overflow-y: auto;
 }
@@ -131,6 +153,8 @@
     width: 45px;
     height: 45px;
 
+    flex-shrink: 0;
+
     border-radius: 50%;
 
     object-fit: cover;
@@ -138,6 +162,8 @@
 
 .user-list-info {
     flex: 1;
+
+    min-width: 0;
 }
 
 .user-list-info h4 {
@@ -146,6 +172,10 @@
     color: #101828;
 
     font-size: 14px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .user-list-info p {
@@ -154,9 +184,15 @@
     color: #667085;
 
     font-size: 12px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .view-profile-btn {
+    flex-shrink: 0;
+
     padding: 7px 14px;
 
     border: none;
@@ -185,6 +221,7 @@
 
     color: #667085;
 }
+
 
 /* ========================================
    COVER SECTION
@@ -267,6 +304,8 @@
     letter-spacing: -0.5px;
 
     color: #101828;
+
+    word-break: break-word;
 }
 
 .profile-header h3 {
@@ -276,6 +315,8 @@
     font-weight: 500;
 
     color: #667085;
+
+    word-break: break-word;
 }
 
 .community-badge {
@@ -309,6 +350,8 @@
     line-height: 1.7;
 
     color: #475467;
+
+    word-break: break-word;
 }
 
 .location {
@@ -326,6 +369,7 @@
 
 .profile-buttons {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 
@@ -396,7 +440,7 @@
 
     display: grid;
 
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 
     gap: 18px;
 }
@@ -493,6 +537,8 @@
 }
 
 .about-item strong {
+    flex-shrink: 0;
+
     width: 140px;
 
     color: #344054;
@@ -600,13 +646,15 @@
 .trip-buttons {
     display: flex;
 
+    flex-wrap: wrap;
+
     gap: 10px;
 
     margin-top: 22px;
 }
 
 .trip-buttons button {
-    flex: 1;
+    flex: 1 1 100px;
 
     padding: 10px 14px;
 
@@ -713,6 +761,8 @@
     font-weight: 700;
 
     color: #101828;
+
+    word-break: break-word;
 }
 
 .post-card p {
@@ -721,6 +771,8 @@
     font-size: 13px;
 
     color: #667085;
+
+    word-break: break-word;
 }
 
 
@@ -797,6 +849,29 @@
 
 
 /* ========================================
+   PRIVATE PROFILE MESSAGE
+======================================== */
+
+.private-profile-message {
+    max-width: 1150px;
+
+    margin: 25px auto;
+
+    background: #ffffff;
+
+    border: 1px dashed #d0d5dd;
+
+    border-radius: 18px;
+
+    padding: 55px 25px;
+
+    text-align: center;
+
+    color: #667085;
+}
+
+
+/* ========================================
    LOADING
 ======================================== */
 
@@ -826,13 +901,31 @@
     .profile-header,
     .stats-section,
     .about-card,
-    .posts-section {
+    .posts-section,
+    .private-profile-message {
         width: calc(100% - 40px);
     }
 
     .saved-trip-grid,
     .post-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* ========================================
+   RESPONSIVE - SMALL TABLET
+======================================== */
+
+@media (max-width: 800px) {
+
+    .stats-section {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .about-card {
+        padding: 26px 24px;
     }
 
 }
@@ -892,7 +985,7 @@
     .stats-section {
         width: calc(100% - 24px);
 
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
 
         gap: 12px;
     }
@@ -923,7 +1016,8 @@
         width: auto;
     }
 
-    .posts-section {
+    .posts-section,
+    .private-profile-message {
         width: calc(100% - 24px);
     }
 
@@ -936,6 +1030,14 @@
         height: 230px;
     }
 
+    .user-modal {
+        max-height: min(80vh, 600px);
+    }
+
+    .user-modal-header h2 {
+        font-size: 17px;
+    }
+
 }
 
 
@@ -946,11 +1048,26 @@
 @media (max-width: 400px) {
 
     .cover-section {
-        height: 200px;
+        height: 190px;
+    }
+
+    .profile-header {
+        margin-top: -45px;
+
+        padding: 0 16px 24px;
+    }
+
+    .profile-image {
+        width: 100px;
+        height: 100px;
+
+        margin-top: -50px;
+
+        border-width: 4px;
     }
 
     .profile-header h1 {
-        font-size: 22px;
+        font-size: 21px;
     }
 
     .stats-section {
@@ -961,9 +1078,36 @@
         padding: 17px 10px;
     }
 
+    .stat-card h2 {
+        font-size: 20px;
+    }
+
+    .about-card {
+        padding: 20px 16px;
+    }
+
     .trip-buttons {
         flex-direction: column;
     }
 
-}
+    .trip-buttons button {
+        flex: 1 1 auto;
+    }
 
+    .post-card img {
+        height: 200px;
+    }
+
+    .details-btn {
+        width: calc(100% - 40px);
+    }
+
+    .user-modal-overlay {
+        padding: 12px;
+    }
+
+    .user-list-item {
+        padding: 10px 14px;
+    }
+
+}
