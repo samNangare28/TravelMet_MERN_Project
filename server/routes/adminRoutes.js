@@ -13,7 +13,9 @@ const { authLimiter } =
     require("../middleware/rateLimiter");
 
 
+// =====================================================
 // ADMIN LOGIN
+// =====================================================
 
 router.post(
     "/login",
@@ -22,7 +24,9 @@ router.post(
 );
 
 
+// =====================================================
 // ADMIN AUTH TEST
+// =====================================================
 
 router.get(
     "/test",
@@ -44,5 +48,36 @@ router.get(
     }
 );
 
+
+// =====================================================
+// GET PENDING COMPANIES
+// =====================================================
+
+router.get(
+    "/companies/pending",
+    adminAuth,
+    adminController.getPendingCompanies
+);
+
+// =====================================================
+// APPROVE COMPANY
+// =====================================================
+
+router.put(
+    "/companies/:id/approve",
+    adminAuth,
+    adminController.approveCompany
+);
+
+
+// =====================================================
+// REJECT COMPANY
+// =====================================================
+
+router.put(
+    "/companies/:id/reject",
+    adminAuth,
+    adminController.rejectCompany
+);
 
 module.exports = router;
