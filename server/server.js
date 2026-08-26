@@ -35,6 +35,9 @@ const placesRoutes =
 const blogRoutes =
     require("./routes/blogRoutes");
 
+const adminRoutes =
+    require("./routes/adminRoutes");
+
 const contactRoutes = require("./routes/contactRoutes");
 
 
@@ -83,6 +86,10 @@ app.use(
     authRoutes
 );
 
+app.use(
+    "/api/admin",
+    adminRoutes
+);
 
 app.use(
     "/api/company-auth",
