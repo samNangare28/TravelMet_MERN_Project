@@ -8,6 +8,8 @@ const { generalLimiter } = require("./middleware/rateLimiter");
 const connectDB =
     require("./config/db");
 
+const companyAuthRoutes =
+    require("./routes/companyAuthRoutes");
 
 const authRoutes =
     require("./routes/authRoutes");
@@ -81,6 +83,11 @@ app.use(
     authRoutes
 );
 
+
+app.use(
+    "/api/company-auth",
+    companyAuthRoutes
+);
 app.use(
     "/api/users",
     userRoutes
