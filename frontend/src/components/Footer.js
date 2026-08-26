@@ -34,7 +34,7 @@ function Footer() {
 
                     <Link to="/trip-planner">AI Planner</Link>
 
-                    <Link to="/blogs">Bolg</Link>
+                    <Link to="/blogs">Blog</Link>
 
                     <Link to="/community">Community</Link>
 

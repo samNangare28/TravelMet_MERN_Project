@@ -396,3 +396,142 @@
     }
 
 }
+/* ========================================
+   ACCOUNT TYPE SELECTION
+======================================== */
+
+.account-type-section {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 450px;
+    margin-bottom: 20px;
+}
+
+.account-type-title {
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475467;
+}
+
+.account-type-options {
+    display: flex;
+    gap: 12px;
+}
+
+.account-type-card {
+    flex: 1;
+    min-height: 78px;
+    border: 1px solid #d0d5dd;
+    border-radius: 14px;
+    background: #ffffff;
+    color: #344054;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.account-type-card:hover {
+    border-color: #667085;
+    transform: translateY(-2px);
+}
+
+.account-type-card.active {
+    border-color: #101828;
+    background: #f8fafc;
+    color: #101828;
+    box-shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
+}
+
+.account-type-icon {
+    font-size: 22px;
+}
+
+.register-form textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 14px 15px;
+
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+
+    outline: none;
+    resize: vertical;
+
+    background: #ffffff;
+    color: #101828;
+
+    font-family: inherit;
+    font-size: 13px;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.register-form textarea::placeholder {
+    color: #98a2b3;
+}
+
+.register-form textarea:focus {
+    border-color: #344054;
+    box-shadow:
+        0 0 0 3px rgba(16, 24, 40, 0.06);
+}
+
+.certificate-note {
+    margin-top: -7px;
+    color: #667085;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.login-link-button {
+    margin-top: 2px !important;
+    background: transparent !important;
+    color: #667085 !important;
+    box-shadow: none !important;
+    font-size: 12px !important;
+}
+
+.login-link-button:hover {
+    background: transparent !important;
+    color: #101828 !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .account-type-section {
+        max-width: 100%;
+    }
+
+    .account-type-options {
+        flex-direction: column;
+    }
+
+    .account-type-card {
+        min-height: 64px;
+    }
+
+}
