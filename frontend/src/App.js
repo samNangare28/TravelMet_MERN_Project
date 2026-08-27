@@ -37,6 +37,7 @@ import CreateBlog from "./Pages/CreateBlog";
 import EditBlog from "./Pages/EditBlog";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
+import CompanyLogin from "./Pages/CompanyLogin";
 
 // ===============================
 // USER PROTECTED ROUTE
@@ -160,6 +161,10 @@ function App() {
                     }
                 />
 
+                <Route
+                    path="/company/login"
+                    element={<CompanyLogin />}
+                />
 
                 {/* =====================================
                     USER PROFILE
