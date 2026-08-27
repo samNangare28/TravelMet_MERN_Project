@@ -1,14 +1,12 @@
-require("dotenv").config();
+require("dotenv").config({
+    path: require("path").resolve(__dirname, "../.env")
+});
 
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-const Admin =
-    require("../models/Admin");
-
-const connectDB =
-    require("../config/db");
-
+const Admin = require("../models/Admin");
+const connectDB = require("../config/db");
 
 const createAdmin = async () => {
 
@@ -33,9 +31,11 @@ const createAdmin = async () => {
         }
 
 
+        const adminPassword = "samuuu";
+
         const hashedPassword =
             await bcrypt.hash(
-                "TravelMet@Admin123",
+                adminPassword,
                 10
             );
 
