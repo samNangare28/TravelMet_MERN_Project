@@ -7,12 +7,36 @@ function CompanyProfile() {
 
     const navigate = useNavigate();
 
-    const [company, setCompany] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    // ==========================================
+    // LOCAL COMPANY DATA
+    // ==========================================
+
+    const storedCompany =
+        JSON.parse(
+            localStorage.getItem("company") || "{}"
+        );
 
     const companyToken =
         localStorage.getItem("companyToken");
+
+
+    // ==========================================
+    // STATES
+    // ==========================================
+
+    const [company, setCompany] =
+        useState(storedCompany);
+
+    const [loading, setLoading] =
+        useState(true);
+
+    const [error, setError] =
+        useState("");
+
+
+    // ==========================================
+    // FETCH COMPANY PROFILE
+    // ==========================================
 
     useEffect(() => {
 
@@ -20,60 +44,79 @@ function CompanyProfile() {
 
             try {
 
-                if (!companyToken) {
+                setLoading(true);
+                setError("");
 
-                    navigate("/login");
-
-                    return;
-                }
 
                 /*
-                 * Company login response मध्ये company data
-                 * localStorage मध्ये save केलेलं असेल.
-                 */
-
-                const storedCompany =
-                    JSON.parse(
-                        localStorage.getItem("company") || "null"
-                    );
-
-                if (storedCompany) {
-
-                    setCompany(storedCompany);
-
-                }
-
-                /*
-                 * जर तुझ्याकडे backend मध्ये company profile
-                 * GET API असेल तर इथे API call करू शकतेस.
+                 * If you already have a company profile
+                 * endpoint, this request will fetch the
+                 * latest company information.
                  *
                  * Example:
-                 *
-                 * const response = await api.get(
-                 *     "/api/company/profile",
-                 *     {
-                 *         headers: {
-                 *             Authorization:
-                 *                 `Bearer ${companyToken}`
-                 *         }
-                 *     }
-                 * );
-                 *
-                 * setCompany(response.data.company);
+                 * GET /api/company-auth/profile
                  */
+
+                const response =
+                    await api.get(
+                        "/api/company-auth/profile",
+                        {
+                            headers: {
+                                Authorization:
+                                    `Bearer ${companyToken}`
+                            }
+                        }
+                    );
+
+
+                if (response.data.company) {
+
+                    const updatedCompany =
+                        response.data.company;
+
+
+                    setCompany(
+                        updatedCompany
+                    );
+
+
+                    localStorage.setItem(
+                        "company",
+                        JSON.stringify(
+                            updatedCompany
+                        )
+                    );
+
+                }
 
             }
 
             catch (error) {
 
-                console.error(
+                console.log(
                     "COMPANY PROFILE ERROR:",
                     error
                 );
 
-                setError(
-                    "Unable to load company profile"
-                );
+
+                /*
+                 * If profile endpoint does not exist
+                 * yet, don't destroy the saved login data.
+                 *
+                 * We can still display the company
+                 * information received during login.
+                 */
+
+                if (
+                    error.response?.status !== 404
+                ) {
+
+                    setError(
+                        error.response?.data?.message ||
+                        "Unable to load latest company details."
+                    );
+
+                }
 
             }
 
@@ -85,20 +128,49 @@ function CompanyProfile() {
 
         };
 
+
+        if (!companyToken) {
+
+            navigate(
+                "/login",
+                { replace: true }
+            );
+
+            return;
+
+        }
+
+
         fetchCompanyProfile();
 
     }, [companyToken, navigate]);
 
 
+    // ==========================================
+    // LOGOUT
+    // ==========================================
+
     const handleLogout = () => {
 
-        localStorage.removeItem("companyToken");
-        localStorage.removeItem("company");
+        localStorage.removeItem(
+            "companyToken"
+        );
 
-        navigate("/login");
+        localStorage.removeItem(
+            "company"
+        );
+
+        navigate(
+            "/login",
+            { replace: true }
+        );
 
     };
 
+
+    // ==========================================
+    // LOADING
+    // ==========================================
 
     if (loading) {
 
@@ -119,90 +191,89 @@ function CompanyProfile() {
     }
 
 
-    if (error) {
+    // ==========================================
+    // VERIFICATION STATUS
+    // ==========================================
 
-        return (
-
-            <div className="company-profile-error">
-
-                <h2>
-                    Something went wrong
-                </h2>
-
-                <p>
-                    {error}
-                </p>
-
-                <button
-                    onClick={() => navigate("/login")}
-                >
-                    Back to Login
-                </button>
-
-            </div>
-
-        );
-
-    }
+    const verificationStatus =
+        company.verificationStatus ||
+        "pending";
 
 
-    if (!company) {
+    const statusClass =
+        verificationStatus.toLowerCase();
 
-        return (
 
-            <div className="company-profile-error">
+    const statusText =
+        verificationStatus === "verified"
+            ? "Verified"
+            : verificationStatus === "rejected"
+                ? "Rejected"
+                : "Pending Verification";
 
-                <h2>
-                    Company profile not found
-                </h2>
 
-                <button
-                    onClick={() => navigate("/login")}
-                >
-                    Login Again
-                </button>
-
-            </div>
-
-        );
-
-    }
-
+    // ==========================================
+    // PROFILE
+    // ==========================================
 
     return (
 
         <div className="company-profile-page">
 
-            {/* ==========================================
+
+            {/* =====================================
                 COVER
-            ========================================== */}
+            ===================================== */}
 
             <section className="company-cover">
 
                 <img
                     src={
                         company.coverImage ||
-                        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600"
+                        "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?w=1600"
                     }
-                    alt="Company Cover"
+                    alt="Company cover"
+                    className="company-cover-image"
                 />
 
+
                 <div className="company-cover-overlay"></div>
+
+
+                <div className="company-cover-content">
+
+                    <span className="company-panel-label">
+                        TRAVEL COMPANY
+                    </span>
+
+                    <h1>
+                        {company.companyName ||
+                            "Travel Company"}
+                    </h1>
+
+                    <p>
+                        Professional travel services
+                        on TravelMet
+                    </p>
+
+                </div>
 
             </section>
 
 
-            {/* ==========================================
-                MAIN PROFILE
-            ========================================== */}
+            {/* =====================================
+                MAIN CONTENT
+            ===================================== */}
 
             <main className="company-profile-container">
 
-                {/* ======================================
+
+                {/* =================================
                     PROFILE HEADER
-                ====================================== */}
+                ================================= */}
 
                 <section className="company-profile-header">
+
 
                     <div className="company-logo-wrapper">
 
@@ -210,8 +281,10 @@ function CompanyProfile() {
 
                             <img
                                 src={company.logo}
-                                alt={company.companyName}
-                                className="company-profile-logo"
+                                alt={
+                                    company.companyName
+                                }
+                                className="company-logo-image"
                             />
 
                         ) : (
@@ -225,503 +298,480 @@ function CompanyProfile() {
                     </div>
 
 
-                    <div className="company-title-area">
+                    <div className="company-header-info">
 
-                        <div className="company-name-row">
+                        <div className="company-title-row">
 
-                            <h1>
-                                {company.companyName}
-                            </h1>
+                            <div>
 
+                                <h2>
+                                    {company.companyName ||
+                                        "Travel Company"}
+                                </h2>
 
-                            {company.verificationStatus ===
-                                "verified" && (
+                                <p className="company-owner">
 
-                                <span className="verified-badge">
-                                    ✓ Verified
-                                </span>
+                                    Owned by{" "}
 
-                            )}
+                                    <strong>
+                                        {company.ownerName ||
+                                            "Company Owner"}
+                                    </strong>
 
+                                </p>
 
-                            {company.verificationStatus ===
-                                "pending" && (
-
-                                <span className="pending-badge">
-                                    ⏳ Pending
-                                </span>
-
-                            )}
+                            </div>
 
 
-                            {company.verificationStatus ===
-                                "rejected" && (
+                            <span
+                                className={`verification-badge ${statusClass}`}
+                            >
 
-                                <span className="rejected-badge">
-                                    ✕ Rejected
-                                </span>
+                                {verificationStatus ===
+                                    "verified"
+                                    ? "✓"
+                                    : verificationStatus ===
+                                        "rejected"
+                                        ? "!"
+                                        : "⏳"}
 
-                            )}
+                                {" "}
+
+                                {statusText}
+
+                            </span>
 
                         </div>
 
 
-                        <p className="company-owner">
+                        <div className="company-header-actions">
 
-                            Managed by{" "}
-
-                            <strong>
-                                {company.ownerName}
-                            </strong>
-
-                        </p>
-
-
-                        <p className="company-location">
-
-                            📍 {company.address}
-
-                        </p>
-
-                    </div>
+                            <button
+                                className="company-edit-btn"
+                                onClick={() =>
+                                    navigate(
+                                        "/company/edit-profile"
+                                    )
+                                }
+                            >
+                                ✏️ Edit Profile
+                            </button>
 
 
-                    <div className="company-header-actions">
+                            <button
+                                className="company-logout-btn"
+                                onClick={
+                                    handleLogout
+                                }
+                            >
+                                Logout
+                            </button>
 
-                        <button
-                            className="company-dashboard-btn"
-                            onClick={() =>
-                                navigate(
-                                    "/company/dashboard"
-                                )
-                            }
-                        >
-                            Dashboard
-                        </button>
-
-
-                        <button
-                            className="company-logout-btn"
-                            onClick={handleLogout}
-                        >
-                            Logout
-                        </button>
+                        </div>
 
                     </div>
 
                 </section>
 
 
-                {/* ======================================
+                {/* =================================
+                    ERROR
+                ================================= */}
+
+                {error && (
+
+                    <div className="company-profile-warning">
+
+                        ⚠️ {error}
+
+                    </div>
+
+                )}
+
+
+                {/* =================================
+                    VERIFICATION NOTICE
+                ================================= */}
+
+                <section
+                    className={`verification-notice ${statusClass}`}
+                >
+
+                    <div className="verification-notice-icon">
+
+                        {verificationStatus ===
+                            "verified"
+                            ? "✓"
+                            : verificationStatus ===
+                                "rejected"
+                                ? "!"
+                                : "⏳"}
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            {verificationStatus ===
+                                "verified"
+                                ? "Company Verified"
+                                : verificationStatus ===
+                                    "rejected"
+                                    ? "Verification Rejected"
+                                    : "Verification Pending"}
+                        </h3>
+
+
+                        <p>
+
+                            {verificationStatus ===
+                                "verified"
+
+                                ? "Your company has been verified by the TravelMet administration team."
+
+                                : verificationStatus ===
+                                    "rejected"
+
+                                    ? (
+                                        company.rejectionReason ||
+                                        "Your company verification was rejected."
+                                    )
+
+                                    : "Your company application has been submitted and is waiting for verification by the TravelMet administration team."
+
+                            }
+
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                {/* =================================
                     CONTENT GRID
-                ====================================== */}
+                ================================= */}
 
-                <section className="company-content-grid">
-
-
-                    {/* ==================================
-                        LEFT
-                    ================================== */}
-
-                    <div className="company-main-content">
+                <div className="company-content-grid">
 
 
-                        {/* ABOUT */}
+                    {/* =================================
+                        ABOUT
+                    ================================= */}
 
-                        <div className="company-card">
+                    <section className="company-card about-company-card">
 
-                            <div className="company-card-heading">
+                        <div className="company-card-heading">
 
-                                <span className="heading-icon">
-                                    🏢
+                            <div className="card-heading-icon">
+                                🏢
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    COMPANY
+                                </span>
+
+                                <h3>
+                                    About Company
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        <p className="company-description">
+
+                            {company.description ||
+                                "No company description has been added yet."}
+
+                        </p>
+
+                    </section>
+
+
+                    {/* =================================
+                        CONTACT DETAILS
+                    ================================= */}
+
+                    <section className="company-card">
+
+                        <div className="company-card-heading">
+
+                            <div className="card-heading-icon">
+                                📞
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    CONTACT
+                                </span>
+
+                                <h3>
+                                    Contact Details
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        <div className="company-details-list">
+
+
+                            <div className="company-detail-item">
+
+                                <span className="detail-icon">
+                                    ✉️
                                 </span>
 
                                 <div>
 
-                                    <span className="small-heading">
-                                        COMPANY
-                                    </span>
+                                    <small>
+                                        Email
+                                    </small>
 
-                                    <h2>
-                                        About Us
-                                    </h2>
+                                    <p>
+                                        {company.email ||
+                                            "Not available"}
+                                    </p>
 
                                 </div>
 
                             </div>
 
 
-                            <p className="company-description">
+                            <div className="company-detail-item">
 
-                                {company.description ||
-                                    "This company has not added a description yet."}
-
-                            </p>
-
-                        </div>
-
-
-                        {/* CONTACT */}
-
-                        <div className="company-card">
-
-                            <div className="company-card-heading">
-
-                                <span className="heading-icon">
+                                <span className="detail-icon">
                                     📞
                                 </span>
 
                                 <div>
 
-                                    <span className="small-heading">
-                                        INFORMATION
-                                    </span>
+                                    <small>
+                                        Phone
+                                    </small>
 
-                                    <h2>
-                                        Contact Details
-                                    </h2>
-
-                                </div>
-
-                            </div>
-
-
-                            <div className="company-contact-grid">
-
-
-                                <div className="contact-item">
-
-                                    <span>
-                                        ✉️
-                                    </span>
-
-                                    <div>
-
-                                        <small>
-                                            Email
-                                        </small>
-
-                                        <strong>
-                                            {company.email}
-                                        </strong>
-
-                                    </div>
-
-                                </div>
-
-
-                                <div className="contact-item">
-
-                                    <span>
-                                        📱
-                                    </span>
-
-                                    <div>
-
-                                        <small>
-                                            Phone
-                                        </small>
-
-                                        <strong>
-                                            {company.phone ||
-                                                "Not provided"}
-                                        </strong>
-
-                                    </div>
-
-                                </div>
-
-
-                                <div className="contact-item">
-
-                                    <span>
-                                        📍
-                                    </span>
-
-                                    <div>
-
-                                        <small>
-                                            Address
-                                        </small>
-
-                                        <strong>
-                                            {company.address ||
-                                                "Not provided"}
-                                        </strong>
-
-                                    </div>
-
-                                </div>
-
-
-                                <div className="contact-item">
-
-                                    <span>
-                                        🌐
-                                    </span>
-
-                                    <div>
-
-                                        <small>
-                                            Website
-                                        </small>
-
-                                        {company.website ? (
-
-                                            <a
-                                                href={
-                                                    company.website
-                                                }
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                Visit Website
-                                            </a>
-
-                                        ) : (
-
-                                            <strong>
-                                                Not provided
-                                            </strong>
-
-                                        )}
-
-                                    </div>
+                                    <p>
+                                        {company.phone ||
+                                            "Not available"}
+                                    </p>
 
                                 </div>
 
                             </div>
 
-                        </div>
 
+                            <div className="company-detail-item">
 
-                        {/* CERTIFICATE */}
-
-                        <div className="company-card certificate-card">
-
-                            <div className="company-card-heading">
-
-                                <span className="heading-icon">
-                                    📄
+                                <span className="detail-icon">
+                                    📍
                                 </span>
 
                                 <div>
 
-                                    <span className="small-heading">
-                                        VERIFICATION
-                                    </span>
+                                    <small>
+                                        Address
+                                    </small>
 
-                                    <h2>
-                                        Company Certificate
-                                    </h2>
-
-                                </div>
-
-                            </div>
-
-
-                            <div className="certificate-content">
-
-                                <div className="certificate-info">
-
-                                    <div className="certificate-file-icon">
-                                        PDF
-                                    </div>
-
-                                    <div>
-
-                                        <strong>
-                                            Verification Certificate
-                                        </strong>
-
-                                        <p>
-                                            Official document submitted
-                                            for company verification.
-                                        </p>
-
-                                    </div>
+                                    <p>
+                                        {company.address ||
+                                            "Not available"}
+                                    </p>
 
                                 </div>
-
-
-                                {company.certificate ? (
-
-                                    <a
-                                        href={
-                                            company.certificate
-                                        }
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="certificate-btn"
-                                    >
-                                        View Certificate
-                                    </a>
-
-                                ) : (
-
-                                    <span className="no-certificate">
-                                        No certificate
-                                    </span>
-
-                                )}
 
                             </div>
 
                         </div>
+
+                    </section>
+
+
+                    {/* =================================
+                        WEBSITE
+                    ================================= */}
+
+                    <section className="company-card">
+
+                        <div className="company-card-heading">
+
+                            <div className="card-heading-icon">
+                                🌐
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    ONLINE PRESENCE
+                                </span>
+
+                                <h3>
+                                    Company Website
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        {company.website ? (
+
+                            <a
+                                href={
+                                    company.website
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="company-website-link"
+                            >
+
+                                <span>
+                                    🌐
+                                </span>
+
+                                <div>
+
+                                    <strong>
+                                        Visit Website
+                                    </strong>
+
+                                    <small>
+                                        {company.website}
+                                    </small>
+
+                                </div>
+
+                                <span className="external-icon">
+                                    ↗
+                                </span>
+
+                            </a>
+
+                        ) : (
+
+                            <div className="company-empty-detail">
+
+                                No website added.
+
+                            </div>
+
+                        )}
+
+                    </section>
+
+
+                    {/* =================================
+                        CERTIFICATE
+                    ================================= */}
+
+                    <section className="company-card">
+
+                        <div className="company-card-heading">
+
+                            <div className="card-heading-icon">
+                                📄
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    VERIFICATION
+                                </span>
+
+                                <h3>
+                                    Certificate
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        {company.certificate ? (
+
+                            <a
+                                href={
+                                    company.certificate
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="certificate-link"
+                            >
+
+                                <div className="certificate-file-icon">
+                                    📄
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Verification Certificate
+                                    </strong>
+
+                                    <small>
+                                        View submitted document
+                                    </small>
+
+                                </div>
+
+                                <span>
+                                    ↗
+                                </span>
+
+                            </a>
+
+                        ) : (
+
+                            <div className="company-empty-detail">
+
+                                No certificate uploaded.
+
+                            </div>
+
+                        )}
+
+                    </section>
+
+                </div>
+
+
+                {/* =================================
+                    COMPANY FOOTER
+                ================================= */}
+
+                <section className="company-profile-footer">
+
+                    <div>
+
+                        <span>
+                            TRAVELMET
+                        </span>
+
+                        <p>
+                            Your trusted travel community
+                            and planning platform.
+                        </p>
 
                     </div>
 
 
-                    {/* ==================================
-                        RIGHT SIDEBAR
-                    ================================== */}
+                    <div className="company-footer-status">
 
-                    <aside className="company-sidebar">
+                        <span>
+                            Account Status
+                        </span>
 
+                        <strong>
+                            {statusText}
+                        </strong>
 
-                        {/* STATUS */}
-
-                        <div className="status-card">
-
-                            <span className="small-heading">
-                                ACCOUNT STATUS
-                            </span>
-
-
-                            <div className="status-icon">
-
-                                {company.verificationStatus ===
-                                    "verified"
-                                    ? "✓"
-                                    : company.verificationStatus ===
-                                        "pending"
-                                        ? "⏳"
-                                        : "✕"}
-
-                            </div>
-
-
-                            <h3>
-
-                                {company.verificationStatus ===
-                                    "verified"
-                                    ? "Verified Company"
-                                    : company.verificationStatus ===
-                                        "pending"
-                                        ? "Verification Pending"
-                                        : "Verification Rejected"}
-
-                            </h3>
-
-
-                            <p>
-
-                                {company.verificationStatus ===
-                                    "verified"
-                                    ? "Your company has been successfully verified by TravelMet."
-                                    : company.verificationStatus ===
-                                        "pending"
-                                        ? "Your application is currently under review by the TravelMet administration team."
-                                        : "Your company verification was rejected. Please review the submitted information."}
-
-                            </p>
-
-                        </div>
-
-
-                        {/* COMPANY DETAILS */}
-
-                        <div className="company-sidebar-card">
-
-                            <span className="small-heading">
-                                COMPANY DETAILS
-                            </span>
-
-
-                            <div className="sidebar-detail">
-
-                                <span>
-                                    Company ID
-                                </span>
-
-                                <strong>
-                                    {company.id ||
-                                        company._id ||
-                                        "N/A"}
-                                </strong>
-
-                            </div>
-
-
-                            <div className="sidebar-detail">
-
-                                <span>
-                                    Owner
-                                </span>
-
-                                <strong>
-                                    {company.ownerName}
-                                </strong>
-
-                            </div>
-
-
-                            <div className="sidebar-detail">
-
-                                <span>
-                                    Status
-                                </span>
-
-                                <strong className={
-                                    `status-text ${company.verificationStatus}`
-                                }>
-
-                                    {company.verificationStatus}
-
-                                </strong>
-
-                            </div>
-
-                        </div>
-
-
-                        {/* QUICK ACTIONS */}
-
-                        <div className="company-sidebar-card">
-
-                            <span className="small-heading">
-                                QUICK ACTIONS
-                            </span>
-
-
-                            <button
-                                className="quick-action"
-                                onClick={() =>
-                                    navigate(
-                                        "/company/dashboard"
-                                    )
-                                }
-                            >
-                                <span>📊</span>
-                                Company Dashboard
-                                <span>→</span>
-                            </button>
-
-
-                            <button
-                                className="quick-action"
-                                onClick={() =>
-                                    navigate("/community")
-                                }
-                            >
-                                <span>🌍</span>
-                                TravelMet Community
-                                <span>→</span>
-                            </button>
-
-                        </div>
-
-                    </aside>
+                    </div>
 
                 </section>
 
