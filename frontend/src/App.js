@@ -1,8 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+// ===============================
+// COMMON COMPONENTS
+// ===============================
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import MobileBottomNav from "./components/MobileBottomNav";
+
+// ===============================
+// USER PAGES
+// ===============================
 
 import Home from "./Pages/Home";
 import TripPlanner from "./Pages/TripPlanner";
@@ -10,7 +18,6 @@ import Contact from "./Pages/Contact";
 import Register from "./Pages/Register";
 import Login from "./Pages/Login";
 import Dashboard from "./Pages/Dashboard";
-import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./Pages/Profile";
 import CreatePost from "./Pages/CreatePost";
 import EditProfile from "./Pages/EditProfile";
@@ -31,26 +38,118 @@ import EditBlog from "./Pages/EditBlog";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
 
+// ===============================
+// USER PROTECTED ROUTE
+// ===============================
+
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// ===============================
+// ADMIN
+// ===============================
+
+import AdminLogin from "./Pages/AdminLogin";
+import AdminDashboard from "./Pages/AdminDashboard";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
+
+
 function App() {
+
     return (
 
         <BrowserRouter>
 
+            {/* =====================================
+                MAIN WEBSITE NAVBAR
+            ===================================== */}
+
             <Navbar />
+
 
             <Routes>
 
-                <Route path="/" element={<Home />} />
+                {/* =====================================
+                    HOME
+                ===================================== */}
 
-                <Route path="/community" element={<Community/>} />
+                <Route
+                    path="/"
+                    element={<Home />}
+                />
 
-                <Route path="/trip-planner" element={<TripPlanner />} />
 
-                <Route path="/contact" element={<Contact />} />
+                {/* =====================================
+                    COMMUNITY
+                ===================================== */}
 
-                <Route path="/register" element={<Register />} />
+                <Route
+                    path="/community"
+                    element={<Community />}
+                />
 
-                <Route path="/login" element={<Login />} />
+
+                {/* =====================================
+                    TRIP PLANNER
+                ===================================== */}
+
+                <Route
+                    path="/trip-planner"
+                    element={<TripPlanner />}
+                />
+
+
+                {/* =====================================
+                    CONTACT
+                ===================================== */}
+
+                <Route
+                    path="/contact"
+                    element={<Contact />}
+                />
+
+
+                {/* =====================================
+                    USER AUTH
+                ===================================== */}
+
+                <Route
+                    path="/register"
+                    element={<Register />}
+                />
+
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
+
+
+                {/* =====================================
+                    ADMIN LOGIN
+                ===================================== */}
+
+                <Route
+                    path="/admin/login"
+                    element={<AdminLogin />}
+                />
+
+
+                {/* =====================================
+                    ADMIN DASHBOARD
+                ===================================== */}
+
+                <Route
+                    path="/admin/dashboard"
+                    element={
+                        <AdminProtectedRoute>
+                            <AdminDashboard />
+                        </AdminProtectedRoute>
+                    }
+                />
+
+
+                {/* =====================================
+                    USER DASHBOARD
+                ===================================== */}
 
                 <Route
                     path="/dashboard"
@@ -61,11 +160,55 @@ function App() {
                     }
                 />
 
-                <Route path="/profile" element={<Profile />} />
 
-                <Route path="/profile/:id"element={<PublicProfile />}/>
+                {/* =====================================
+                    USER PROFILE
+                ===================================== */}
 
-                <Route path="/create-post" element={<CreatePost />} />
+                <Route
+                    path="/profile"
+                    element={<Profile />}
+                />
+
+                <Route
+                    path="/profile/:id"
+                    element={<PublicProfile />}
+                />
+
+                <Route
+                    path="/user/:id"
+                    element={<UserProfile />}
+                />
+
+                <Route
+                    path="/edit-profile"
+                    element={<EditProfile />}
+                />
+
+
+                {/* =====================================
+                    POSTS
+                ===================================== */}
+
+                <Route
+                    path="/create-post"
+                    element={<CreatePost />}
+                />
+
+                <Route
+                    path="/post/:id"
+                    element={<PostDetails />}
+                />
+
+                <Route
+                    path="/edit-post/:id"
+                    element={<EditPost />}
+                />
+
+
+                {/* =====================================
+                    BLOGS
+                ===================================== */}
 
                 <Route
                     path="/blogs"
@@ -95,19 +238,25 @@ function App() {
                     }
                 />
 
-                <Route path="/edit-profile" element={<EditProfile />} />
 
-                <Route path="/post/:id" element={<PostDetails />} />
+                {/* =====================================
+                    TRIPS
+                ===================================== */}
 
-                <Route path="/edit-post/:id" element={<EditPost />} />
+                <Route
+                    path="/trip-preview"
+                    element={<TripPreview />}
+                />
 
-                <Route path="/trip-preview" element={<TripPreview />} />
+                <Route
+                    path="/trip-details/:id"
+                    element={<TripDetails />}
+                />
 
-                <Route path="/trip-details/:id" element={<TripDetails />}/> 
 
-                <Route path="/message-success" element={<MessageSuccess />}/>
-
-                <Route path="/user/:id"element={<UserProfile />}/>
+                {/* =====================================
+                    NOTIFICATIONS
+                ===================================== */}
 
                 <Route
                     path="/notifications"
@@ -118,6 +267,11 @@ function App() {
                     }
                 />
 
+
+                {/* =====================================
+                    SEARCH
+                ===================================== */}
+
                 <Route
                     path="/search"
                     element={
@@ -126,18 +280,51 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+
+                {/* =====================================
+                    MESSAGE SUCCESS
+                ===================================== */}
+
+                <Route
+                    path="/message-success"
+                    element={<MessageSuccess />}
+                />
+
+
+                {/* =====================================
+                    PASSWORD RESET
+                ===================================== */}
+
+                <Route
+                    path="/forgot-password"
+                    element={<ForgotPassword />}
+                />
+
+                <Route
+                    path="/reset-password/:token"
+                    element={<ResetPassword />}
+                />
+
             </Routes>
 
+
+            {/* =====================================
+                COMMON FOOTER
+            ===================================== */}
+
             <Footer />
+
+
+            {/* =====================================
+                MOBILE NAVIGATION
+            ===================================== */}
 
             <MobileBottomNav />
 
         </BrowserRouter>
-
     );
-
 }
+
 
 export default App;
