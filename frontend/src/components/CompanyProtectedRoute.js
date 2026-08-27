@@ -2,13 +2,14 @@ import { Navigate } from "react-router-dom";
 
 function CompanyProtectedRoute({ children }) {
 
-    const companyToken =
+    const token =
         localStorage.getItem("companyToken");
 
     const company =
         localStorage.getItem("company");
 
-    if (!companyToken || !company) {
+
+    if (!token || !company) {
 
         return (
             <Navigate
@@ -19,7 +20,9 @@ function CompanyProtectedRoute({ children }) {
 
     }
 
+
     return children;
+
 }
 
 export default CompanyProtectedRoute;

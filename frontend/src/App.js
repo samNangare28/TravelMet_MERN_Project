@@ -1,16 +1,14 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+    BrowserRouter,
+    Routes,
+    Route
+} from "react-router-dom";
 
-// ===============================
-// COMMON COMPONENTS
-// ===============================
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import MobileBottomNav from "./components/MobileBottomNav";
 
-// ===============================
-// USER PAGES
-// ===============================
 
 import Home from "./Pages/Home";
 import TripPlanner from "./Pages/TripPlanner";
@@ -18,6 +16,7 @@ import Contact from "./Pages/Contact";
 import Register from "./Pages/Register";
 import Login from "./Pages/Login";
 import Dashboard from "./Pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./Pages/Profile";
 import CreatePost from "./Pages/CreatePost";
 import EditProfile from "./Pages/EditProfile";
@@ -37,22 +36,15 @@ import CreateBlog from "./Pages/CreateBlog";
 import EditBlog from "./Pages/EditBlog";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
-import CompanyProfile from "./Pages/CompanyProfile";
-import CompanyProtectedRoute from "./components/CompanyProtectedRoute";
 
-// ===============================
-// USER PROTECTED ROUTE
-// ===============================
-
-import ProtectedRoute from "./components/ProtectedRoute";
-
-// ===============================
-// ADMIN
-// ===============================
 
 import AdminLogin from "./Pages/AdminLogin";
 import AdminDashboard from "./Pages/AdminDashboard";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
+
+
+import CompanyProfile from "./Pages/CompanyProfile";
+import CompanyProtectedRoute from "./components/CompanyProtectedRoute";
 
 
 function App() {
@@ -61,67 +53,34 @@ function App() {
 
         <BrowserRouter>
 
-            {/* =====================================
-                MAIN WEBSITE NAVBAR
-            ===================================== */}
-
             <Navbar />
-
 
             <Routes>
 
-                {/* =====================================
-                    HOME
-                ===================================== */}
+
+                {/* ==========================================
+                    PUBLIC ROUTES
+                ========================================== */}
 
                 <Route
                     path="/"
                     element={<Home />}
                 />
 
-
-                {/* =====================================
-                    COMMUNITY
-                ===================================== */}
-
                 <Route
                     path="/community"
                     element={<Community />}
                 />
-
-
-                {/* =====================================
-                    TRIP PLANNER
-                ===================================== */}
 
                 <Route
                     path="/trip-planner"
                     element={<TripPlanner />}
                 />
 
-
-                    <Route
-                        path="/company/profile"
-                        element={
-                            <CompanyProtectedRoute>
-                                <CompanyProfile />
-                            </CompanyProtectedRoute>
-                        }
-                    />
-
-                {/* =====================================
-                    CONTACT
-                ===================================== */}
-
                 <Route
                     path="/contact"
                     element={<Contact />}
                 />
-
-
-                {/* =====================================
-                    USER AUTH
-                ===================================== */}
 
                 <Route
                     path="/register"
@@ -134,19 +93,15 @@ function App() {
                 />
 
 
-                {/* =====================================
-                    ADMIN LOGIN
-                ===================================== */}
+                {/* ==========================================
+                    ADMIN
+                ========================================== */}
 
                 <Route
                     path="/admin/login"
                     element={<AdminLogin />}
                 />
 
-
-                {/* =====================================
-                    ADMIN DASHBOARD
-                ===================================== */}
 
                 <Route
                     path="/admin/dashboard"
@@ -158,9 +113,23 @@ function App() {
                 />
 
 
-                {/* =====================================
+                {/* ==========================================
+                    COMPANY
+                ========================================== */}
+
+                <Route
+                    path="/company/profile"
+                    element={
+                        <CompanyProtectedRoute>
+                            <CompanyProfile />
+                        </CompanyProtectedRoute>
+                    }
+                />
+
+
+                {/* ==========================================
                     USER DASHBOARD
-                ===================================== */}
+                ========================================== */}
 
                 <Route
                     path="/dashboard"
@@ -172,9 +141,9 @@ function App() {
                 />
 
 
-                {/* =====================================
+                {/* ==========================================
                     USER PROFILE
-                ===================================== */}
+                ========================================== */}
 
                 <Route
                     path="/profile"
@@ -186,20 +155,10 @@ function App() {
                     element={<PublicProfile />}
                 />
 
-                <Route
-                    path="/user/:id"
-                    element={<UserProfile />}
-                />
 
-                <Route
-                    path="/edit-profile"
-                    element={<EditProfile />}
-                />
-
-
-                {/* =====================================
+                {/* ==========================================
                     POSTS
-                ===================================== */}
+                ========================================== */}
 
                 <Route
                     path="/create-post"
@@ -217,9 +176,9 @@ function App() {
                 />
 
 
-                {/* =====================================
+                {/* ==========================================
                     BLOGS
-                ===================================== */}
+                ========================================== */}
 
                 <Route
                     path="/blogs"
@@ -250,9 +209,9 @@ function App() {
                 />
 
 
-                {/* =====================================
+                {/* ==========================================
                     TRIPS
-                ===================================== */}
+                ========================================== */}
 
                 <Route
                     path="/trip-preview"
@@ -265,9 +224,19 @@ function App() {
                 />
 
 
-                {/* =====================================
+                {/* ==========================================
+                    PROFILE EDIT
+                ========================================== */}
+
+                <Route
+                    path="/edit-profile"
+                    element={<EditProfile />}
+                />
+
+
+                {/* ==========================================
                     NOTIFICATIONS
-                ===================================== */}
+                ========================================== */}
 
                 <Route
                     path="/notifications"
@@ -279,9 +248,9 @@ function App() {
                 />
 
 
-                {/* =====================================
+                {/* ==========================================
                     SEARCH
-                ===================================== */}
+                ========================================== */}
 
                 <Route
                     path="/search"
@@ -293,19 +262,24 @@ function App() {
                 />
 
 
-                {/* =====================================
-                    MESSAGE SUCCESS
-                ===================================== */}
+                {/* ==========================================
+                    OTHER
+                ========================================== */}
 
                 <Route
                     path="/message-success"
                     element={<MessageSuccess />}
                 />
 
+                <Route
+                    path="/user/:id"
+                    element={<UserProfile />}
+                />
 
-                {/* =====================================
-                    PASSWORD RESET
-                ===================================== */}
+
+                {/* ==========================================
+                    PASSWORD
+                ========================================== */}
 
                 <Route
                     path="/forgot-password"
@@ -320,21 +294,14 @@ function App() {
             </Routes>
 
 
-            {/* =====================================
-                COMMON FOOTER
-            ===================================== */}
-
             <Footer />
-
-
-            {/* =====================================
-                MOBILE NAVIGATION
-            ===================================== */}
 
             <MobileBottomNav />
 
         </BrowserRouter>
+
     );
+
 }
 
 
