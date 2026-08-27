@@ -1,7 +1,6 @@
 const express = require("express");
 
-const router =
-    express.Router();
+const router = express.Router();
 
 const tourController =
     require("../controllers/tourController");
@@ -13,6 +12,11 @@ const companyAuth =
 // =====================================================
 // ADD TOUR
 // =====================================================
+//
+// Company only
+// POST /api/tours
+//
+// =====================================================
 
 router.post(
     "/",
@@ -22,7 +26,34 @@ router.post(
 
 
 // =====================================================
+// GET ALL PUBLIC TOURS
+// =====================================================
+//
+// Used by Explore Tours.
+//
+// Shows:
+// - Active tours
+// - Non-expired tours
+// - Tours from verified companies
+//
+// GET /api/tours
+//
+// =====================================================
+
+router.get(
+    "/",
+    tourController.getAllTours
+);
+
+
+// =====================================================
 // GET LOGGED-IN COMPANY TOURS
+// =====================================================
+//
+// Company only
+//
+// GET /api/tours/company/my-tours
+//
 // =====================================================
 
 router.get(
@@ -35,6 +66,12 @@ router.get(
 // =====================================================
 // GET SINGLE TOUR
 // =====================================================
+//
+// Public
+//
+// GET /api/tours/:id
+//
+// =====================================================
 
 router.get(
     "/:id",
@@ -44,6 +81,13 @@ router.get(
 
 // =====================================================
 // UPDATE TOUR
+// =====================================================
+//
+// Company only
+// Company can update only its own tour.
+//
+// PUT /api/tours/:id
+//
 // =====================================================
 
 router.put(
@@ -56,6 +100,13 @@ router.put(
 // =====================================================
 // DELETE TOUR
 // =====================================================
+//
+// Company only
+// Company can delete only its own tour.
+//
+// DELETE /api/tours/:id
+//
+// =====================================================
 
 router.delete(
     "/:id",
@@ -64,5 +115,8 @@ router.delete(
 );
 
 
-module.exports =
-    router;
+// =====================================================
+// EXPORT
+// =====================================================
+
+module.exports = router;

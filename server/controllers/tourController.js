@@ -54,9 +54,10 @@ const addTour = async (req, res) => {
         // GET COMPANY
         // =================================================
 
-        const company = await TravelCompany.findById(
-            req.company.id
-        );
+        const company =
+            await TravelCompany.findById(
+                req.company.id
+            );
 
 
         if (!company) {
@@ -98,8 +99,11 @@ const addTour = async (req, res) => {
         // DATE VALIDATION
         // =================================================
 
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+        const start =
+            new Date(startDate);
+
+        const end =
+            new Date(endDate);
 
 
         if (
@@ -137,7 +141,8 @@ const addTour = async (req, res) => {
         // PREVENT PAST TOUR
         // =================================================
 
-        const today = new Date();
+        const today =
+            new Date();
 
         today.setHours(
             0,
@@ -165,39 +170,40 @@ const addTour = async (req, res) => {
         // CREATE TOUR
         // =================================================
 
-        const tour = new Tour({
+        const tour =
+            new Tour({
 
-            company:
-                company._id,
+                company:
+                    company._id,
 
-            title:
-                title.trim(),
+                title:
+                    title.trim(),
 
-            destination:
-                destination.trim(),
+                destination:
+                    destination.trim(),
 
-            description:
-                description.trim(),
+                description:
+                    description.trim(),
 
-            price:
-                Number(price),
+                price:
+                    Number(price),
 
-            startDate:
-                start,
+                startDate:
+                    start,
 
-            endDate:
-                end,
+                endDate:
+                    end,
 
-            duration:
-                Number(duration),
+                duration:
+                    Number(duration),
 
-            maxTravelers:
-                Number(maxTravelers),
+                maxTravelers:
+                    Number(maxTravelers),
 
-            image:
-                image?.trim() || ""
+                image:
+                    image?.trim() || ""
 
-        });
+            });
 
 
         await tour.save();
@@ -308,6 +314,136 @@ const getCompanyTours = async (req, res) => {
 
 
 // =====================================================
+// GET ALL PUBLIC TOURS
+// =====================================================
+//
+// This endpoint is used by Explore Tours.
+//
+// Rules:
+// 1. Only active tours
+// 2. End date must not be in the past
+// 3. Company must be verified
+// 4. Company information is populated
+//
+// =====================================================
+
+const getAllTours = async (req, res) => {
+
+    try {
+
+        // =================================================
+        // CURRENT DATE
+        // =================================================
+
+        const today =
+            new Date();
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        // =================================================
+        // FIND PUBLIC TOURS
+        // =================================================
+
+        const tours =
+            await Tour.find({
+
+                status:
+                    "active",
+
+                endDate: {
+                    $gte: today
+                }
+
+            })
+
+            // =================================================
+            // COMPANY DETAILS
+            // =================================================
+
+            .populate(
+
+                "company",
+
+                "companyName ownerName email phone website logo coverImage description verificationStatus"
+
+            )
+
+            // =================================================
+            // SORT
+            // =================================================
+
+            .sort({
+
+                startDate:
+                    1
+
+            });
+
+
+        // =================================================
+        // ONLY VERIFIED COMPANIES
+        // =================================================
+
+        const verifiedTours =
+            tours.filter(
+
+                (tour) =>
+
+                    tour.company &&
+                    tour.company.verificationStatus ===
+                    "verified"
+
+            );
+
+
+        // =================================================
+        // RESPONSE
+        // =================================================
+
+        return res.status(200).json({
+
+            success: true,
+
+            count:
+                verifiedTours.length,
+
+            tours:
+                verifiedTours
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "❌ GET ALL TOURS ERROR:",
+            error
+        );
+
+
+        return res.status(500).json({
+
+            success: false,
+
+            message:
+                "Unable to fetch tours"
+
+        });
+
+    }
+
+};
+
+
+
+// =====================================================
 // GET SINGLE TOUR
 // =====================================================
 
@@ -322,9 +458,13 @@ const getSingleTour = async (req, res) => {
 
         const tour =
             await Tour.findById(id)
+
                 .populate(
+
                     "company",
-                    "companyName ownerName email phone website logo"
+
+                    "companyName ownerName email phone website logo coverImage description verificationStatus"
+
                 );
 
 
@@ -341,6 +481,63 @@ const getSingleTour = async (req, res) => {
 
         }
 
+
+        // =================================================
+        // CHECK EXPIRED TOUR
+        // =================================================
+
+        const today =
+            new Date();
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        if (
+            tour.endDate < today
+        ) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message:
+                    "This tour has expired"
+
+            });
+
+        }
+
+
+        // =================================================
+        // CHECK COMPANY
+        // =================================================
+
+        if (
+            !tour.company ||
+            tour.company.verificationStatus !==
+            "verified"
+        ) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message:
+                    "Tour is not available"
+
+            });
+
+        }
+
+
+        // =================================================
+        // RESPONSE
+        // =================================================
 
         return res.status(200).json({
 
@@ -392,6 +589,10 @@ const updateTour = async (req, res) => {
             req.company.id;
 
 
+        // =================================================
+        // FIND COMPANY'S TOUR
+        // =================================================
+
         const tour =
             await Tour.findOne({
 
@@ -433,10 +634,12 @@ const updateTour = async (req, res) => {
 
 
         // =================================================
-        // UPDATE ONLY PROVIDED VALUES
+        // UPDATE PROVIDED VALUES
         // =================================================
 
-        if (title !== undefined) {
+        if (
+            title !== undefined
+        ) {
 
             tour.title =
                 title.trim();
@@ -444,7 +647,9 @@ const updateTour = async (req, res) => {
         }
 
 
-        if (destination !== undefined) {
+        if (
+            destination !== undefined
+        ) {
 
             tour.destination =
                 destination.trim();
@@ -452,7 +657,9 @@ const updateTour = async (req, res) => {
         }
 
 
-        if (description !== undefined) {
+        if (
+            description !== undefined
+        ) {
 
             tour.description =
                 description.trim();
@@ -460,7 +667,9 @@ const updateTour = async (req, res) => {
         }
 
 
-        if (price !== undefined) {
+        if (
+            price !== undefined
+        ) {
 
             tour.price =
                 Number(price);
@@ -468,23 +677,73 @@ const updateTour = async (req, res) => {
         }
 
 
-        if (startDate !== undefined) {
+        if (
+            startDate !== undefined
+        ) {
 
-            tour.startDate =
+            const newStartDate =
                 new Date(startDate);
 
+
+            if (
+                Number.isNaN(
+                    newStartDate.getTime()
+                )
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "Invalid start date"
+
+                });
+
+            }
+
+
+            tour.startDate =
+                newStartDate;
+
         }
 
 
-        if (endDate !== undefined) {
+        if (
+            endDate !== undefined
+        ) {
 
-            tour.endDate =
+            const newEndDate =
                 new Date(endDate);
 
+
+            if (
+                Number.isNaN(
+                    newEndDate.getTime()
+                )
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "Invalid end date"
+
+                });
+
+            }
+
+
+            tour.endDate =
+                newEndDate;
+
         }
 
 
-        if (duration !== undefined) {
+        if (
+            duration !== undefined
+        ) {
 
             tour.duration =
                 Number(duration);
@@ -492,7 +751,9 @@ const updateTour = async (req, res) => {
         }
 
 
-        if (maxTravelers !== undefined) {
+        if (
+            maxTravelers !== undefined
+        ) {
 
             tour.maxTravelers =
                 Number(maxTravelers);
@@ -500,7 +761,9 @@ const updateTour = async (req, res) => {
         }
 
 
-        if (image !== undefined) {
+        if (
+            image !== undefined
+        ) {
 
             tour.image =
                 image.trim();
@@ -546,8 +809,47 @@ const updateTour = async (req, res) => {
         }
 
 
+        // =================================================
+        // PREVENT MOVING END DATE INTO PAST
+        // =================================================
+
+        const today =
+            new Date();
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        if (
+            tour.endDate < today
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Tour end date cannot be in the past"
+
+            });
+
+        }
+
+
+        // =================================================
+        // SAVE
+        // =================================================
+
         await tour.save();
 
+
+        // =================================================
+        // RESPONSE
+        // =================================================
 
         return res.status(200).json({
 
@@ -602,6 +904,10 @@ const deleteTour = async (req, res) => {
             req.company.id;
 
 
+        // =================================================
+        // DELETE ONLY COMPANY'S OWN TOUR
+        // =================================================
+
         const tour =
             await Tour.findOneAndDelete({
 
@@ -627,6 +933,10 @@ const deleteTour = async (req, res) => {
 
         }
 
+
+        // =================================================
+        // RESPONSE
+        // =================================================
 
         return res.status(200).json({
 
@@ -681,6 +991,8 @@ module.exports = {
     addTour,
 
     getCompanyTours,
+
+    getAllTours,
 
     getSingleTour,
 
