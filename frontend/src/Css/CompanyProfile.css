@@ -1,0 +1,771 @@
+
+.company-profile-page {
+    min-height: 100vh;
+    background: #f5f7fa;
+    color: #172033;
+    padding-bottom: 60px;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.company-profile-loading {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    color: #667085;
+}
+
+.company-loader {
+    width: 42px;
+    height: 42px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #1d4ed8;
+    border-radius: 50%;
+    animation: companySpin 0.8s linear infinite;
+}
+
+@keyframes companySpin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =====================================================
+   COVER
+===================================================== */
+
+.company-cover {
+    position: relative;
+    width: 100%;
+    height: 330px;
+    overflow: hidden;
+}
+
+.company-cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.company-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(
+            to right,
+            rgba(8, 15, 30, 0.88),
+            rgba(8, 15, 30, 0.35),
+            rgba(8, 15, 30, 0.05)
+        );
+}
+
+.company-cover-content {
+    position: absolute;
+    left: 8%;
+    bottom: 55px;
+    color: white;
+    max-width: 700px;
+}
+
+.company-panel-label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    opacity: 0.8;
+}
+
+.company-cover-content h1 {
+    margin: 0;
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.company-cover-content p {
+    margin-top: 10px;
+    font-size: 16px;
+    opacity: 0.85;
+}
+
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+.company-profile-container {
+    width: min(1180px, 92%);
+    margin: 0 auto;
+}
+
+
+/* =====================================================
+   PROFILE HEADER
+===================================================== */
+
+.company-profile-header {
+    position: relative;
+    margin-top: -65px;
+    z-index: 5;
+
+    display: flex;
+    align-items: flex-end;
+    gap: 28px;
+
+    background: white;
+    border-radius: 20px;
+    padding: 28px;
+
+    box-shadow:
+        0 15px 45px rgba(16, 24, 40, 0.10);
+
+    border: 1px solid #eaecf0;
+}
+
+.company-logo-wrapper {
+    flex-shrink: 0;
+}
+
+.company-logo-image,
+.company-logo-placeholder {
+    width: 130px;
+    height: 130px;
+    border-radius: 20px;
+    border: 5px solid white;
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.company-logo-image {
+    object-fit: cover;
+}
+
+.company-logo-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef2f7;
+    font-size: 48px;
+}
+
+
+.company-header-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.company-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.company-title-row h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: #101828;
+}
+
+.company-owner {
+    margin: 7px 0 0;
+    color: #667085;
+    font-size: 14px;
+}
+
+.company-owner strong {
+    color: #344054;
+}
+
+
+/* =====================================================
+   VERIFICATION BADGE
+===================================================== */
+
+.verification-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 8px 13px;
+
+    border-radius: 999px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.verification-badge.verified {
+    background: #ecfdf3;
+    color: #027a48;
+}
+
+.verification-badge.pending {
+    background: #fffaeb;
+    color: #b54708;
+}
+
+.verification-badge.rejected {
+    background: #fef3f2;
+    color: #b42318;
+}
+
+
+/* =====================================================
+   HEADER ACTIONS
+===================================================== */
+
+.company-header-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.company-edit-btn,
+.company-logout-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 11px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.company-edit-btn {
+    background: #172033;
+    color: white;
+}
+
+.company-edit-btn:hover {
+    transform: translateY(-2px);
+    background: #0f172a;
+}
+
+.company-logout-btn {
+    background: #f2f4f7;
+    color: #344054;
+}
+
+.company-logout-btn:hover {
+    background: #e4e7ec;
+}
+
+
+/* =====================================================
+   WARNING
+===================================================== */
+
+.company-profile-warning {
+    margin-top: 22px;
+    padding: 14px 18px;
+    border-radius: 12px;
+
+    background: #fffaeb;
+    border: 1px solid #fedf89;
+    color: #93370d;
+
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   VERIFICATION NOTICE
+===================================================== */
+
+.verification-notice {
+    margin-top: 24px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+
+    padding: 20px;
+
+    border-radius: 16px;
+    border: 1px solid;
+}
+
+.verification-notice.verified {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.verification-notice.pending {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.verification-notice.rejected {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.verification-notice-icon {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    font-weight: 800;
+    font-size: 18px;
+
+    background: white;
+}
+
+.verification-notice h3 {
+    margin: 0 0 5px;
+    font-size: 16px;
+}
+
+.verification-notice p {
+    margin: 0;
+    color: #667085;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   CONTENT GRID
+===================================================== */
+
+.company-content-grid {
+    margin-top: 24px;
+
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 22px;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.company-card {
+    background: white;
+    border: 1px solid #eaecf0;
+    border-radius: 18px;
+    padding: 25px;
+
+    box-shadow:
+        0 8px 25px rgba(16, 24, 40, 0.04);
+}
+
+.company-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 22px;
+}
+
+.card-heading-icon {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #f2f4f7;
+
+    font-size: 20px;
+}
+
+.company-card-heading span {
+    display: block;
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    color: #98a2b3;
+
+    margin-bottom: 3px;
+}
+
+.company-card-heading h3 {
+    margin: 0;
+
+    font-size: 19px;
+    color: #101828;
+}
+
+
+/* =====================================================
+   ABOUT
+===================================================== */
+
+.company-description {
+    color: #667085;
+    font-size: 15px;
+    line-height: 1.8;
+    margin: 0;
+}
+
+
+/* =====================================================
+   CONTACT DETAILS
+===================================================== */
+
+.company-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.company-detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.detail-icon {
+    width: 36px;
+    height: 36px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #f8fafc;
+}
+
+.company-detail-item small {
+    display: block;
+    margin-bottom: 3px;
+
+    color: #98a2b3;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.company-detail-item p {
+    margin: 0;
+
+    color: #344054;
+    font-size: 14px;
+
+    word-break: break-word;
+}
+
+
+/* =====================================================
+   WEBSITE
+===================================================== */
+
+.company-website-link {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 15px;
+
+    border: 1px solid #eaecf0;
+    border-radius: 13px;
+
+    text-decoration: none;
+    color: #344054;
+
+    transition: 0.25s ease;
+}
+
+.company-website-link:hover {
+    border-color: #98a2b3;
+    transform: translateY(-2px);
+}
+
+.company-website-link > span:first-child {
+    font-size: 23px;
+}
+
+.company-website-link div {
+    flex: 1;
+    min-width: 0;
+}
+
+.company-website-link strong {
+    display: block;
+    font-size: 14px;
+}
+
+.company-website-link small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #667085;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.external-icon {
+    font-size: 18px;
+}
+
+
+/* =====================================================
+   CERTIFICATE
+===================================================== */
+
+.certificate-link {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 15px;
+
+    border: 1px solid #eaecf0;
+    border-radius: 13px;
+
+    text-decoration: none;
+    color: #344054;
+
+    transition: 0.25s ease;
+}
+
+.certificate-link:hover {
+    border-color: #98a2b3;
+    transform: translateY(-2px);
+}
+
+.certificate-file-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #fef3f2;
+    border-radius: 10px;
+
+    font-size: 20px;
+}
+
+.certificate-link div:nth-child(2) {
+    flex: 1;
+}
+
+.certificate-link strong {
+    display: block;
+    font-size: 14px;
+}
+
+.certificate-link small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #667085;
+}
+
+.certificate-link > span:last-child {
+    font-size: 18px;
+}
+
+
+/* =====================================================
+   EMPTY DETAIL
+===================================================== */
+
+.company-empty-detail {
+    padding: 20px;
+
+    text-align: center;
+
+    border: 1px dashed #d0d5dd;
+    border-radius: 12px;
+
+    color: #98a2b3;
+
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.company-profile-footer {
+    margin-top: 24px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 25px;
+
+    background: #172033;
+    color: white;
+
+    border-radius: 18px;
+}
+
+.company-profile-footer > div:first-child span {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    opacity: 0.6;
+}
+
+.company-profile-footer p {
+    margin: 7px 0 0;
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.company-footer-status {
+    text-align: right;
+}
+
+.company-footer-status span {
+    display: block;
+    font-size: 11px;
+    opacity: 0.55;
+    margin-bottom: 5px;
+}
+
+.company-footer-status strong {
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .company-cover {
+        height: 290px;
+    }
+
+    .company-cover-content {
+        left: 5%;
+        bottom: 45px;
+    }
+
+    .company-cover-content h1 {
+        font-size: 34px;
+    }
+
+    .company-profile-header {
+        align-items: flex-start;
+        flex-direction: column;
+        margin-top: -45px;
+    }
+
+    .company-title-row {
+        flex-direction: column;
+    }
+
+    .company-content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .company-header-actions {
+        flex-wrap: wrap;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .company-profile-page {
+        padding-bottom: 35px;
+    }
+
+    .company-cover {
+        height: 250px;
+    }
+
+    .company-cover-content {
+        left: 20px;
+        right: 20px;
+        bottom: 30px;
+    }
+
+    .company-cover-content h1 {
+        font-size: 27px;
+        line-height: 1.2;
+    }
+
+    .company-cover-content p {
+        font-size: 13px;
+    }
+
+    .company-profile-container {
+        width: 94%;
+    }
+
+    .company-profile-header {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .company-logo-image,
+    .company-logo-placeholder {
+        width: 100px;
+        height: 100px;
+    }
+
+    .company-title-row h2 {
+        font-size: 22px;
+    }
+
+    .company-card {
+        padding: 20px;
+    }
+
+    .company-profile-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .company-footer-status {
+        text-align: left;
+    }
+
+    .company-header-actions {
+        width: 100%;
+    }
+
+    .company-edit-btn,
+    .company-logout-btn {
+        flex: 1;
+    }
+
+}

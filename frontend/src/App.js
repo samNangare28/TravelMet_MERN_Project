@@ -37,7 +37,8 @@ import CreateBlog from "./Pages/CreateBlog";
 import EditBlog from "./Pages/EditBlog";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
-import CompanyLogin from "./Pages/CompanyLogin";
+import CompanyProfile from "./Pages/CompanyProfile";
+import CompanyProtectedRoute from "./components/CompanyProtectedRoute";
 
 // ===============================
 // USER PROTECTED ROUTE
@@ -98,6 +99,15 @@ function App() {
                     element={<TripPlanner />}
                 />
 
+
+                    <Route
+                        path="/company/profile"
+                        element={
+                            <CompanyProtectedRoute>
+                                <CompanyProfile />
+                            </CompanyProtectedRoute>
+                        }
+                    />
 
                 {/* =====================================
                     CONTACT
@@ -161,10 +171,6 @@ function App() {
                     }
                 />
 
-                <Route
-                    path="/company/login"
-                    element={<CompanyLogin />}
-                />
 
                 {/* =====================================
                     USER PROFILE
