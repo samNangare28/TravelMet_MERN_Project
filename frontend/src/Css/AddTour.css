@@ -1,0 +1,436 @@
+/* =====================================================
+   ADD TOUR PAGE
+===================================================== */
+
+.add-tour-page {
+    min-height: 100vh;
+    padding: 110px 7% 70px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(197, 155, 95, 0.10),
+            transparent 32%
+        ),
+        #f8f7f4;
+    color: #1f2933;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.add-tour-header {
+    max-width: 1100px;
+    margin: 0 auto 35px;
+}
+
+.add-tour-back-btn {
+    border: none;
+    background: transparent;
+    color: #8a6838;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 28px;
+    transition: 0.25s ease;
+}
+
+.add-tour-back-btn:hover {
+    transform: translateX(-4px);
+    color: #a67c43;
+}
+
+.add-tour-eyebrow {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: #a67c43;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.add-tour-header h1 {
+    margin: 0;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    color: #20252b;
+}
+
+.add-tour-header p {
+    margin: 12px 0 0;
+    max-width: 650px;
+    color: #707780;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.add-tour-form {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #ebe7df;
+    border-radius: 24px;
+    box-shadow:
+        0 20px 55px rgba(31, 41, 51, 0.08);
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.add-tour-error {
+    margin: 25px 30px 0;
+    padding: 15px 18px;
+    border-radius: 12px;
+    background: #fff2f1;
+    border: 1px solid #ffd4d0;
+    color: #b42318;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   FORM SECTION
+===================================================== */
+
+.add-tour-form-section {
+    padding: 38px 42px;
+    border-bottom: 1px solid #eeeae3;
+}
+
+.add-tour-section-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.add-tour-section-heading > span {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #f5f1e8;
+    color: #a67c43;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.add-tour-section-heading small {
+    display: block;
+    margin-bottom: 4px;
+    color: #a67c43;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.7px;
+}
+
+.add-tour-section-heading h2 {
+    margin: 0;
+    color: #252a30;
+    font-size: 22px;
+    font-weight: 750;
+}
+
+
+/* =====================================================
+   FIELD GRID
+===================================================== */
+
+.add-tour-field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.add-tour-field.full {
+    grid-column: 1 / -1;
+}
+
+
+/* =====================================================
+   LABELS
+===================================================== */
+
+.add-tour-field label {
+    display: block;
+    margin-bottom: 9px;
+    color: #343a40;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   INPUTS
+===================================================== */
+
+.add-tour-field input,
+.add-tour-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ddd9d1;
+    border-radius: 12px;
+    background: #fcfcfb;
+    color: #252a30;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.add-tour-field input {
+    height: 50px;
+    padding: 0 15px;
+}
+
+.add-tour-field textarea {
+    min-height: 130px;
+    padding: 14px 15px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.add-tour-field input::placeholder,
+.add-tour-field textarea::placeholder {
+    color: #a3a7ac;
+}
+
+.add-tour-field input:focus,
+.add-tour-field textarea:focus {
+    border-color: #c59b5f;
+    background: #ffffff;
+    box-shadow:
+        0 0 0 4px rgba(197, 155, 95, 0.10);
+}
+
+.add-tour-field input:disabled,
+.add-tour-field textarea:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+
+/* =====================================================
+   CHARACTER COUNT
+===================================================== */
+
+.add-tour-character-count {
+    display: block;
+    margin-top: 7px;
+    text-align: right;
+    color: #9a9fa5;
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   INPUT PREFIX / SUFFIX
+===================================================== */
+
+.input-with-prefix,
+.input-with-suffix {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-prefix > span {
+    position: absolute;
+    left: 15px;
+    z-index: 2;
+    color: #8a6838;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.input-with-prefix input {
+    padding-left: 34px;
+}
+
+.input-with-suffix input {
+    padding-right: 65px;
+}
+
+.input-with-suffix > span {
+    position: absolute;
+    right: 15px;
+    color: #858b92;
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   DATE INPUT
+===================================================== */
+
+.add-tour-field input[type="date"] {
+    color-scheme: light;
+    cursor: pointer;
+}
+
+.add-tour-field input[type="number"] {
+    appearance: textfield;
+}
+
+.add-tour-field input[type="number"]::-webkit-inner-spin-button,
+.add-tour-field input[type="number"]::-webkit-outer-spin-button {
+    margin: 0;
+}
+
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.add-tour-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    padding: 25px 42px;
+    background: #fbfaf8;
+    border-top: 1px solid #eeeae3;
+}
+
+.add-tour-cancel-btn,
+.add-tour-submit-btn {
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: 11px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 750;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.add-tour-cancel-btn {
+    border: 1px solid #ddd9d1;
+    background: #ffffff;
+    color: #555c63;
+}
+
+.add-tour-cancel-btn:hover {
+    background: #f5f3ef;
+}
+
+.add-tour-submit-btn {
+    border: none;
+    background: #252a30;
+    color: #ffffff;
+    min-width: 160px;
+    box-shadow:
+        0 8px 20px rgba(37, 42, 48, 0.15);
+}
+
+.add-tour-submit-btn:hover {
+    transform: translateY(-2px);
+    background: #171b1f;
+    box-shadow:
+        0 12px 25px rgba(37, 42, 48, 0.20);
+}
+
+.add-tour-submit-btn:disabled,
+.add-tour-cancel-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 800px) {
+
+    .add-tour-page {
+        padding: 95px 20px 50px;
+    }
+
+    .add-tour-form-section {
+        padding: 30px 25px;
+    }
+
+    .add-tour-field-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .add-tour-field.full {
+        grid-column: auto;
+    }
+
+    .add-tour-form-actions {
+        padding: 22px 25px;
+    }
+
+}
+
+
+@media (max-width: 550px) {
+
+    .add-tour-page {
+        padding: 90px 14px 40px;
+    }
+
+    .add-tour-header h1 {
+        font-size: 34px;
+    }
+
+    .add-tour-header p {
+        font-size: 14px;
+    }
+
+    .add-tour-form {
+        border-radius: 18px;
+    }
+
+    .add-tour-form-section {
+        padding: 25px 18px;
+    }
+
+    .add-tour-section-heading {
+        margin-bottom: 23px;
+    }
+
+    .add-tour-section-heading h2 {
+        font-size: 19px;
+    }
+
+    .add-tour-form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        padding: 20px 18px;
+    }
+
+    .add-tour-cancel-btn,
+    .add-tour-submit-btn {
+        width: 100%;
+    }
+
+}
