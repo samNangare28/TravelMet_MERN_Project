@@ -40,6 +40,8 @@ const adminRoutes =
 
 const contactRoutes = require("./routes/contactRoutes");
 
+const tourRoutes = require("./routes/tourRoutes");
+
 
 const app =
     express();
@@ -130,6 +132,11 @@ app.use(
     blogRoutes
 );
 app.use("/api/contact", contactRoutes);
+
+app.use(
+    "/api/tours",
+    tourRoutes
+);
 
 
 // HEALTH CHECK
