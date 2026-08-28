@@ -11,7 +11,6 @@ function Navbar() {
     const navigate = useNavigate();
 
     const [scrolled, setScrolled] = useState(false);
-
     const [showCreateChoice, setShowCreateChoice] = useState(false);
 
     const token = localStorage.getItem("token");
@@ -20,14 +19,14 @@ function Navbar() {
         localStorage.getItem("user") || "{}"
     );
 
-    // ================= SCROLL =================
+    // =====================================================
+    // SCROLL
+    // =====================================================
 
     useEffect(() => {
 
         const handleScroll = () => {
-
             setScrolled(window.scrollY > 50);
-
         };
 
         window.addEventListener(
@@ -36,322 +35,394 @@ function Navbar() {
         );
 
         return () => {
-
             window.removeEventListener(
                 "scroll",
                 handleScroll
             );
-
         };
 
     }, []);
 
-    // ================= LOGOUT =================
+
+    // =====================================================
+    // LOGOUT
+    // =====================================================
 
     const logout = () => {
 
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
-        // Direct login page
         navigate("/login");
 
     };
+
+
+    // =====================================================
+    // CHECK ACTIVE PATH
+    // =====================================================
+
+    const isActive = (path) => {
+
+        return (
+            location.pathname === path ||
+            location.pathname.startsWith(`${path}/`)
+        );
+
+    };
+
 
     return (
 
         <>
 
-        <nav
-            className={
-                scrolled
-                    ? "navbar active"
-                    : "navbar"
-            }
-        >
+            <nav
+                className={
+                    scrolled
+                        ? "navbar active"
+                        : "navbar"
+                }
+            >
 
-            {/* ================= LOGO ================= */}
+                {/* =================================================
+                    LOGO
+                ================================================= */}
 
-            <div className="logo">
-
-                <Link
-                    to="/"
-                    className="logo-link"
-                >
-                    ✈ TravelMet
-                </Link>
-
-            </div>
-
-
-            {/* ================= NAV LINKS ================= */}
-
-            <ul className="nav-links">
-
-                <li>
+                <div className="logo">
 
                     <Link
                         to="/"
-                        className={
-                            location.pathname === "/"
-                                ? "active-link"
-                                : ""
-                        }
+                        className="logo-link"
                     >
-                        Home
+                        ✈ TravelMet
                     </Link>
 
-                </li>
-
-                <li>
-
-                    <Link
-                        to="/trip-planner"
-                        className={
-                            location.pathname ===
-                            "/trip-planner"
-                                ? "active-link"
-                                : ""
-                        }
-                    >
-                        AI Planner
-                    </Link>
-
-                </li>
-
-                <li>
-
-                    <Link
-                        to="/community"
-                        className={
-                            location.pathname ===
-                            "/community"
-                                ? "active-link"
-                                : ""
-                        }
-                    >
-                        Community
-                    </Link>
-
-                </li>
-
-                <li>
-
-                    <Link
-                        to="/blogs"
-                        className={
-                            location.pathname.startsWith(
-                                "/blogs"
-                            )
-                                ? "active-link"
-                                : ""
-                        }
-                    >
-                        Blog
-                    </Link>
-
-                </li>
-
-                <li>
-
-                    <Link
-                        to="/contact"
-                        className={
-                            location.pathname ===
-                            "/contact"
-                                ? "active-link"
-                                : ""
-                        }
-                    >
-                        Contact
-                    </Link>
-
-                </li>
-
-            </ul>
+                </div>
 
 
-            {/* ================= RIGHT SECTION ================= */}
+                {/* =================================================
+                    MAIN NAV LINKS
+                ================================================= */}
 
-            <div className="nav-right">
+                <ul className="nav-links">
 
-                {token ? (
-
-                    /* ================= LOGGED IN ================= */
-
-                    <>
-
-                        <ProfileSearch />
-
-                        <button
-                            type="button"
-                            className="create-btn"
-                            onClick={() =>
-                                setShowCreateChoice(true)
+                    <li>
+                        <Link
+                            to="/"
+                            className={
+                                location.pathname === "/"
+                                    ? "active-link"
+                                    : ""
                             }
                         >
-                            + Create
-                        </button>
+                            Home
+                        </Link>
+                    </li>
 
-                        <NotificationBell />
 
-
+                    <li>
                         <Link
-                            to="/profile"
-                            className="profile-box"
+                            to="/trip-planner"
+                            className={
+                                isActive("/trip-planner")
+                                    ? "active-link"
+                                    : ""
+                            }
                         >
+                            AI Planner
+                        </Link>
+                    </li>
 
-                            <img
-                                src={
-                                    user.profileImage
-                                        ? user.profileImage
-                                        : "https://i.pravatar.cc/100"
+
+                    <li>
+                        <Link
+                            to="/community"
+                            className={
+                                isActive("/community")
+                                    ? "active-link"
+                                    : ""
+                            }
+                        >
+                            Community
+                        </Link>
+                    </li>
+
+
+                    {/* =================================================
+                        EXPLORE TOURS
+                    ================================================= */}
+
+                    <li>
+                        <Link
+                            to="/explore-tours"
+                            className={
+                                isActive("/explore-tours")
+                                    ? "active-link"
+                                    : ""
+                            }
+                        >
+                            Explore Tours
+                        </Link>
+                    </li>
+
+
+                    <li>
+                        <Link
+                            to="/blogs"
+                            className={
+                                isActive("/blogs")
+                                    ? "active-link"
+                                    : ""
+                            }
+                        >
+                            Blog
+                        </Link>
+                    </li>
+
+
+                    <li>
+                        <Link
+                            to="/contact"
+                            className={
+                                isActive("/contact")
+                                    ? "active-link"
+                                    : ""
+                            }
+                        >
+                            Contact
+                        </Link>
+                    </li>
+
+                </ul>
+
+
+                {/* =================================================
+                    RIGHT SECTION
+                ================================================= */}
+
+                <div className="nav-right">
+
+                    {token ? (
+
+                        <>
+                            <ProfileSearch />
+
+
+                            {/* =================================================
+                                CREATE
+                            ================================================= */}
+
+                            <button
+                                type="button"
+                                className="create-btn"
+                                onClick={() =>
+                                    setShowCreateChoice(true)
                                 }
-                                alt="Profile"
-                                className="profile-img"
-                            />
-
-                            <div>
-
-                                <h4>
-                                    {user.firstName}
-                                </h4>
-
-                                <span>
-                                    Community
-                                </span>
-
-                            </div>
-
-                        </Link>
+                            >
+                                + Create
+                            </button>
 
 
-                        <button
-                            className="logout-btn"
-                            onClick={logout}
-                        >
-                            Logout
-                        </button>
+                            {/* =================================================
+                                NOTIFICATIONS
+                            ================================================= */}
 
-                    </>
-
-                ) : (
-
-                    /* ================= LOGGED OUT ================= */
-
-                    <>
-
-                        <Link
-                            to="/login"
-                            className="login-btn"
-                        >
-                            Login
-                        </Link>
-
-                        <Link
-                            to="/register"
-                            className="register-btn"
-                        >
-                            Register
-                        </Link>
-
-                    </>
-
-                )}
-
-            </div>
-
-        </nav>
+                            <NotificationBell />
 
 
-        {/* ================= CREATE CHOICE MODAL ================= */}
+                            {/* =================================================
+                                USER PROFILE
+                            ================================================= */}
 
-        {showCreateChoice && (
+                            <Link
+                                to="/profile"
+                                className="profile-box"
+                            >
 
-            <div
-                className="create-choice-overlay"
-                onClick={() => setShowCreateChoice(false)}
-            >
+                                <img
+                                    src={
+                                        user.profileImage
+                                            ? user.profileImage
+                                            : "https://i.pravatar.cc/100"
+                                    }
+                                    alt="Profile"
+                                    className="profile-img"
+                                />
+
+                                <div>
+
+                                    <h4>
+                                        {user.firstName}
+                                    </h4>
+
+                                    <span>
+                                        Community
+                                    </span>
+
+                                </div>
+
+                            </Link>
+
+
+                            {/* =================================================
+                                LOGOUT
+                            ================================================= */}
+
+                            <button
+                                className="logout-btn"
+                                onClick={logout}
+                            >
+                                Logout
+                            </button>
+
+                        </>
+
+                    ) : (
+
+                        <>
+                            <Link
+                                to="/login"
+                                className="login-btn"
+                            >
+                                Login
+                            </Link>
+
+                            <Link
+                                to="/register"
+                                className="register-btn"
+                            >
+                                Register
+                            </Link>
+                        </>
+
+                    )}
+
+                </div>
+
+            </nav>
+
+
+            {/* =====================================================
+                CREATE CHOICE MODAL
+            ===================================================== */}
+
+            {showCreateChoice && (
 
                 <div
-                    className="create-choice-modal"
-                    onClick={(e) => e.stopPropagation()}
+                    className="create-choice-overlay"
+                    onClick={() =>
+                        setShowCreateChoice(false)
+                    }
                 >
 
-                    <h3>What would you like to create?</h3>
+                    <div
+                        className="create-choice-modal"
+                        onClick={(e) =>
+                            e.stopPropagation()
+                        }
+                    >
 
-                    <p>
-                        Share a quick travel moment, or write a
-                        full story for the TravelMet magazine.
-                    </p>
+                        <h3>
+                            What would you like to create?
+                        </h3>
 
-                    <div className="create-choice-options">
+                        <p>
+                            Share a quick travel moment, or write a
+                            full story for the TravelMet magazine.
+                        </p>
+
+
+                        <div className="create-choice-options">
+
+                            {/* ================= POST ================= */}
+
+                            <button
+                                type="button"
+                                className="create-choice-option"
+                                onClick={() => {
+
+                                    setShowCreateChoice(false);
+
+                                    navigate(
+                                        "/create-post"
+                                    );
+
+                                }}
+                            >
+
+                                <span className="create-choice-icon">
+                                    📷
+                                </span>
+
+                                <span className="create-choice-text">
+
+                                    <strong>
+                                        Create Post
+                                    </strong>
+
+                                    <span className="create-choice-sub">
+                                        Share a photo &amp; quick update
+                                        to the community feed
+                                    </span>
+
+                                </span>
+
+                            </button>
+
+
+                            {/* ================= BLOG ================= */}
+
+                            <button
+                                type="button"
+                                className="create-choice-option"
+                                onClick={() => {
+
+                                    setShowCreateChoice(false);
+
+                                    navigate(
+                                        "/create-blog"
+                                    );
+
+                                }}
+                            >
+
+                                <span className="create-choice-icon">
+                                    📝
+                                </span>
+
+                                <span className="create-choice-text">
+
+                                    <strong>
+                                        Create Blog
+                                    </strong>
+
+                                    <span className="create-choice-sub">
+                                        Publish a full travel story to
+                                        the TravelMet magazine
+                                    </span>
+
+                                </span>
+
+                            </button>
+
+                        </div>
+
 
                         <button
                             type="button"
-                            className="create-choice-option"
-                            onClick={() => {
-
-                                setShowCreateChoice(false);
-                                navigate("/create-post");
-
-                            }}
+                            className="create-choice-close"
+                            onClick={() =>
+                                setShowCreateChoice(false)
+                            }
                         >
-
-                            <span className="create-choice-icon">
-                                📷
-                            </span>
-
-                            <span className="create-choice-text">
-                                <strong>Create Post</strong>
-                                <span className="create-choice-sub">
-                                    Share a photo &amp; quick update
-                                    to the community feed
-                                </span>
-                            </span>
-
-                        </button>
-
-                        <button
-                            type="button"
-                            className="create-choice-option"
-                            onClick={() => {
-
-                                setShowCreateChoice(false);
-                                navigate("/create-blog");
-
-                            }}
-                        >
-
-                            <span className="create-choice-icon">
-                                📝
-                            </span>
-
-                            <span className="create-choice-text">
-                                <strong>Create Blog</strong>
-                                <span className="create-choice-sub">
-                                    Publish a full travel story to
-                                    the TravelMet magazine
-                                </span>
-                            </span>
-
+                            Cancel
                         </button>
 
                     </div>
 
-                    <button
-                        type="button"
-                        className="create-choice-close"
-                        onClick={() => setShowCreateChoice(false)}
-                    >
-                        Cancel
-                    </button>
-
                 </div>
 
-            </div>
-
-        )}
+            )}
 
         </>
 

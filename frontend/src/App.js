@@ -11,6 +11,7 @@ import MobileBottomNav from "./components/MobileBottomNav";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import CompanyProtectedRoute from "./components/CompanyProtectedRoute";
+import CompanyNavbar from "./components/CompanyNavbar";
 
 // =====================================================
 // USER PAGES
@@ -36,7 +37,6 @@ import PublicProfile from "./Pages/PublicProfile";
 import Notifications from "./Pages/Notifications";
 import Search from "./Pages/Search";
 
-
 // =====================================================
 // BLOG PAGES
 // =====================================================
@@ -46,14 +46,12 @@ import BlogDetails from "./Pages/BlogDetails";
 import CreateBlog from "./Pages/CreateBlog";
 import EditBlog from "./Pages/EditBlog";
 
-
 // =====================================================
 // AUTH PAGES
 // =====================================================
 
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
-
 
 // =====================================================
 // ADMIN PAGES
@@ -62,7 +60,6 @@ import ResetPassword from "./Pages/ResetPassword";
 import AdminLogin from "./Pages/AdminLogin";
 import AdminDashboard from "./Pages/AdminDashboard";
 
-
 // =====================================================
 // COMPANY PAGES
 // =====================================================
@@ -70,7 +67,6 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import CompanyProfile from "./Pages/CompanyProfile";
 import CompanyDashboard from "./Pages/CompanyDashboard";
 import AddTour from "./Pages/AddTour";
-
 
 // =====================================================
 // TOUR PAGES
@@ -86,6 +82,20 @@ import TourDetailsPage from "./Pages/TourDetails";
 
 function App() {
 
+    /*
+     * Check which type of account is currently logged in.
+     *
+     * companyToken  -> Company account
+     * token         -> Normal user account
+     */
+
+    const companyToken =
+        localStorage.getItem("companyToken");
+
+    const userToken =
+        localStorage.getItem("token");
+
+
     return (
 
         <BrowserRouter>
@@ -94,7 +104,11 @@ function App() {
                 NAVBAR
             ================================================= */}
 
-            <Navbar />
+            {companyToken ? (
+                <CompanyNavbar />
+            ) : (
+                <Navbar />
+            )}
 
 
             {/* =================================================
@@ -102,7 +116,6 @@ function App() {
             ================================================= */}
 
             <Routes>
-
 
                 {/* =================================================
                     PUBLIC USER ROUTES
@@ -275,7 +288,7 @@ function App() {
 
 
                 {/* =================================================
-                    MESSAGE
+                    MESSAGE SUCCESS
                 ================================================= */}
 
                 <Route
@@ -367,7 +380,7 @@ function App() {
 
                 {/* =================================================
                     EXPLORE TOURS
-                    PUBLIC USER PAGE
+                    PUBLIC PAGE
                 ================================================= */}
 
                 <Route
@@ -399,7 +412,9 @@ function App() {
                 MOBILE NAV
             ================================================= */}
 
-            <MobileBottomNav />
+            {!companyToken && userToken && (
+                <MobileBottomNav />
+            )}
 
         </BrowserRouter>
 
