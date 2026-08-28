@@ -11,7 +11,6 @@ import MobileBottomNav from "./components/MobileBottomNav";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import CompanyProtectedRoute from "./components/CompanyProtectedRoute";
-import CompanyNavbar from "./components/CompanyNavbar";
 
 // =====================================================
 // USER PAGES
@@ -82,33 +81,18 @@ import TourDetailsPage from "./Pages/TourDetails";
 
 function App() {
 
-    /*
-     * Check which type of account is currently logged in.
-     *
-     * companyToken  -> Company account
-     * token         -> Normal user account
-     */
-
-    const companyToken =
-        localStorage.getItem("companyToken");
-
-    const userToken =
-        localStorage.getItem("token");
-
-
     return (
 
         <BrowserRouter>
 
             {/* =================================================
-                NAVBAR
+                MAIN NAVBAR
+
+                Navbar itself checks whether the logged-in
+                account is User or Company.
             ================================================= */}
 
-            {companyToken ? (
-                <CompanyNavbar />
-            ) : (
-                <Navbar />
-            )}
+            <Navbar />
 
 
             {/* =================================================
@@ -116,6 +100,7 @@ function App() {
             ================================================= */}
 
             <Routes>
+
 
                 {/* =================================================
                     PUBLIC USER ROUTES
@@ -197,7 +182,11 @@ function App() {
 
                 <Route
                     path="/create-post"
-                    element={<CreatePost />}
+                    element={
+                        <ProtectedRoute>
+                            <CreatePost />
+                        </ProtectedRoute>
+                    }
                 />
 
                 <Route
@@ -207,7 +196,11 @@ function App() {
 
                 <Route
                     path="/edit-post/:id"
-                    element={<EditPost />}
+                    element={
+                        <ProtectedRoute>
+                            <EditPost />
+                        </ProtectedRoute>
+                    }
                 />
 
 
@@ -217,12 +210,20 @@ function App() {
 
                 <Route
                     path="/trip-preview"
-                    element={<TripPreview />}
+                    element={
+                        <ProtectedRoute>
+                            <TripPreview />
+                        </ProtectedRoute>
+                    }
                 />
 
                 <Route
                     path="/trip-details/:id"
-                    element={<TripDetails />}
+                    element={
+                        <ProtectedRoute>
+                            <TripDetails />
+                        </ProtectedRoute>
+                    }
                 />
 
 
@@ -365,7 +366,7 @@ function App() {
 
 
                 {/* =================================================
-                    ADD TOUR
+                    COMPANY ADD TOUR
                 ================================================= */}
 
                 <Route
@@ -380,7 +381,7 @@ function App() {
 
                 {/* =================================================
                     EXPLORE TOURS
-                    PUBLIC PAGE
+                    PUBLIC
                 ================================================= */}
 
                 <Route
@@ -409,10 +410,12 @@ function App() {
 
 
             {/* =================================================
-                MOBILE NAV
+                MOBILE USER NAVIGATION
+
+                Company ला user mobile nav दाखवायचा नाही.
             ================================================= */}
 
-            {!companyToken && userToken && (
+            {!localStorage.getItem("companyToken") && (
                 <MobileBottomNav />
             )}
 

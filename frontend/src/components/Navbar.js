@@ -1,7 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 import "../Css/Navbar.css";
 import "../Css/Blog.css";
+
 import NotificationBell from "./NotificationBell";
 import ProfileSearch from "./ProfileSearch";
 
@@ -13,11 +15,30 @@ function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [showCreateChoice, setShowCreateChoice] = useState(false);
 
-    const token = localStorage.getItem("token");
+    // =====================================================
+    // AUTH DATA
+    // =====================================================
+
+    const token =
+        localStorage.getItem("token");
+
+    const companyToken =
+        localStorage.getItem("companyToken");
 
     const user = JSON.parse(
         localStorage.getItem("user") || "{}"
     );
+
+    const company = JSON.parse(
+        localStorage.getItem("company") || "{}"
+    );
+
+    const isCompanyLoggedIn =
+        !!companyToken;
+
+    const isUserLoggedIn =
+        !!token && !isCompanyLoggedIn;
+
 
     // =====================================================
     // SCROLL
@@ -26,7 +47,11 @@ function Navbar() {
     useEffect(() => {
 
         const handleScroll = () => {
-            setScrolled(window.scrollY > 50);
+
+            setScrolled(
+                window.scrollY > 50
+            );
+
         };
 
         window.addEventListener(
@@ -35,20 +60,22 @@ function Navbar() {
         );
 
         return () => {
+
             window.removeEventListener(
                 "scroll",
                 handleScroll
             );
+
         };
 
     }, []);
 
 
     // =====================================================
-    // LOGOUT
+    // USER LOGOUT
     // =====================================================
 
-    const logout = () => {
+    const logoutUser = () => {
 
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -59,22 +86,52 @@ function Navbar() {
 
 
     // =====================================================
-    // CHECK ACTIVE PATH
+    // COMPANY LOGOUT
     // =====================================================
 
-    const isActive = (path) => {
+    const logoutCompany = () => {
 
-        return (
-            location.pathname === path ||
-            location.pathname.startsWith(`${path}/`)
+        localStorage.removeItem(
+            "companyToken"
         );
+
+        localStorage.removeItem(
+            "company"
+        );
+
+        navigate("/login");
 
     };
 
 
+    // =====================================================
+    // ACTIVE LINK
+    // =====================================================
+
+    const isActive = (path) => {
+
+        if (path === "/") {
+
+            return location.pathname === "/";
+
+        }
+
+        return location.pathname.startsWith(path);
+
+    };
+
+
+    // =====================================================
+    // RENDER
+    // =====================================================
+
     return (
 
         <>
+
+            {/* =================================================
+                MAIN NAVBAR
+            ================================================= */}
 
             <nav
                 className={
@@ -101,26 +158,33 @@ function Navbar() {
 
 
                 {/* =================================================
-                    MAIN NAV LINKS
+                    NAVIGATION LINKS
                 ================================================= */}
 
                 <ul className="nav-links">
 
+                    {/* HOME */}
+
                     <li>
+
                         <Link
                             to="/"
                             className={
-                                location.pathname === "/"
+                                isActive("/")
                                     ? "active-link"
                                     : ""
                             }
                         >
                             Home
                         </Link>
+
                     </li>
 
 
+                    {/* AI PLANNER */}
+
                     <li>
+
                         <Link
                             to="/trip-planner"
                             className={
@@ -131,10 +195,14 @@ function Navbar() {
                         >
                             AI Planner
                         </Link>
+
                     </li>
 
 
+                    {/* COMMUNITY */}
+
                     <li>
+
                         <Link
                             to="/community"
                             className={
@@ -145,28 +213,14 @@ function Navbar() {
                         >
                             Community
                         </Link>
+
                     </li>
 
 
-                    {/* =================================================
-                        EXPLORE TOURS
-                    ================================================= */}
+                    {/* BLOG */}
 
                     <li>
-                        <Link
-                            to="/explore-tours"
-                            className={
-                                isActive("/explore-tours")
-                                    ? "active-link"
-                                    : ""
-                            }
-                        >
-                            Explore Tours
-                        </Link>
-                    </li>
 
-
-                    <li>
                         <Link
                             to="/blogs"
                             className={
@@ -177,10 +231,14 @@ function Navbar() {
                         >
                             Blog
                         </Link>
+
                     </li>
 
 
+                    {/* CONTACT */}
+
                     <li>
+
                         <Link
                             to="/contact"
                             className={
@@ -191,26 +249,157 @@ function Navbar() {
                         >
                             Contact
                         </Link>
+
+                    </li>
+
+
+                    {/* =================================================
+                        EXPLORE TOURS
+                    ================================================= */}
+
+                    <li>
+
+                        <Link
+                            to="/explore-tours"
+                            className={
+                                isActive("/explore-tours")
+                                    ? "active-link"
+                                    : ""
+                            }
+                        >
+                            Explore Tours
+                        </Link>
+
                     </li>
 
                 </ul>
 
 
                 {/* =================================================
-                    RIGHT SECTION
+                    RIGHT SIDE
                 ================================================= */}
 
                 <div className="nav-right">
 
-                    {token ? (
+
+                    {/* =================================================
+                        COMPANY LOGGED IN
+                    ================================================= */}
+
+                    {isCompanyLoggedIn ? (
 
                         <>
+
+                            {/* COMPANY DASHBOARD */}
+
+                            <Link
+                                to="/company/dashboard"
+                                className={
+                                    isActive(
+                                        "/company/dashboard"
+                                    )
+                                        ? "company-nav-link active"
+                                        : "company-nav-link"
+                                }
+                            >
+                                Dashboard
+                            </Link>
+
+
+                            {/* ADD TOUR */}
+
+                            <Link
+                                to="/company/add-tour"
+                                className="create-btn"
+                            >
+                                + Add Tour
+                            </Link>
+
+
+                            {/* MY TOURS */}
+
+                            <Link
+                                to="/company/dashboard"
+                                className={
+                                    isActive(
+                                        "/company/dashboard"
+                                    )
+                                        ? "company-nav-link"
+                                        : "company-nav-link"
+                                }
+                            >
+                                My Tours
+                            </Link>
+
+
+                            {/* COMPANY PROFILE */}
+
+                            <Link
+                                to="/company/profile"
+                                className="profile-box company-profile-box"
+                            >
+
+                                <div className="company-nav-avatar">
+                                    {company.logo ? (
+
+                                        <img
+                                            src={company.logo}
+                                            alt={
+                                                company.companyName ||
+                                                "Company"
+                                            }
+                                            className="company-nav-logo"
+                                        />
+
+                                    ) : (
+
+                                        <span>
+                                            🏢
+                                        </span>
+
+                                    )}
+                                </div>
+
+
+                                <div>
+
+                                    <h4>
+                                        {company.companyName ||
+                                            "Company"}
+                                    </h4>
+
+                                    <span>
+                                        Travel Company
+                                    </span>
+
+                                </div>
+
+                            </Link>
+
+
+                            {/* COMPANY LOGOUT */}
+
+                            <button
+                                className="logout-btn"
+                                onClick={logoutCompany}
+                            >
+                                Logout
+                            </button>
+
+                        </>
+
+                    ) : isUserLoggedIn ? (
+
+                        /* =================================================
+                            NORMAL USER LOGGED IN
+                        ================================================= */
+
+                        <>
+
                             <ProfileSearch />
 
 
-                            {/* =================================================
-                                CREATE
-                            ================================================= */}
+                            {/* CREATE */}
 
                             <button
                                 type="button"
@@ -223,16 +412,12 @@ function Navbar() {
                             </button>
 
 
-                            {/* =================================================
-                                NOTIFICATIONS
-                            ================================================= */}
+                            {/* NOTIFICATIONS */}
 
                             <NotificationBell />
 
 
-                            {/* =================================================
-                                USER PROFILE
-                            ================================================= */}
+                            {/* USER PROFILE */}
 
                             <Link
                                 to="/profile"
@@ -249,10 +434,12 @@ function Navbar() {
                                     className="profile-img"
                                 />
 
+
                                 <div>
 
                                     <h4>
-                                        {user.firstName}
+                                        {user.firstName ||
+                                            "User"}
                                     </h4>
 
                                     <span>
@@ -264,13 +451,11 @@ function Navbar() {
                             </Link>
 
 
-                            {/* =================================================
-                                LOGOUT
-                            ================================================= */}
+                            {/* USER LOGOUT */}
 
                             <button
                                 className="logout-btn"
-                                onClick={logout}
+                                onClick={logoutUser}
                             >
                                 Logout
                             </button>
@@ -279,7 +464,12 @@ function Navbar() {
 
                     ) : (
 
+                        /* =================================================
+                            LOGGED OUT
+                        ================================================= */
+
                         <>
+
                             <Link
                                 to="/login"
                                 className="login-btn"
@@ -287,12 +477,14 @@ function Navbar() {
                                 Login
                             </Link>
 
+
                             <Link
                                 to="/register"
                                 className="register-btn"
                             >
                                 Register
                             </Link>
+
                         </>
 
                     )}
@@ -302,11 +494,12 @@ function Navbar() {
             </nav>
 
 
-            {/* =====================================================
+            {/* =================================================
                 CREATE CHOICE MODAL
-            ===================================================== */}
+                USER ONLY
+            ================================================= */}
 
-            {showCreateChoice && (
+            {showCreateChoice && isUserLoggedIn && (
 
                 <div
                     className="create-choice-overlay"
@@ -326,22 +519,27 @@ function Navbar() {
                             What would you like to create?
                         </h3>
 
+
                         <p>
-                            Share a quick travel moment, or write a
-                            full story for the TravelMet magazine.
+                            Share a quick travel moment, or
+                            write a full story for the
+                            TravelMet magazine.
                         </p>
 
 
                         <div className="create-choice-options">
 
-                            {/* ================= POST ================= */}
+
+                            {/* CREATE POST */}
 
                             <button
                                 type="button"
                                 className="create-choice-option"
                                 onClick={() => {
 
-                                    setShowCreateChoice(false);
+                                    setShowCreateChoice(
+                                        false
+                                    );
 
                                     navigate(
                                         "/create-post"
@@ -354,6 +552,7 @@ function Navbar() {
                                     📷
                                 </span>
 
+
                                 <span className="create-choice-text">
 
                                     <strong>
@@ -361,8 +560,9 @@ function Navbar() {
                                     </strong>
 
                                     <span className="create-choice-sub">
-                                        Share a photo &amp; quick update
-                                        to the community feed
+                                        Share a photo &amp;
+                                        quick update to the
+                                        community feed
                                     </span>
 
                                 </span>
@@ -370,14 +570,16 @@ function Navbar() {
                             </button>
 
 
-                            {/* ================= BLOG ================= */}
+                            {/* CREATE BLOG */}
 
                             <button
                                 type="button"
                                 className="create-choice-option"
                                 onClick={() => {
 
-                                    setShowCreateChoice(false);
+                                    setShowCreateChoice(
+                                        false
+                                    );
 
                                     navigate(
                                         "/create-blog"
@@ -390,6 +592,7 @@ function Navbar() {
                                     📝
                                 </span>
 
+
                                 <span className="create-choice-text">
 
                                     <strong>
@@ -397,8 +600,9 @@ function Navbar() {
                                     </strong>
 
                                     <span className="create-choice-sub">
-                                        Publish a full travel story to
-                                        the TravelMet magazine
+                                        Publish a full travel
+                                        story to the TravelMet
+                                        magazine
                                     </span>
 
                                 </span>
@@ -407,6 +611,8 @@ function Navbar() {
 
                         </div>
 
+
+                        {/* CANCEL */}
 
                         <button
                             type="button"
