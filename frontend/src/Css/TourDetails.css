@@ -74,8 +74,8 @@
 }
 
 .tour-details-hero-placeholder p {
-    font-size: 18px;
     margin-top: 10px;
+    font-size: 18px;
 }
 
 .tour-details-hero-overlay {
@@ -114,9 +114,14 @@
 
 .tour-details-hero-content p {
     margin-top: 15px;
-    font-size: 17px;
     color: #eeeeee;
+    font-size: 17px;
 }
+
+
+/* =====================================================
+   STATUS BADGE
+===================================================== */
 
 .tour-details-status {
     position: absolute;
@@ -129,6 +134,7 @@
     font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 }
 
 .tour-details-status.cancelled {
@@ -170,8 +176,8 @@
 
 .tour-section-heading h2 {
     margin: 0;
-    font-size: 27px;
     color: #17202a;
+    font-size: 27px;
 }
 
 
@@ -188,8 +194,8 @@
 }
 
 .tour-full-description {
-    margin: 25px 0 32px;
     max-width: 900px;
+    margin: 25px 0 32px;
     color: #5f6368;
     font-size: 16px;
     line-height: 1.8;
@@ -270,10 +276,10 @@
 .tour-company-logo {
     width: 70px;
     height: 70px;
-    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
     border-radius: 15px;
     background: #f2f3f5;
     font-size: 32px;
@@ -314,6 +320,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     border-radius: 10px;
     background: #f6f6f6;
 }
@@ -332,6 +339,7 @@
     color: #343a40;
     font-size: 14px;
     line-height: 1.5;
+    word-break: break-word;
 }
 
 .tour-company-website {
@@ -409,16 +417,163 @@
     line-height: 1.5;
 }
 
-.tour-book-btn,
-.tour-book-disabled {
+
+/* =====================================================
+   TRAVELER CAPACITY
+===================================================== */
+
+.tour-capacity-box {
+    margin-top: 22px;
+    padding: 18px;
+    border: 1px solid #e8eaed;
+    border-radius: 13px;
+    background: #fafbfc;
+}
+
+
+/* HEADER */
+
+.tour-capacity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.tour-capacity-title {
+    color: #555b63;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.tour-capacity-count {
+    color: #17202a;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+/* PROGRESS */
+
+.tour-capacity-progress {
     width: 100%;
-    margin-top: 10px;
+    height: 8px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #e8eaed;
+}
+
+.tour-capacity-progress-bar {
+    height: 100%;
+    border-radius: inherit;
+    background: #17202a;
+    transition: width 0.4s ease;
+}
+
+
+/* CAPACITY INFO */
+
+.tour-capacity-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.tour-capacity-info span {
+    color: #777e87;
+    font-size: 12px;
+}
+
+.tour-capacity-info strong {
+    color: #197a46;
+    font-size: 12px;
+}
+
+
+/* FULL */
+
+.tour-capacity-box.full {
+    border-color: #f1d1d1;
+    background: #fff7f7;
+}
+
+.tour-capacity-box.full .tour-capacity-progress-bar {
+    background: #c0392b;
+}
+
+.tour-capacity-box.full .tour-capacity-info strong {
+    color: #b42318;
+}
+
+
+/* LOW SEATS */
+
+.tour-capacity-box.low-seats {
+    border-color: #eadfca;
+    background: #fffaf1;
+}
+
+.tour-capacity-box.low-seats .tour-capacity-progress-bar {
+    background: #b4863d;
+}
+
+.tour-capacity-box.low-seats .tour-capacity-info strong {
+    color: #9a6b24;
+}
+
+
+/* =====================================================
+   BOOKING STATUS MESSAGE
+===================================================== */
+
+.tour-booking-status {
+    margin-top: 18px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.tour-booking-status.success {
+    border: 1px solid #cdebd8;
+    background: #f1fbf5;
+    color: #176b3a;
+}
+
+.tour-booking-status.warning {
+    border: 1px solid #eadfca;
+    background: #fffaf1;
+    color: #916b2f;
+}
+
+.tour-booking-status.error {
+    border: 1px solid #f0cccc;
+    background: #fff5f5;
+    color: #a32117;
+}
+
+
+/* =====================================================
+   BOOK / CANCEL BUTTONS
+===================================================== */
+
+.tour-book-btn,
+.tour-book-disabled,
+.tour-cancel-btn {
+    width: 100%;
+    margin-top: 18px;
     padding: 15px;
     border: none;
     border-radius: 11px;
     font-size: 15px;
     font-weight: 700;
 }
+
+
+/* BOOK */
 
 .tour-book-btn {
     background: #17202a;
@@ -432,10 +587,42 @@
     transform: translateY(-1px);
 }
 
+.tour-book-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
+}
+
+
+/* CANCEL */
+
+.tour-cancel-btn {
+    background: #fff1f1;
+    color: #b42318;
+    border: 1px solid #f0cccc;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.tour-cancel-btn:hover {
+    background: #ffe4e4;
+}
+
+
+/* DISABLED */
+
 .tour-book-disabled {
     background: #e9ecef;
     color: #888;
     cursor: not-allowed;
+}
+
+
+/* FULL TOUR */
+
+.tour-book-disabled.full {
+    background: #f8dddd;
+    color: #a32117;
 }
 
 
@@ -454,8 +641,8 @@
 .tour-company-description p {
     margin: 20px 0 0;
     color: #626870;
-    line-height: 1.8;
     font-size: 15px;
+    line-height: 1.8;
 }
 
 
@@ -494,6 +681,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 30px;
     text-align: center;
 }
 
@@ -534,13 +722,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
     padding: 30px;
+    text-align: center;
 }
 
 .tour-error-icon {
-    font-size: 50px;
     margin-bottom: 15px;
+    font-size: 50px;
 }
 
 .tour-details-error-page h2 {
@@ -561,11 +749,17 @@
     color: #ffffff;
     font-weight: 600;
     cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.tour-details-error-page button:hover {
+    background: #000000;
+    transform: translateY(-1px);
 }
 
 
 /* =====================================================
-   RESPONSIVE
+   RESPONSIVE - TABLET
 ===================================================== */
 
 @media (max-width: 900px) {
@@ -589,11 +783,18 @@
 }
 
 
+/* =====================================================
+   RESPONSIVE - MOBILE
+===================================================== */
+
 @media (max-width: 600px) {
 
     .tour-details-topbar {
         padding: 18px 5%;
     }
+
+
+    /* HERO */
 
     .tour-details-hero {
         height: 370px;
@@ -620,10 +821,16 @@
         font-size: 11px;
     }
 
+
+    /* CONTAINER */
+
     .tour-details-container {
         width: 92%;
         padding: 30px 0;
     }
+
+
+    /* CARDS */
 
     .tour-overview-card,
     .tour-company-card,
@@ -632,22 +839,90 @@
         padding: 24px;
     }
 
+
+    /* INFO */
+
     .tour-info-grid {
         grid-template-columns: 1fr;
     }
+
+
+    /* HEADINGS */
 
     .tour-section-heading h2 {
         font-size: 23px;
     }
 
+
+    /* PRICE */
+
     .tour-price {
         font-size: 35px;
     }
 
-    .tour-details-footer {
-        flex-direction: column;
+
+    /* COMPANY */
+
+    .tour-company-header {
         align-items: flex-start;
+    }
+
+    .tour-company-logo {
+        width: 60px;
+        height: 60px;
+        flex-shrink: 0;
+    }
+
+
+    /* CAPACITY */
+
+    .tour-capacity-box {
+        padding: 15px;
+    }
+
+    .tour-capacity-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .tour-capacity-info {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+
+    /* FOOTER */
+
+    .tour-details-footer {
+        align-items: flex-start;
+        flex-direction: column;
         gap: 8px;
+    }
+
+}
+
+
+/* =====================================================
+   VERY SMALL MOBILE
+===================================================== */
+
+@media (max-width: 380px) {
+
+    .tour-details-hero-content h1 {
+        font-size: 26px;
+    }
+
+    .tour-price {
+        font-size: 31px;
+    }
+
+    .tour-overview-card,
+    .tour-company-card,
+    .tour-booking-card,
+    .tour-company-description {
+        padding: 20px;
     }
 
 }

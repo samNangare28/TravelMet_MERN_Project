@@ -1,0 +1,451 @@
+.edit-tour-page {
+    min-height: 100vh;
+    background: #f7f8fa;
+    padding-bottom: 80px;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.edit-tour-header {
+    background: linear-gradient(
+        135deg,
+        #111827,
+        #1f2937
+    );
+    color: white;
+    padding: 55px 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.edit-tour-eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    opacity: .7;
+    margin-bottom: 12px;
+}
+
+.edit-tour-header h1 {
+    margin: 0;
+    font-size: 42px;
+    font-weight: 800;
+}
+
+.edit-tour-header p {
+    max-width: 620px;
+    margin: 12px 0 0;
+    line-height: 1.7;
+    color: #d1d5db;
+}
+
+.back-dashboard-btn {
+    border: 1px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.08);
+    color: white;
+    padding: 13px 22px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: .25s;
+}
+
+.back-dashboard-btn:hover {
+    background: white;
+    color: #111827;
+}
+
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+.edit-tour-container {
+    width: min(1000px, 92%);
+    margin: 40px auto;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.edit-tour-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, .05);
+}
+
+.edit-tour-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.edit-tour-card-heading > span {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #475569;
+}
+
+.edit-tour-card-heading small {
+    display: block;
+    color: #9ca3af;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.edit-tour-card-heading h2 {
+    margin: 4px 0 0;
+    font-size: 22px;
+    color: #111827;
+}
+
+
+/* =====================================================
+   FORM GRID
+===================================================== */
+
+.edit-tour-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+}
+
+.edit-tour-field {
+    position: relative;
+}
+
+.edit-tour-field.full {
+    grid-column: 1 / -1;
+}
+
+.edit-tour-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.edit-tour-field input,
+.edit-tour-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #dbe0e6;
+    background: #fafafa;
+    border-radius: 12px;
+    padding: 14px 15px;
+    font-size: 14px;
+    color: #111827;
+    outline: none;
+    transition: .2s;
+    font-family: inherit;
+}
+
+.edit-tour-field textarea {
+    resize: vertical;
+    min-height: 140px;
+}
+
+.edit-tour-field input:focus,
+.edit-tour-field textarea:focus {
+    border-color: #111827;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, .06);
+}
+
+.character-count {
+    position: absolute;
+    right: 8px;
+    bottom: -20px;
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.edit-tour-status-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.status-option {
+    border: 1px solid #e5e7eb;
+    border-radius: 15px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.status-option:hover {
+    border-color: #9ca3af;
+}
+
+.status-option.selected {
+    border-color: #111827;
+    background: #f8fafc;
+}
+
+.status-option input {
+    display: none;
+}
+
+.status-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+}
+
+.status-option strong {
+    display: block;
+    font-size: 14px;
+    color: #111827;
+}
+
+.status-option small {
+    display: block;
+    margin-top: 4px;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+
+/* =====================================================
+   MESSAGES
+===================================================== */
+
+.edit-tour-error,
+.edit-tour-success {
+    border-radius: 12px;
+    padding: 14px 17px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.edit-tour-error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.edit-tour-success {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.edit-tour-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+}
+
+.edit-tour-cancel,
+.edit-tour-save {
+    border: none;
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.edit-tour-cancel {
+    background: white;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+
+.edit-tour-cancel:hover {
+    background: #f3f4f6;
+}
+
+.edit-tour-save {
+    background: #111827;
+    color: white;
+}
+
+.edit-tour-save:hover {
+    background: #000;
+    transform: translateY(-1px);
+}
+
+.edit-tour-save:disabled,
+.edit-tour-cancel:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.edit-tour-loading {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.edit-tour-loader {
+    width: 42px;
+    height: 42px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #111827;
+    border-radius: 50%;
+    animation: editTourSpin .8s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes editTourSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.edit-tour-loading h3 {
+    margin: 0;
+    color: #111827;
+}
+
+.edit-tour-loading p {
+    color: #6b7280;
+}
+
+
+/* =====================================================
+   ERROR PAGE
+===================================================== */
+
+.edit-tour-error-page {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+}
+
+.edit-tour-error-page > div {
+    font-size: 45px;
+}
+
+.edit-tour-error-page h2 {
+    margin: 15px 0 8px;
+}
+
+.edit-tour-error-page p {
+    color: #6b7280;
+}
+
+.edit-tour-error-page button {
+    margin-top: 15px;
+    border: none;
+    background: #111827;
+    color: white;
+    padding: 13px 22px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 800px) {
+
+    .edit-tour-header {
+        padding: 40px 5%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .edit-tour-header h1 {
+        font-size: 34px;
+    }
+
+    .edit-tour-container {
+        width: 94%;
+        margin-top: 25px;
+    }
+
+    .edit-tour-card {
+        padding: 22px;
+    }
+
+    .edit-tour-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-tour-field.full {
+        grid-column: auto;
+    }
+
+    .edit-tour-status-options {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .edit-tour-header h1 {
+        font-size: 30px;
+    }
+
+    .edit-tour-card-heading h2 {
+        font-size: 19px;
+    }
+
+    .edit-tour-actions {
+        flex-direction: column-reverse;
+    }
+
+    .edit-tour-cancel,
+    .edit-tour-save {
+        width: 100%;
+    }
+
+}

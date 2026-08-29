@@ -1468,3 +1468,350 @@
     }
 
 }
+/* =====================================================
+   TOUR BOOKING CAPACITY
+===================================================== */
+
+.tour-booking-capacity {
+    margin-top: 18px;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #eceef0;
+    border-radius: 12px;
+}
+
+.tour-booking-capacity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.tour-booking-capacity-header span {
+    color: #737982;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+}
+
+.tour-booking-capacity-header strong {
+    font-size: 12px;
+}
+
+.booking-available {
+    color: #197a46;
+}
+
+.booking-full {
+    color: #b42318;
+}
+
+
+/* =====================================================
+   BOOKING PROGRESS
+===================================================== */
+
+.tour-booking-progress {
+    width: 100%;
+    height: 7px;
+    overflow: hidden;
+    background: #e4e7eb;
+    border-radius: 20px;
+}
+
+.tour-booking-progress-bar {
+    height: 100%;
+    min-width: 0;
+    background: #17202a;
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+.tour-booking-count {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+
+.tour-booking-count span {
+    color: #777e87;
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   VIEW BOOKINGS BUTTON
+===================================================== */
+
+.tour-bookings-toggle-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 11px 14px;
+    border: 1px solid #dfe2e5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #30343a;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tour-bookings-toggle-btn:hover {
+    background: #f5f6f7;
+    border-color: #c9cdd2;
+    transform: translateY(-1px);
+}
+
+.tour-bookings-toggle-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* =====================================================
+   BOOKINGS PANEL
+===================================================== */
+
+.tour-bookings-panel {
+    margin-top: 14px;
+    padding: 18px;
+    background: #fafafa;
+    border: 1px solid #e5e7ea;
+    border-radius: 13px;
+    animation: bookingPanelOpen 0.25s ease;
+}
+
+@keyframes bookingPanelOpen {
+
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* =====================================================
+   BOOKING SUMMARY
+===================================================== */
+
+.tour-bookings-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.tour-bookings-summary > div {
+    padding: 12px 8px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #eceef0;
+    border-radius: 9px;
+}
+
+.tour-bookings-summary span {
+    display: block;
+    margin-bottom: 5px;
+    color: #8a8f97;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.tour-bookings-summary strong {
+    display: block;
+    color: #22272b;
+    font-size: 17px;
+}
+
+
+/* =====================================================
+   REGISTERED TRAVELERS
+===================================================== */
+
+.tour-bookings-list h4 {
+    margin: 0 0 12px;
+    color: #292e33;
+    font-size: 14px;
+}
+
+.tour-booking-user {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.tour-booking-user:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.tour-booking-user-avatar {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: #eceff1;
+    font-size: 17px;
+}
+
+.tour-booking-user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tour-booking-user-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.tour-booking-user-info strong {
+    display: block;
+    overflow: hidden;
+    color: #252a2f;
+    font-size: 13px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tour-booking-user-info span {
+    display: block;
+    overflow: hidden;
+    margin-top: 2px;
+    color: #777e87;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tour-booking-user-info small {
+    display: block;
+    margin-top: 2px;
+    color: #969ba2;
+    font-size: 10px;
+}
+
+.tour-booking-confirmed {
+    flex-shrink: 0;
+    padding: 5px 8px;
+    border-radius: 20px;
+    background: #edf8f1;
+    color: #197a46;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+
+/* =====================================================
+   NO BOOKINGS
+===================================================== */
+
+.no-tour-bookings {
+    padding: 18px 8px;
+    text-align: center;
+}
+
+.no-tour-bookings > span {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 25px;
+}
+
+.no-tour-bookings p {
+    margin: 0;
+    color: #858b92;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   SMALL LOADER
+===================================================== */
+
+.tour-booking-small-loader {
+    width: 25px;
+    height: 25px;
+    margin: 0 auto 10px;
+    border: 3px solid #e4e7eb;
+    border-top-color: #30343a;
+    border-radius: 50%;
+    animation: bookingSpin 0.7s linear infinite;
+}
+
+@keyframes bookingSpin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =====================================================
+   BOOKING STAT CARD
+===================================================== */
+
+.dashboard-stat-card.bookings .dashboard-stat-icon {
+    font-size: 22px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .tour-bookings-summary {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .tour-bookings-summary strong {
+        font-size: 15px;
+    }
+
+    .tour-booking-user {
+        align-items: flex-start;
+    }
+
+    .tour-booking-confirmed {
+        font-size: 8px;
+        padding: 4px 6px;
+    }
+
+}
+
+@media (max-width: 420px) {
+
+    .tour-bookings-panel {
+        padding: 13px;
+    }
+
+    .tour-booking-user-info span {
+        max-width: 130px;
+    }
+
+    .tour-booking-confirmed {
+        display: none;
+    }
+
+}

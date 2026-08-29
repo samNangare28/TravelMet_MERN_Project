@@ -38,6 +38,19 @@ function CompanyDashboard() {
     const [error, setError] =
         useState("");
 
+    // =====================================================
+    // BOOKING STATES
+    // =====================================================
+
+    const [bookingData, setBookingData] =
+        useState({});
+
+    const [bookingLoading, setBookingLoading] =
+        useState("");
+
+    const [expandedTour, setExpandedTour] =
+        useState("");
+
 
     // =====================================================
     // FETCH COMPANY TOURS
@@ -112,6 +125,83 @@ function CompanyDashboard() {
 
 
     // =====================================================
+    // FETCH BOOKINGS FOR TOUR
+    // =====================================================
+
+    const fetchTourBookings = async (tourId) => {
+
+        try {
+
+            setBookingLoading(tourId);
+
+            const response = await api.get(
+                `/api/tours/${tourId}/bookings`,
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${companyToken}`
+                    }
+                }
+            );
+
+            if (response.data.success) {
+
+                setBookingData(
+                    (current) => ({
+                        ...current,
+                        [tourId]: response.data
+                    })
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "FETCH TOUR BOOKINGS ERROR:",
+                error
+            );
+
+            alert(
+                error.response?.data?.message ||
+                "Unable to fetch tour bookings."
+            );
+
+        } finally {
+
+            setBookingLoading("");
+
+        }
+
+    };
+
+
+    // =====================================================
+    // TOGGLE BOOKINGS
+    // =====================================================
+
+    const handleViewBookings = async (tourId) => {
+
+        // Close if already open
+
+        if (expandedTour === tourId) {
+
+            setExpandedTour("");
+
+            return;
+
+        }
+
+        setExpandedTour(tourId);
+
+        // Fetch fresh booking data
+
+        await fetchTourBookings(tourId);
+
+    };
+
+
+    // =====================================================
     // REMOVE EXPIRED TOURS FROM DISPLAY
     // =====================================================
 
@@ -177,6 +267,18 @@ function CompanyDashboard() {
 
 
     // =====================================================
+    // TOTAL BOOKINGS
+    // =====================================================
+
+    const totalBookings =
+        Object.values(bookingData).reduce(
+            (total, data) =>
+                total + Number(data?.count || 0),
+            0
+        );
+
+
+    // =====================================================
     // DELETE TOUR
     // =====================================================
 
@@ -216,6 +318,30 @@ function CompanyDashboard() {
                             tour._id !== tourId
                     )
             );
+
+
+            // Remove booking data also
+
+            setBookingData(
+                (current) => {
+
+                    const updated = {
+                        ...current
+                    };
+
+                    delete updated[tourId];
+
+                    return updated;
+
+                }
+            );
+
+
+            if (expandedTour === tourId) {
+
+                setExpandedTour("");
+
+            }
 
 
         } catch (error) {
@@ -380,10 +506,12 @@ function CompanyDashboard() {
             <div className="company-dashboard-status">
 
                 <div className="dashboard-status-icon">
+
                     {company.verificationStatus ===
                         "verified"
                         ? "✓"
                         : "⏳"}
+
                 </div>
 
                 <div>
@@ -532,6 +660,35 @@ function CompanyDashboard() {
 
                 </div>
 
+
+                {/* =================================================
+                    TOTAL BOOKINGS
+                ================================================= */}
+
+                <div className="dashboard-stat-card bookings">
+
+                    <div className="dashboard-stat-icon">
+                        👥
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Bookings
+                        </span>
+
+                        <strong>
+                            {totalBookings}
+                        </strong>
+
+                        <small>
+                            Loaded tour registrations
+                        </small>
+
+                    </div>
+
+                </div>
+
             </section>
 
 
@@ -569,6 +726,7 @@ function CompanyDashboard() {
                             )
                         }
                     >
+
                         <span>
                             +
                         </span>
@@ -624,239 +782,561 @@ function CompanyDashboard() {
                     <div className="company-tour-grid">
 
                         {visibleTours.map(
-                            (tour) => (
+                            (tour) => {
 
-                                <article
-                                    className="company-tour-card"
-                                    key={tour._id}
-                                >
+                                const currentBooking =
+                                    bookingData[tour._id];
 
-                                    {/* =========================
-                                        IMAGE
-                                    ========================= */}
+                                const bookedTravelers =
+                                    currentBooking?.count || 0;
 
-                                    <div className="company-tour-image-wrapper">
+                                const maxTravelers =
+                                    currentBooking?.maxTravelers ||
+                                    tour.maxTravelers ||
+                                    0;
 
-                                        {tour.image ? (
+                                const remainingTravelers =
+                                    currentBooking
+                                        ? currentBooking.remainingTravelers
+                                        : maxTravelers;
 
-                                            <img
-                                                src={tour.image}
-                                                alt={tour.title}
-                                                className="company-tour-image"
-                                            />
-
-                                        ) : (
-
-                                            <div className="company-tour-image-placeholder">
-
-                                                <span>
-                                                    ✈️
-                                                </span>
-
-                                                <small>
-                                                    TravelMet Tour
-                                                </small>
-
-                                            </div>
-
-                                        )}
+                                const isFull =
+                                    currentBooking
+                                        ? currentBooking.tourCapacity?.isFull ||
+                                          remainingTravelers === 0
+                                        : false;
 
 
-                                        <span
-                                            className={
-                                                `tour-status-badge ${
-                                                    tour.status ||
-                                                    "active"
-                                                }`
-                                            }
-                                        >
+                                return (
 
-                                            {tour.status ===
-                                                "cancelled"
-                                                ? "Cancelled"
-                                                : tour.status ===
-                                                    "completed"
-                                                    ? "Completed"
-                                                    : "Active"}
+                                    <article
+                                        className="company-tour-card"
+                                        key={tour._id}
+                                    >
 
-                                        </span>
+                                        {/* =========================
+                                            IMAGE
+                                        ========================= */}
 
-                                    </div>
+                                        <div className="company-tour-image-wrapper">
+
+                                            {tour.image ? (
+
+                                                <img
+                                                    src={tour.image}
+                                                    alt={tour.title}
+                                                    className="company-tour-image"
+                                                />
+
+                                            ) : (
+
+                                                <div className="company-tour-image-placeholder">
+
+                                                    <span>
+                                                        ✈️
+                                                    </span>
+
+                                                    <small>
+                                                        TravelMet Tour
+                                                    </small>
+
+                                                </div>
+
+                                            )}
 
 
-                                    {/* =========================
-                                        CONTENT
-                                    ========================= */}
+                                            <span
+                                                className={
+                                                    `tour-status-badge ${
+                                                        tour.status ||
+                                                        "active"
+                                                    }`
+                                                }
+                                            >
 
-                                    <div className="company-tour-content">
+                                                {tour.status ===
+                                                    "cancelled"
+                                                    ? "Cancelled"
+                                                    : tour.status ===
+                                                        "completed"
+                                                        ? "Completed"
+                                                        : "Active"}
 
-                                        <span className="tour-destination">
-                                            📍 {tour.destination}
-                                        </span>
+                                            </span>
+
+                                        </div>
 
 
-                                        <h3>
-                                            {tour.title}
-                                        </h3>
+                                        {/* =========================
+                                            CONTENT
+                                        ========================= */}
+
+                                        <div className="company-tour-content">
+
+                                            <span className="tour-destination">
+                                                📍 {tour.destination}
+                                            </span>
 
 
-                                        <p className="tour-description">
+                                            <h3>
+                                                {tour.title}
+                                            </h3>
 
-                                            {tour.description?.length >
-                                                120
-                                                ? `${tour.description.substring(
-                                                    0,
+
+                                            <p className="tour-description">
+
+                                                {tour.description?.length >
                                                     120
-                                                )}...`
-                                                : tour.description}
+                                                    ? `${tour.description.substring(
+                                                        0,
+                                                        120
+                                                    )}...`
+                                                    : tour.description}
 
-                                        </p>
+                                            </p>
 
 
-                                        {/* =========================
-                                            DATE
-                                        ========================= */}
+                                            {/* =========================
+                                                DATE
+                                            ========================= */}
 
-                                        <div className="tour-info-row">
+                                            <div className="tour-info-row">
 
-                                            <div>
+                                                <div>
+
+                                                    <span>
+                                                        DEPARTURE
+                                                    </span>
+
+                                                    <strong>
+                                                        {formatDate(
+                                                            tour.startDate
+                                                        )}
+                                                    </strong>
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <span>
+                                                        RETURN
+                                                    </span>
+
+                                                    <strong>
+                                                        {formatDate(
+                                                            tour.endDate
+                                                        )}
+                                                    </strong>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            {/* =========================
+                                                TOUR META
+                                            ========================= */}
+
+                                            <div className="tour-meta-row">
 
                                                 <span>
-                                                    DEPARTURE
+                                                    ⏱{" "}
+                                                    {tour.duration}{" "}
+                                                    {tour.duration === 1
+                                                        ? "Day"
+                                                        : "Days"}
                                                 </span>
-
-                                                <strong>
-                                                    {formatDate(
-                                                        tour.startDate
-                                                    )}
-                                                </strong>
-
-                                            </div>
-
-
-                                            <div>
 
                                                 <span>
-                                                    RETURN
+                                                    👥{" "}
+                                                    {tour.maxTravelers}{" "}
+                                                    Travelers
                                                 </span>
 
-                                                <strong>
-                                                    {formatDate(
-                                                        tour.endDate
+                                            </div>
+
+
+                                            {/* =========================
+                                                BOOKING CAPACITY
+                                            ========================= */}
+
+                                            <div className="tour-booking-capacity">
+
+                                                <div className="tour-booking-capacity-header">
+
+                                                    <span>
+                                                        TOUR BOOKINGS
+                                                    </span>
+
+                                                    {currentBooking && (
+
+                                                        <strong
+                                                            className={
+                                                                isFull
+                                                                    ? "booking-full"
+                                                                    : "booking-available"
+                                                            }
+                                                        >
+                                                            {isFull
+                                                                ? "FULL"
+                                                                : `${remainingTravelers} seats left`}
+                                                        </strong>
+
                                                     )}
-                                                </strong>
+
+                                                </div>
+
+
+                                                <div className="tour-booking-progress">
+
+                                                    <div
+                                                        className="tour-booking-progress-bar"
+                                                        style={{
+                                                            width:
+                                                                `${Math.min(
+                                                                    (
+                                                                        bookedTravelers /
+                                                                        Math.max(
+                                                                            maxTravelers,
+                                                                            1
+                                                                        )
+                                                                    ) *
+                                                                    100,
+                                                                    100
+                                                                )}%`
+                                                        }}
+                                                    ></div>
+
+                                                </div>
+
+
+                                                <div className="tour-booking-count">
+
+                                                    <span>
+                                                        {bookedTravelers} booked
+                                                    </span>
+
+                                                    <span>
+                                                        {maxTravelers} max
+                                                    </span>
+
+                                                </div>
 
                                             </div>
 
-                                        </div>
 
+                                            {/* =========================
+                                                PRICE
+                                            ========================= */}
 
-                                        {/* =========================
-                                            TOUR META
-                                        ========================= */}
+                                            <div className="tour-price-row">
 
-                                        <div className="tour-meta-row">
+                                                <div>
 
-                                            <span>
-                                                ⏱{" "}
-                                                {tour.duration}{" "}
-                                                {tour.duration === 1
-                                                    ? "Day"
-                                                    : "Days"}
-                                            </span>
+                                                    <small>
+                                                        Starting from
+                                                    </small>
 
-                                            <span>
-                                                👥{" "}
-                                                {tour.maxTravelers}{" "}
-                                                Travelers
-                                            </span>
+                                                    <strong>
+                                                        ₹
+                                                        {Number(
+                                                            tour.price || 0
+                                                        ).toLocaleString(
+                                                            "en-IN"
+                                                        )}
+                                                    </strong>
 
-                                        </div>
-
-
-                                        {/* =========================
-                                            PRICE
-                                        ========================= */}
-
-                                        <div className="tour-price-row">
-
-                                            <div>
-
-                                                <small>
-                                                    Starting from
-                                                </small>
-
-                                                <strong>
-                                                    ₹
-                                                    {Number(
-                                                        tour.price || 0
-                                                    ).toLocaleString(
-                                                        "en-IN"
-                                                    )}
-                                                </strong>
+                                                </div>
 
                                             </div>
 
-                                        </div>
+
+                                            {/* =========================
+                                                ACTIONS
+                                            ========================= */}
+
+                                            <div className="company-tour-actions">
+
+                                                <button
+                                                    className="tour-view-btn"
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/tour/${tour._id}`
+                                                        )
+                                                    }
+                                                >
+                                                    View Tour
+                                                </button>
 
 
-                                        {/* =========================
-                                            ACTIONS
-                                        ========================= */}
+                                                <button
+                                                    className="tour-edit-btn"
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/company/edit-tour/${tour._id}`
+                                                        )
+                                                    }
+                                                >
+                                                    Edit
+                                                </button>
 
-                                        <div className="company-tour-actions">
+
+                                                <button
+                                                    className="tour-delete-btn"
+                                                    onClick={() =>
+                                                        handleDeleteTour(
+                                                            tour._id
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        deleteLoading ===
+                                                        tour._id
+                                                    }
+                                                >
+
+                                                    {deleteLoading ===
+                                                        tour._id
+                                                        ? "..."
+                                                        : "Delete"}
+
+                                                </button>
+
+                                            </div>
+
+
+                                            {/* =========================
+                                                BOOKINGS BUTTON
+                                            ========================= */}
 
                                             <button
-                                                className="tour-view-btn"
+                                                className="tour-bookings-toggle-btn"
                                                 onClick={() =>
-                                                    navigate(
-                                                        `/tour/${tour._id}`
-                                                    )
-                                                }
-                                            >
-                                                View Tour
-                                            </button>
-
-
-                                            <button
-                                                className="tour-edit-btn"
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/company/edit-tour/${tour._id}`
-                                                    )
-                                                }
-                                            >
-                                                Edit
-                                            </button>
-
-
-                                            <button
-                                                className="tour-delete-btn"
-                                                onClick={() =>
-                                                    handleDeleteTour(
+                                                    handleViewBookings(
                                                         tour._id
                                                     )
                                                 }
                                                 disabled={
-                                                    deleteLoading ===
+                                                    bookingLoading ===
                                                     tour._id
                                                 }
                                             >
 
-                                                {deleteLoading ===
+                                                {bookingLoading ===
                                                     tour._id
-                                                    ? "..."
-                                                    : "Delete"}
+                                                    ? "Loading Bookings..."
+                                                    : expandedTour ===
+                                                        tour._id
+                                                        ? "▲ Hide Bookings"
+                                                        : "👥 View Bookings"}
 
                                             </button>
 
+
+                                            {/* =========================
+                                                BOOKINGS PANEL
+                                            ========================= */}
+
+                                            {expandedTour ===
+                                                tour._id && (
+
+                                                <div className="tour-bookings-panel">
+
+                                                    {currentBooking ? (
+
+                                                        <>
+
+                                                            <div className="tour-bookings-summary">
+
+                                                                <div>
+
+                                                                    <span>
+                                                                        BOOKED
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {
+                                                                            currentBooking.count
+                                                                        }
+                                                                    </strong>
+
+                                                                </div>
+
+
+                                                                <div>
+
+                                                                    <span>
+                                                                        REMAINING
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {
+                                                                            currentBooking.remainingTravelers
+                                                                        }
+                                                                    </strong>
+
+                                                                </div>
+
+
+                                                                <div>
+
+                                                                    <span>
+                                                                        CAPACITY
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {
+                                                                            currentBooking.maxTravelers
+                                                                        }
+                                                                    </strong>
+
+                                                                </div>
+
+                                                            </div>
+
+
+                                                            {currentBooking.bookings?.length ===
+                                                                0 ? (
+
+                                                                <div className="no-tour-bookings">
+
+                                                                    <span>
+                                                                        👥
+                                                                    </span>
+
+                                                                    <p>
+                                                                        No travelers have registered for this tour yet.
+                                                                    </p>
+
+                                                                </div>
+
+                                                            ) : (
+
+                                                                <div className="tour-bookings-list">
+
+                                                                    <h4>
+                                                                        Registered Travelers
+                                                                    </h4>
+
+
+                                                                    {currentBooking.bookings.map(
+                                                                        (booking) => {
+
+                                                                            const user =
+                                                                                booking.user ||
+                                                                                {};
+
+                                                                            const fullName =
+                                                                                `${user.firstName || ""} ${user.lastName || ""}`
+                                                                                    .trim();
+
+
+                                                                            return (
+
+                                                                                <div
+                                                                                    className="tour-booking-user"
+                                                                                    key={
+                                                                                        booking._id
+                                                                                    }
+                                                                                >
+
+                                                                                    <div className="tour-booking-user-avatar">
+
+                                                                                        {user.profileImage ? (
+
+                                                                                            <img
+                                                                                                src={
+                                                                                                    user.profileImage
+                                                                                                }
+                                                                                                alt={
+                                                                                                    fullName ||
+                                                                                                    user.username ||
+                                                                                                    "Traveler"
+                                                                                                }
+                                                                                            />
+
+                                                                                        ) : (
+
+                                                                                            <span>
+                                                                                                👤
+                                                                                            </span>
+
+                                                                                        )}
+
+                                                                                    </div>
+
+
+                                                                                    <div className="tour-booking-user-info">
+
+                                                                                        <strong>
+                                                                                            {
+                                                                                                fullName ||
+                                                                                                user.username ||
+                                                                                                "Traveler"
+                                                                                            }
+                                                                                        </strong>
+
+                                                                                        <span>
+                                                                                            {
+                                                                                                user.email ||
+                                                                                                "Email not available"
+                                                                                            }
+                                                                                        </span>
+
+                                                                                        {user.username && (
+                                                                                            <small>
+                                                                                                @
+                                                                                                {
+                                                                                                    user.username
+                                                                                                }
+                                                                                            </small>
+                                                                                        )}
+
+                                                                                    </div>
+
+
+                                                                                    <span className="tour-booking-confirmed">
+                                                                                        Confirmed
+                                                                                    </span>
+
+                                                                                </div>
+
+                                                                            );
+
+                                                                        }
+                                                                    )}
+
+                                                                </div>
+
+                                                            )}
+
+                                                        </>
+
+                                                    ) : (
+
+                                                        <div className="no-tour-bookings">
+
+                                                            <div className="tour-booking-small-loader"></div>
+
+                                                            <p>
+                                                                Loading booking information...
+                                                            </p>
+
+                                                        </div>
+
+                                                    )}
+
+                                                </div>
+
+                                            )}
+
                                         </div>
 
-                                    </div>
+                                    </article>
 
-                                </article>
+                                );
 
-                            )
+                            }
                         )}
 
                     </div>

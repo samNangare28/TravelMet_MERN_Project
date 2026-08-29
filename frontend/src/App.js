@@ -73,6 +73,7 @@ import AddTour from "./Pages/AddTour";
 
 import ExploreTours from "./Pages/ExploreTours";
 import TourDetailsPage from "./Pages/TourDetails";
+import EditTour from "./Pages/EditTour";
 
 
 // =====================================================
@@ -374,6 +375,15 @@ function App() {
                     element={
                         <CompanyProtectedRoute>
                             <AddTour />
+                        </CompanyProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/company/edit-tour/:id"
+                    element={
+                        <CompanyProtectedRoute>
+                            <EditTour />
                         </CompanyProtectedRoute>
                     }
                 />

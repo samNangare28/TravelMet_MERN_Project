@@ -8,9 +8,60 @@ function TourDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
 
+    // =====================================================
+    // TOUR STATES
+    // =====================================================
+
     const [tour, setTour] = useState(null);
+
     const [loading, setLoading] = useState(true);
+
     const [error, setError] = useState("");
+
+
+    // =====================================================
+    // BOOKING STATES
+    // =====================================================
+
+    const [bookingLoading, setBookingLoading] =
+        useState(false);
+
+    const [cancelLoading, setCancelLoading] =
+        useState(false);
+
+    const [bookingChecked, setBookingChecked] =
+        useState(false);
+
+    const [isBooked, setIsBooked] =
+        useState(false);
+
+    const [booking, setBooking] =
+        useState(null);
+
+    const [bookingMessage, setBookingMessage] =
+        useState("");
+
+    const [bookingError, setBookingError] =
+        useState("");
+
+
+    // =====================================================
+    // CAPACITY STATES
+    // =====================================================
+
+    const [tourCapacity, setTourCapacity] =
+        useState({
+
+            maxTravelers: 0,
+
+            bookedTravelers: 0,
+
+            remainingTravelers: 0,
+
+            isFull: false
+
+        });
+
 
     // =====================================================
     // FETCH TOUR DETAILS
@@ -23,6 +74,7 @@ function TourDetails() {
             try {
 
                 setLoading(true);
+
                 setError("");
 
                 const response = await api.get(
@@ -63,8 +115,132 @@ function TourDetails() {
 
         };
 
+
         if (id) {
+
             fetchTour();
+
+        }
+
+    }, [id]);
+
+
+    // =====================================================
+    // FETCH TOUR CAPACITY
+    // =====================================================
+
+    useEffect(() => {
+
+        const fetchCapacity = async () => {
+
+            try {
+
+                const response = await api.get(
+                    `/api/tours/${id}/booking-count`
+                );
+
+
+                if (response.data.success) {
+
+                    setTourCapacity(
+                        response.data.tourCapacity
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "TOUR CAPACITY ERROR:",
+                    error
+                );
+
+            }
+
+        };
+
+
+        if (id) {
+
+            fetchCapacity();
+
+        }
+
+    }, [id, isBooked]);
+
+
+    // =====================================================
+    // CHECK MY BOOKING
+    // =====================================================
+
+    useEffect(() => {
+
+        const checkMyBooking = async () => {
+
+            const token =
+                localStorage.getItem("token");
+
+
+            // User not logged in
+
+            if (!token) {
+
+                setBookingChecked(true);
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await api.get(
+                        `/api/tours/${id}/my-booking`,
+                        {
+                            headers: {
+
+                                Authorization:
+                                    `Bearer ${token}`
+
+                            }
+
+                        }
+                    );
+
+
+                if (response.data.success) {
+
+                    setIsBooked(
+                        response.data.booked
+                    );
+
+                    setBooking(
+                        response.data.booking
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "CHECK TOUR BOOKING ERROR:",
+                    error
+                );
+
+            } finally {
+
+                setBookingChecked(true);
+
+            }
+
+        };
+
+
+        if (id) {
+
+            checkMyBooking();
+
         }
 
     }, [id]);
@@ -77,17 +253,253 @@ function TourDetails() {
     const formatDate = (date) => {
 
         if (!date) {
+
             return "N/A";
+
         }
 
         return new Date(date).toLocaleDateString(
             "en-IN",
             {
+
                 day: "2-digit",
+
                 month: "long",
+
                 year: "numeric"
+
             }
         );
+
+    };
+
+
+    // =====================================================
+    // BOOK TOUR
+    // =====================================================
+
+    const handleBookTour = async () => {
+
+        const token =
+            localStorage.getItem("token");
+
+
+        // =================================================
+        // LOGIN CHECK
+        // =================================================
+
+        if (!token) {
+
+            const shouldLogin =
+                window.confirm(
+                    "Please login to register for this tour.\n\nGo to login page?"
+                );
+
+
+            if (shouldLogin) {
+
+                navigate("/login");
+
+            }
+
+            return;
+
+        }
+
+
+        // =================================================
+        // PREVENT DOUBLE CLICK
+        // =================================================
+
+        if (bookingLoading) {
+
+            return;
+
+        }
+
+
+        setBookingLoading(true);
+
+        setBookingMessage("");
+
+        setBookingError("");
+
+
+        try {
+
+            const response =
+                await api.post(
+
+                    `/api/tours/${id}/book`,
+
+                    {},
+
+                    {
+
+                        headers: {
+
+                            Authorization:
+                                `Bearer ${token}`
+
+                        }
+
+                    }
+
+                );
+
+
+            if (response.data.success) {
+
+                setIsBooked(true);
+
+                setBooking(
+                    response.data.booking
+                );
+
+
+                if (
+                    response.data.tourCapacity
+                ) {
+
+                    setTourCapacity(
+                        response.data.tourCapacity
+                    );
+
+                }
+
+
+                setBookingMessage(
+                    response.data.message ||
+                    "Tour registered successfully 🎉"
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "BOOK TOUR ERROR:",
+                error
+            );
+
+
+            setBookingError(
+                error.response?.data?.message ||
+                "Unable to register for this tour."
+            );
+
+        } finally {
+
+            setBookingLoading(false);
+
+        }
+
+    };
+
+
+    // =====================================================
+    // CANCEL BOOKING
+    // =====================================================
+
+    const handleCancelBooking = async () => {
+
+        const token =
+            localStorage.getItem("token");
+
+
+        if (!token) {
+
+            navigate("/login");
+
+            return;
+
+        }
+
+
+        const confirmCancel =
+            window.confirm(
+                "Are you sure you want to cancel your tour booking?"
+            );
+
+
+        if (!confirmCancel) {
+
+            return;
+
+        }
+
+
+        setCancelLoading(true);
+
+        setBookingMessage("");
+
+        setBookingError("");
+
+
+        try {
+
+            const response =
+                await api.delete(
+
+                    `/api/tours/${id}/book`,
+
+                    {
+
+                        headers: {
+
+                            Authorization:
+                                `Bearer ${token}`
+
+                        }
+
+                    }
+
+                );
+
+
+            if (response.data.success) {
+
+                setIsBooked(false);
+
+                setBooking(null);
+
+
+                if (
+                    response.data.tourCapacity
+                ) {
+
+                    setTourCapacity(
+                        response.data.tourCapacity
+                    );
+
+                }
+
+
+                setBookingMessage(
+                    response.data.message ||
+                    "Tour booking cancelled successfully."
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "CANCEL BOOKING ERROR:",
+                error
+            );
+
+
+            setBookingError(
+                error.response?.data?.message ||
+                "Unable to cancel tour booking."
+            );
+
+        } finally {
+
+            setCancelLoading(false);
+
+        }
 
     };
 
@@ -158,13 +570,81 @@ function TourDetails() {
     }
 
 
+    // =====================================================
+    // COMPANY
+    // =====================================================
+
     const company =
         tour.company || {};
 
 
+    // =====================================================
+    // EXPIRY
+    // =====================================================
+
     const isExpired =
         tour.endDate &&
         new Date(tour.endDate) < new Date();
+
+
+    // =====================================================
+    // TOUR STATUS
+    // =====================================================
+
+    const isCancelled =
+        tour.status === "cancelled";
+
+
+    const isCompleted =
+        tour.status === "completed";
+
+
+    const isUnavailable =
+        isExpired ||
+        isCancelled ||
+        isCompleted;
+
+
+    // =====================================================
+    // CAPACITY
+    // =====================================================
+
+    const maxTravelers =
+        tourCapacity.maxTravelers ||
+        tour.maxTravelers ||
+        0;
+
+
+    const bookedTravelers =
+        tourCapacity.bookedTravelers || 0;
+
+
+    const remainingTravelers =
+        tourCapacity.remainingTravelers ??
+        Math.max(
+            maxTravelers -
+            bookedTravelers,
+            0
+        );
+
+
+    const isFull =
+        tourCapacity.isFull ||
+        remainingTravelers <= 0;
+
+
+    const bookingPercentage =
+        maxTravelers > 0
+            ? Math.min(
+                Math.round(
+                    (
+                        bookedTravelers /
+                        maxTravelers
+                    ) * 100
+                ),
+                100
+            )
+            : 0;
 
 
     // =====================================================
@@ -275,6 +755,32 @@ function TourDetails() {
             ================================================= */}
 
             <main className="tour-details-container">
+
+
+                {/* =================================================
+                    BOOKING MESSAGE
+                ================================================= */}
+
+                {bookingMessage && (
+
+                    <div
+                        className="tour-booking-success-message"
+                    >
+                        ✅ {bookingMessage}
+                    </div>
+
+                )}
+
+
+                {bookingError && (
+
+                    <div
+                        className="tour-booking-error-message"
+                    >
+                        ⚠️ {bookingError}
+                    </div>
+
+                )}
 
 
                 {/* =================================================
@@ -580,7 +1086,6 @@ function TourDetails() {
 
                         )}
 
-
                     </section>
 
 
@@ -614,6 +1119,65 @@ function TourDetails() {
 
                         <div className="booking-divider"></div>
 
+
+                        {/* =================================================
+                            TOUR CAPACITY
+                        ================================================= */}
+
+                        <div className="tour-details-capacity">
+
+                            <div className="capacity-header">
+
+                                <span>
+                                    👥 TOUR AVAILABILITY
+                                </span>
+
+                                <strong
+                                    className={
+                                        isFull
+                                            ? "capacity-full"
+                                            : "capacity-available"
+                                    }
+                                >
+                                    {isFull
+                                        ? "FULL"
+                                        : `${remainingTravelers} seats left`}
+                                </strong>
+
+                            </div>
+
+
+                            <div className="capacity-progress">
+
+                                <div
+                                    className="capacity-progress-bar"
+                                    style={{
+                                        width:
+                                            `${bookingPercentage}%`
+                                    }}
+                                ></div>
+
+                            </div>
+
+
+                            <div className="capacity-count">
+
+                                <span>
+                                    {bookedTravelers} booked
+                                </span>
+
+                                <span>
+                                    {maxTravelers} total
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* =================================================
+                            BOOKING DETAILS
+                        ================================================= */}
 
                         <div className="booking-detail">
 
@@ -665,36 +1229,81 @@ function TourDetails() {
                         </div>
 
 
-                        {isExpired ? (
+                        {/* =================================================
+                            BOOKING BUTTON
+                        ================================================= */}
+
+                        {isUnavailable ? (
 
                             <button
                                 className="tour-book-disabled"
                                 disabled
                             >
-                                Tour Expired
+                                {isExpired
+                                    ? "Tour Expired"
+                                    : isCancelled
+                                        ? "Tour Cancelled"
+                                        : "Tour Completed"}
                             </button>
 
-                        ) : tour.status ===
-                            "cancelled" ? (
+                        ) : isBooked ? (
+
+                            <>
+
+                                <button
+                                    className="tour-booked-btn"
+                                    disabled
+                                >
+                                    ✓ You Are Registered
+                                </button>
+
+
+                                <button
+                                    className="tour-cancel-btn"
+                                    onClick={
+                                        handleCancelBooking
+                                    }
+                                    disabled={
+                                        cancelLoading
+                                    }
+                                >
+
+                                    {cancelLoading
+                                        ? "Cancelling..."
+                                        : "Cancel Booking"}
+
+                                </button>
+
+                            </>
+
+                        ) : isFull ? (
 
                             <button
                                 className="tour-book-disabled"
                                 disabled
                             >
-                                Tour Cancelled
+                                Tour Fully Booked
                             </button>
 
                         ) : (
 
                             <button
                                 className="tour-book-btn"
-                                onClick={() =>
-                                    alert(
-                                        "Booking feature will be available soon."
-                                    )
+                                onClick={
+                                    handleBookTour
+                                }
+                                disabled={
+                                    bookingLoading ||
+                                    !bookingChecked
                                 }
                             >
-                                Book This Tour
+
+                                {bookingLoading
+                                    ? "Registering..."
+                                    : !bookingChecked
+                                        ? "Checking..."
+                                        : "Book This Tour"}
+
                             </button>
 
                         )}
