@@ -5,8 +5,14 @@ const router = express.Router();
 const tourController =
     require("../controllers/tourController");
 
+const tourBookingController =
+    require("../controllers/tourBookingController");
+
 const companyAuth =
     require("../middleware/companyAuth");
+
+const auth =
+    require("../middleware/auth");
 
 
 // =====================================================
@@ -14,6 +20,7 @@ const companyAuth =
 // =====================================================
 //
 // Company only
+//
 // POST /api/tours
 //
 // =====================================================
@@ -29,14 +36,15 @@ router.post(
 // GET ALL PUBLIC TOURS
 // =====================================================
 //
-// Used by Explore Tours.
-//
-// Shows:
-// - Active tours
-// - Non-expired tours
-// - Tours from verified companies
+// Public
 //
 // GET /api/tours
+//
+// Returns only:
+// - Active tours
+// - Upcoming/non-expired tours
+// - Tours having available seats
+// - Tours from verified companies
 //
 // =====================================================
 
@@ -64,12 +72,110 @@ router.get(
 
 
 // =====================================================
+// GET TOUR AVAILABILITY
+// =====================================================
+//
+// Public
+//
+// GET /api/tours/:tourId/availability
+//
+// Used by TourDetails.jsx
+//
+// Returns:
+// - maxTravelers
+// - bookedTravelers
+// - remainingTravelers
+// - isFull
+//
+// =====================================================
+
+router.get(
+    "/:tourId/availability",
+    tourBookingController.getTourBookingCount
+);
+
+
+// =====================================================
+// GET MY TOUR BOOKING
+// =====================================================
+//
+// Logged-in User only
+//
+// GET /api/tours/:tourId/my-booking
+//
+// =====================================================
+
+router.get(
+    "/:tourId/my-booking",
+    auth,
+    tourBookingController.getMyTourBooking
+);
+
+
+// =====================================================
+// BOOK / REGISTER FOR TOUR
+// =====================================================
+//
+// Logged-in User only
+//
+// POST /api/tours/:tourId/book
+//
+// =====================================================
+
+router.post(
+    "/:tourId/book",
+    auth,
+    tourBookingController.bookTour
+);
+
+
+// =====================================================
+// CANCEL TOUR BOOKING
+// =====================================================
+//
+// Logged-in User only
+//
+// DELETE /api/tours/:tourId/book
+//
+// =====================================================
+
+router.delete(
+    "/:tourId/book",
+    auth,
+    tourBookingController.cancelBooking
+);
+
+
+// =====================================================
+// GET TOUR BOOKINGS
+// =====================================================
+//
+// Company only
+//
+// GET /api/tours/:tourId/bookings
+//
+// Company can see users registered for its own tour.
+//
+// =====================================================
+
+router.get(
+    "/:tourId/bookings",
+    companyAuth,
+    tourBookingController.getTourBookings
+);
+
+
+// =====================================================
 // GET SINGLE TOUR
 // =====================================================
 //
 // Public
 //
 // GET /api/tours/:id
+//
+// IMPORTANT:
+// This route is AFTER the specific booking routes.
+// Otherwise /availability could be treated as :id.
 //
 // =====================================================
 
@@ -84,7 +190,6 @@ router.get(
 // =====================================================
 //
 // Company only
-// Company can update only its own tour.
 //
 // PUT /api/tours/:id
 //
@@ -102,7 +207,6 @@ router.put(
 // =====================================================
 //
 // Company only
-// Company can delete only its own tour.
 //
 // DELETE /api/tours/:id
 //

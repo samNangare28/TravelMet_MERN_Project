@@ -1,5 +1,6 @@
 const Tour = require("../models/Tour");
 const TravelCompany = require("../models/TravelCompany");
+const TourBooking = require("../models/TourBooking");
 
 
 // =====================================================
@@ -167,6 +168,31 @@ const addTour = async (req, res) => {
 
 
         // =================================================
+        // VALIDATE MAX TRAVELERS
+        // =================================================
+
+        const travelers =
+            Number(maxTravelers);
+
+
+        if (
+            !Number.isInteger(travelers) ||
+            travelers <= 0
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Maximum travelers must be a positive number"
+
+            });
+
+        }
+
+
+        // =================================================
         // CREATE TOUR
         // =================================================
 
@@ -198,7 +224,7 @@ const addTour = async (req, res) => {
                     Number(duration),
 
                 maxTravelers:
-                    Number(maxTravelers),
+                    travelers,
 
                 image:
                     image?.trim() || ""
@@ -220,7 +246,18 @@ const addTour = async (req, res) => {
             message:
                 "Tour added successfully ✅",
 
-            tour
+            tour: {
+
+                ...tour.toObject(),
+
+                bookedTravelers: 0,
+
+                remainingTravelers:
+                    travelers,
+
+                isFull: false
+
+            }
 
         });
 
@@ -252,6 +289,14 @@ const addTour = async (req, res) => {
 // =====================================================
 // GET COMPANY TOURS
 // =====================================================
+//
+// Company dashboard.
+//
+// IMPORTANT:
+// Full tours are NOT removed here.
+// Company must still be able to see/manage them.
+//
+// =====================================================
 
 const getCompanyTours = async (req, res) => {
 
@@ -277,14 +322,67 @@ const getCompanyTours = async (req, res) => {
             });
 
 
+        // =================================================
+        // ADD LIVE BOOKING COUNTS
+        // =================================================
+
+        const toursWithCapacity =
+            await Promise.all(
+
+                tours.map(
+                    async (tour) => {
+
+                        const bookedTravelers =
+                            await TourBooking.countDocuments({
+
+                                tour:
+                                    tour._id,
+
+                                status:
+                                    "confirmed"
+
+                            });
+
+
+                        const remainingTravelers =
+                            Math.max(
+
+                                tour.maxTravelers -
+                                bookedTravelers,
+
+                                0
+
+                            );
+
+
+                        return {
+
+                            ...tour.toObject(),
+
+                            bookedTravelers,
+
+                            remainingTravelers,
+
+                            isFull:
+                                remainingTravelers === 0
+
+                        };
+
+                    }
+                )
+
+            );
+
+
         return res.status(200).json({
 
             success: true,
 
             count:
-                tours.length,
+                toursWithCapacity.length,
 
-            tours
+            tours:
+                toursWithCapacity
 
         });
 
@@ -317,13 +415,13 @@ const getCompanyTours = async (req, res) => {
 // GET ALL PUBLIC TOURS
 // =====================================================
 //
-// This endpoint is used by Explore Tours.
+// Explore Tours.
 //
 // Rules:
-// 1. Only active tours
-// 2. End date must not be in the past
-// 3. Company must be verified
-// 4. Company information is populated
+// 1. Active only
+// 2. Non-expired
+// 3. Verified company
+// 4. NOT FULL
 //
 // =====================================================
 
@@ -347,7 +445,7 @@ const getAllTours = async (req, res) => {
 
 
         // =================================================
-        // FIND PUBLIC TOURS
+        // FIND ACTIVE + NON-EXPIRED TOURS
         // =================================================
 
         const tours =
@@ -362,10 +460,6 @@ const getAllTours = async (req, res) => {
 
             })
 
-            // =================================================
-            // COMPANY DETAILS
-            // =================================================
-
             .populate(
 
                 "company",
@@ -373,10 +467,6 @@ const getAllTours = async (req, res) => {
                 "companyName ownerName email phone website logo coverImage description verificationStatus"
 
             )
-
-            // =================================================
-            // SORT
-            // =================================================
 
             .sort({
 
@@ -387,7 +477,7 @@ const getAllTours = async (req, res) => {
 
 
         // =================================================
-        // ONLY VERIFIED COMPANIES
+        // VERIFIED COMPANIES ONLY
         // =================================================
 
         const verifiedTours =
@@ -403,6 +493,75 @@ const getAllTours = async (req, res) => {
 
 
         // =================================================
+        // CHECK BOOKING CAPACITY
+        // =================================================
+
+        const availableTours =
+            await Promise.all(
+
+                verifiedTours.map(
+                    async (tour) => {
+
+                        const bookedTravelers =
+                            await TourBooking.countDocuments({
+
+                                tour:
+                                    tour._id,
+
+                                status:
+                                    "confirmed"
+
+                            });
+
+
+                        const remainingTravelers =
+                            Math.max(
+
+                                tour.maxTravelers -
+                                bookedTravelers,
+
+                                0
+
+                            );
+
+
+                        // FULL TOUR SHOULD NOT
+                        // APPEAR PUBLICLY
+
+                        if (
+                            remainingTravelers <= 0
+                        ) {
+
+                            return null;
+
+                        }
+
+
+                        return {
+
+                            ...tour.toObject(),
+
+                            bookedTravelers,
+
+                            remainingTravelers,
+
+                            isFull: false
+
+                        };
+
+                    }
+                )
+
+            );
+
+
+        const filteredTours =
+            availableTours.filter(
+                Boolean
+            );
+
+
+        // =================================================
         // RESPONSE
         // =================================================
 
@@ -411,10 +570,10 @@ const getAllTours = async (req, res) => {
             success: true,
 
             count:
-                verifiedTours.length,
+                filteredTours.length,
 
             tours:
-                verifiedTours
+                filteredTours
 
         });
 
@@ -536,6 +695,37 @@ const getSingleTour = async (req, res) => {
 
 
         // =================================================
+        // GET LIVE BOOKING COUNT
+        // =================================================
+
+        const bookedTravelers =
+            await TourBooking.countDocuments({
+
+                tour:
+                    tour._id,
+
+                status:
+                    "confirmed"
+
+            });
+
+
+        const remainingTravelers =
+            Math.max(
+
+                tour.maxTravelers -
+                bookedTravelers,
+
+                0
+
+            );
+
+
+        const isFull =
+            remainingTravelers === 0;
+
+
+        // =================================================
         // RESPONSE
         // =================================================
 
@@ -543,7 +733,17 @@ const getSingleTour = async (req, res) => {
 
             success: true,
 
-            tour
+            tour: {
+
+                ...tour.toObject(),
+
+                bookedTravelers,
+
+                remainingTravelers,
+
+                isFull
+
+            }
 
         });
 
@@ -641,6 +841,21 @@ const updateTour = async (req, res) => {
             title !== undefined
         ) {
 
+            if (
+                !title.trim()
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "Tour title cannot be empty"
+
+                });
+
+            }
+
             tour.title =
                 title.trim();
 
@@ -650,6 +865,21 @@ const updateTour = async (req, res) => {
         if (
             destination !== undefined
         ) {
+
+            if (
+                !destination.trim()
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "Destination cannot be empty"
+
+                });
+
+            }
 
             tour.destination =
                 destination.trim();
@@ -661,6 +891,21 @@ const updateTour = async (req, res) => {
             description !== undefined
         ) {
 
+            if (
+                !description.trim()
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "Description cannot be empty"
+
+                });
+
+            }
+
             tour.description =
                 description.trim();
 
@@ -671,8 +916,29 @@ const updateTour = async (req, res) => {
             price !== undefined
         ) {
 
-            tour.price =
+            const newPrice =
                 Number(price);
+
+
+            if (
+                Number.isNaN(newPrice) ||
+                newPrice < 0
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "Invalid tour price"
+
+                });
+
+            }
+
+
+            tour.price =
+                newPrice;
 
         }
 
@@ -745,8 +1011,31 @@ const updateTour = async (req, res) => {
             duration !== undefined
         ) {
 
-            tour.duration =
+            const newDuration =
                 Number(duration);
+
+
+            if (
+                !Number.isInteger(
+                    newDuration
+                ) ||
+                newDuration <= 0
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "Duration must be a positive number"
+
+                });
+
+            }
+
+
+            tour.duration =
+                newDuration;
 
         }
 
@@ -755,8 +1044,64 @@ const updateTour = async (req, res) => {
             maxTravelers !== undefined
         ) {
 
-            tour.maxTravelers =
+            const newMaxTravelers =
                 Number(maxTravelers);
+
+
+            if (
+                !Number.isInteger(
+                    newMaxTravelers
+                ) ||
+                newMaxTravelers <= 0
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "Maximum travelers must be a positive number"
+
+                });
+
+            }
+
+
+            // =================================================
+            // DO NOT REDUCE CAPACITY BELOW CURRENT BOOKINGS
+            // =================================================
+
+            const bookedTravelers =
+                await TourBooking.countDocuments({
+
+                    tour:
+                        tour._id,
+
+                    status:
+                        "confirmed"
+
+                });
+
+
+            if (
+                newMaxTravelers <
+                bookedTravelers
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        `Maximum travelers cannot be less than current bookings (${bookedTravelers})`
+
+                });
+
+            }
+
+
+            tour.maxTravelers =
+                newMaxTravelers;
 
         }
 
@@ -848,6 +1193,33 @@ const updateTour = async (req, res) => {
 
 
         // =================================================
+        // GET UPDATED BOOKING COUNT
+        // =================================================
+
+        const bookedTravelers =
+            await TourBooking.countDocuments({
+
+                tour:
+                    tour._id,
+
+                status:
+                    "confirmed"
+
+            });
+
+
+        const remainingTravelers =
+            Math.max(
+
+                tour.maxTravelers -
+                bookedTravelers,
+
+                0
+
+            );
+
+
+        // =================================================
         // RESPONSE
         // =================================================
 
@@ -858,7 +1230,18 @@ const updateTour = async (req, res) => {
             message:
                 "Tour updated successfully ✅",
 
-            tour
+            tour: {
+
+                ...tour.toObject(),
+
+                bookedTravelers,
+
+                remainingTravelers,
+
+                isFull:
+                    remainingTravelers === 0
+
+            }
 
         });
 
@@ -932,6 +1315,18 @@ const deleteTour = async (req, res) => {
             });
 
         }
+
+
+        // =================================================
+        // DELETE RELATED BOOKINGS
+        // =================================================
+
+        await TourBooking.deleteMany({
+
+            tour:
+                tour._id
+
+        });
 
 
         // =================================================
