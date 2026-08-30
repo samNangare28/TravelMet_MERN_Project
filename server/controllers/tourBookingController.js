@@ -985,15 +985,9 @@ const getTourBookings =
 // =====================================================
 
 module.exports = {
-
     bookTour,
-
     cancelBooking,
-
     getTourBookingCount,
-
     getMyTourBooking,
-
     getTourBookings
-
 };

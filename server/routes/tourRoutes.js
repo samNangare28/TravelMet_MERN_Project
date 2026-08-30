@@ -16,13 +16,17 @@ const { protect: auth } =
 
 
 // =====================================================
-// ADD TOUR
+// DEBUG
 // =====================================================
-//
-// Company only
-//
-// POST /api/tours
-//
+
+console.log(
+    "TOUR BOOKING CONTROLLER:",
+    tourBookingController
+);
+
+
+// =====================================================
+// ADD TOUR
 // =====================================================
 
 router.post(
@@ -35,18 +39,6 @@ router.post(
 // =====================================================
 // GET ALL PUBLIC TOURS
 // =====================================================
-//
-// Public
-//
-// GET /api/tours
-//
-// Returns only:
-// - Active tours
-// - Upcoming/non-expired tours
-// - Tours having available seats
-// - Tours from verified companies
-//
-// =====================================================
 
 router.get(
     "/",
@@ -55,13 +47,7 @@ router.get(
 
 
 // =====================================================
-// GET LOGGED-IN COMPANY TOURS
-// =====================================================
-//
-// Company only
-//
-// GET /api/tours/company/my-tours
-//
+// GET COMPANY TOURS
 // =====================================================
 
 router.get(
@@ -74,20 +60,6 @@ router.get(
 // =====================================================
 // GET TOUR AVAILABILITY
 // =====================================================
-//
-// Public
-//
-// GET /api/tours/:tourId/booking-count
-//
-// Used by TourDetails.jsx
-//
-// Returns:
-// - maxTravelers
-// - bookedTravelers
-// - remainingTravelers
-// - isFull
-//
-// =====================================================
 
 router.get(
     "/:tourId/booking-count",
@@ -96,13 +68,7 @@ router.get(
 
 
 // =====================================================
-// GET MY TOUR BOOKING
-// =====================================================
-//
-// Logged-in User only
-//
-// GET /api/tours/:tourId/my-booking
-//
+// GET MY BOOKING
 // =====================================================
 
 router.get(
@@ -113,13 +79,7 @@ router.get(
 
 
 // =====================================================
-// BOOK / REGISTER FOR TOUR
-// =====================================================
-//
-// Logged-in User only
-//
-// POST /api/tours/:tourId/book
-//
+// BOOK TOUR
 // =====================================================
 
 router.post(
@@ -130,13 +90,7 @@ router.post(
 
 
 // =====================================================
-// CANCEL TOUR BOOKING
-// =====================================================
-//
-// Logged-in User only
-//
-// DELETE /api/tours/:tourId/book
-//
+// CANCEL BOOKING
 // =====================================================
 
 router.delete(
@@ -147,15 +101,7 @@ router.delete(
 
 
 // =====================================================
-// GET TOUR BOOKINGS
-// =====================================================
-//
-// Company only
-//
-// GET /api/tours/:tourId/bookings
-//
-// Company can see users registered for its own tour.
-//
+// GET TOUR BOOKINGS - COMPANY
 // =====================================================
 
 router.get(
@@ -168,16 +114,6 @@ router.get(
 // =====================================================
 // GET SINGLE TOUR
 // =====================================================
-//
-// Public
-//
-// GET /api/tours/:id
-//
-// IMPORTANT:
-// This route is AFTER the specific booking routes.
-// Otherwise /availability could be treated as :id.
-//
-// =====================================================
 
 router.get(
     "/:id",
@@ -187,12 +123,6 @@ router.get(
 
 // =====================================================
 // UPDATE TOUR
-// =====================================================
-//
-// Company only
-//
-// PUT /api/tours/:id
-//
 // =====================================================
 
 router.put(
@@ -205,12 +135,6 @@ router.put(
 // =====================================================
 // DELETE TOUR
 // =====================================================
-//
-// Company only
-//
-// DELETE /api/tours/:id
-//
-// =====================================================
 
 router.delete(
     "/:id",
@@ -218,9 +142,5 @@ router.delete(
     tourController.deleteTour
 );
 
-
-// =====================================================
-// EXPORT
-// =====================================================
 
 module.exports = router;
