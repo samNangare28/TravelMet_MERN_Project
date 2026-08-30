@@ -38,6 +38,7 @@ function CompanyDashboard() {
     const [error, setError] =
         useState("");
 
+
     // =====================================================
     // BOOKING STATES
     // =====================================================
@@ -48,8 +49,17 @@ function CompanyDashboard() {
     const [bookingLoading, setBookingLoading] =
         useState("");
 
+    const [bookingActionLoading, setBookingActionLoading] =
+        useState("");
+
     const [expandedTour, setExpandedTour] =
         useState("");
+
+    const [pendingBookings, setPendingBookings] =
+        useState([]);
+
+    const [pendingLoading, setPendingLoading] =
+        useState(false);
 
 
     // =====================================================
@@ -99,6 +109,50 @@ function CompanyDashboard() {
 
 
     // =====================================================
+    // FETCH ALL PENDING BOOKINGS
+    // =====================================================
+
+    const fetchPendingBookings = useCallback(async () => {
+
+        try {
+
+            setPendingLoading(true);
+
+            const response = await api.get(
+                "/api/tour-bookings/company/pending",
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${companyToken}`
+                    }
+                }
+            );
+
+            if (response.data.success) {
+
+                setPendingBookings(
+                    response.data.bookings || []
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "FETCH PENDING BOOKINGS ERROR:",
+                error
+            );
+
+        } finally {
+
+            setPendingLoading(false);
+
+        }
+
+    }, [companyToken]);
+
+
+    // =====================================================
     // INITIAL LOAD
     // =====================================================
 
@@ -116,16 +170,18 @@ function CompanyDashboard() {
         }
 
         fetchTours();
+        fetchPendingBookings();
 
     }, [
         companyToken,
         fetchTours,
+        fetchPendingBookings,
         navigate
     ]);
 
 
     // =====================================================
-    // FETCH BOOKINGS FOR TOUR
+    // FETCH BOOKINGS FOR ONE TOUR
     // =====================================================
 
     const fetchTourBookings = async (tourId) => {
@@ -135,7 +191,7 @@ function CompanyDashboard() {
             setBookingLoading(tourId);
 
             const response = await api.get(
-                `/api/tours/${tourId}/bookings`,
+                `/api/tour-bookings/company/${tourId}`,
                 {
                     headers: {
                         Authorization:
@@ -182,8 +238,6 @@ function CompanyDashboard() {
 
     const handleViewBookings = async (tourId) => {
 
-        // Close if already open
-
         if (expandedTour === tourId) {
 
             setExpandedTour("");
@@ -194,9 +248,145 @@ function CompanyDashboard() {
 
         setExpandedTour(tourId);
 
-        // Fetch fresh booking data
-
         await fetchTourBookings(tourId);
+
+    };
+
+
+    // =====================================================
+    // CONFIRM BOOKING
+    // =====================================================
+
+    const handleConfirmBooking = async (bookingId, tourId) => {
+
+        const confirmAction =
+            window.confirm(
+                "Are you sure you want to confirm this booking?"
+            );
+
+        if (!confirmAction) {
+            return;
+        }
+
+        try {
+
+            setBookingActionLoading(
+                `confirm-${bookingId}`
+            );
+
+            const response = await api.patch(
+                `/api/tour-bookings/company/${bookingId}/confirm`,
+                {},
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${companyToken}`
+                    }
+                }
+            );
+
+            if (response.data.success) {
+
+                alert(
+                    "Booking confirmed successfully."
+                );
+
+                // Refresh selected tour bookings
+                await fetchTourBookings(tourId);
+
+                // Refresh pending requests
+                await fetchPendingBookings();
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "CONFIRM BOOKING ERROR:",
+                error
+            );
+
+            alert(
+                error.response?.data?.message ||
+                "Unable to confirm booking."
+            );
+
+        } finally {
+
+            setBookingActionLoading("");
+
+        }
+
+    };
+
+
+    // =====================================================
+    // REJECT BOOKING
+    // =====================================================
+
+    const handleRejectBooking = async (bookingId, tourId) => {
+
+        const rejectionReason =
+            window.prompt(
+                "Enter rejection reason (optional):"
+            );
+
+        // User pressed Cancel
+        if (rejectionReason === null) {
+            return;
+        }
+
+        try {
+
+            setBookingActionLoading(
+                `reject-${bookingId}`
+            );
+
+            const response = await api.patch(
+                `/api/tour-bookings/company/${bookingId}/reject`,
+                {
+                    rejectionReason:
+                        rejectionReason.trim()
+                },
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${companyToken}`
+                    }
+                }
+            );
+
+            if (response.data.success) {
+
+                alert(
+                    "Booking request rejected successfully."
+                );
+
+                // Refresh selected tour
+                await fetchTourBookings(tourId);
+
+                // Refresh pending requests
+                await fetchPendingBookings();
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "REJECT BOOKING ERROR:",
+                error
+            );
+
+            alert(
+                error.response?.data?.message ||
+                "Unable to reject booking."
+            );
+
+        } finally {
+
+            setBookingActionLoading("");
+
+        }
 
     };
 
@@ -273,7 +463,7 @@ function CompanyDashboard() {
     const totalBookings =
         Object.values(bookingData).reduce(
             (total, data) =>
-                total + Number(data?.count || 0),
+                total + Number(data?.confirmedCount || 0),
             0
         );
 
@@ -320,8 +510,6 @@ function CompanyDashboard() {
             );
 
 
-            // Remove booking data also
-
             setBookingData(
                 (current) => {
 
@@ -342,6 +530,10 @@ function CompanyDashboard() {
                 setExpandedTour("");
 
             }
+
+
+            // Refresh pending requests
+            await fetchPendingBookings();
 
 
         } catch (error) {
@@ -556,6 +748,293 @@ function CompanyDashboard() {
 
 
             {/* =================================================
+                PENDING BOOKING REQUESTS
+            ================================================= */}
+
+            <section className="company-pending-bookings-section">
+
+                <div className="company-tour-section-header">
+
+                    <div>
+
+                        <span className="section-eyebrow">
+                            BOOKING MANAGEMENT
+                        </span>
+
+                        <h2>
+                            Pending Booking Requests
+                        </h2>
+
+                        <p>
+                            Review traveller requests and
+                            confirm or reject bookings.
+                        </p>
+
+                    </div>
+
+
+                    <div className="pending-booking-count">
+
+                        {pendingLoading
+                            ? "Loading..."
+                            : `${pendingBookings.length} Pending`}
+
+                    </div>
+
+                </div>
+
+
+                {pendingLoading ? (
+
+                    <div className="no-tour-bookings">
+
+                        <div className="tour-booking-small-loader"></div>
+
+                        <p>
+                            Loading pending booking requests...
+                        </p>
+
+                    </div>
+
+                ) : pendingBookings.length === 0 ? (
+
+                    <div className="company-tour-empty">
+
+                        <div className="empty-tour-icon">
+                            ✓
+                        </div>
+
+                        <h3>
+                            No Pending Requests
+                        </h3>
+
+                        <p>
+                            You are all caught up. New
+                            booking requests will appear here.
+                        </p>
+
+                    </div>
+
+                ) : (
+
+                    <div className="company-pending-bookings-list">
+
+                        {pendingBookings.map(
+                            (booking) => {
+
+                                const user =
+                                    booking.user || {};
+
+                                const tour =
+                                    booking.tour || {};
+
+                                const fullName =
+                                    `${user.firstName || ""} ${user.lastName || ""}`
+                                        .trim();
+
+
+                                const travelerName =
+                                    booking.contactName ||
+                                    fullName ||
+                                    user.username ||
+                                    "Traveler";
+
+
+                                const isConfirming =
+                                    bookingActionLoading ===
+                                    `confirm-${booking._id}`;
+
+
+                                const isRejecting =
+                                    bookingActionLoading ===
+                                    `reject-${booking._id}`;
+
+
+                                return (
+
+                                    <div
+                                        className="company-pending-booking-card"
+                                        key={booking._id}
+                                    >
+
+                                        <div className="tour-booking-user-avatar">
+
+                                            {user.profileImage ? (
+
+                                                <img
+                                                    src={
+                                                        user.profileImage
+                                                    }
+                                                    alt={
+                                                        travelerName
+                                                    }
+                                                />
+
+                                            ) : (
+
+                                                <span>
+                                                    👤
+                                                </span>
+
+                                            )}
+
+                                        </div>
+
+
+                                        <div className="company-pending-booking-info">
+
+                                            <strong>
+                                                {travelerName}
+                                            </strong>
+
+                                            <span>
+                                                📧{" "}
+                                                {booking.contactEmail ||
+                                                    user.email ||
+                                                    "Email not available"}
+                                            </span>
+
+                                            {booking.contactPhone && (
+
+                                                <span>
+                                                    📞{" "}
+                                                    {
+                                                        booking.contactPhone
+                                                    }
+                                                </span>
+
+                                            )}
+
+
+                                            <div className="pending-booking-tour-info">
+
+                                                <strong>
+                                                    ✈️{" "}
+                                                    {tour.title ||
+                                                        "Tour"}
+                                                </strong>
+
+                                                <span>
+                                                    📍{" "}
+                                                    {tour.destination ||
+                                                        "Destination"}
+                                                </span>
+
+                                                <span>
+                                                    📅{" "}
+                                                    {formatDate(
+                                                        tour.startDate
+                                                    )}
+                                                    {" - "}
+                                                    {formatDate(
+                                                        tour.endDate
+                                                    )}
+                                                </span>
+
+                                            </div>
+
+
+                                            {booking.specialRequests && (
+
+                                                <small className="tour-booking-special-requests">
+
+                                                    📝{" "}
+                                                    {
+                                                        booking.specialRequests
+                                                    }
+
+                                                </small>
+
+                                            )}
+
+                                        </div>
+
+
+                                        <div className="company-pending-booking-meta">
+
+                                            <span className="tour-booking-travelers-badge">
+
+                                                {
+                                                    booking.numberOfTravelers ||
+                                                    1
+                                                }{" "}
+
+                                                {(booking.numberOfTravelers || 1) === 1
+                                                    ? "traveler"
+                                                    : "travelers"}
+
+                                            </span>
+
+
+                                            <span className="pending-booking-status">
+
+                                                Pending
+
+                                            </span>
+
+
+                                            <div className="company-booking-action-buttons">
+
+                                                <button
+                                                    className="booking-confirm-btn"
+                                                    onClick={() =>
+                                                        handleConfirmBooking(
+                                                            booking._id,
+                                                            tour._id
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        isConfirming ||
+                                                        isRejecting
+                                                    }
+                                                >
+
+                                                    {isConfirming
+                                                        ? "Confirming..."
+                                                        : "✓ Confirm"}
+
+                                                </button>
+
+
+                                                <button
+                                                    className="booking-reject-btn"
+                                                    onClick={() =>
+                                                        handleRejectBooking(
+                                                            booking._id,
+                                                            tour._id
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        isConfirming ||
+                                                        isRejecting
+                                                    }
+                                                >
+
+                                                    {isRejecting
+                                                        ? "Rejecting..."
+                                                        : "✕ Reject"}
+
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                );
+
+                            }
+                        )}
+
+                    </div>
+
+                )}
+
+            </section>
+
+
+            {/* =================================================
                 STATISTICS
             ================================================= */}
 
@@ -661,10 +1140,6 @@ function CompanyDashboard() {
                 </div>
 
 
-                {/* =================================================
-                    TOTAL BOOKINGS
-                ================================================= */}
-
                 <div className="dashboard-stat-card bookings">
 
                     <div className="dashboard-stat-icon">
@@ -674,7 +1149,7 @@ function CompanyDashboard() {
                     <div>
 
                         <span>
-                            Bookings
+                            Confirmed Bookings
                         </span>
 
                         <strong>
@@ -682,7 +1157,32 @@ function CompanyDashboard() {
                         </strong>
 
                         <small>
-                            Loaded tour registrations
+                            Confirmed registrations
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div className="dashboard-stat-card pending">
+
+                    <div className="dashboard-stat-icon">
+                        ⏳
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Pending Requests
+                        </span>
+
+                        <strong>
+                            {pendingBookings.length}
+                        </strong>
+
+                        <small>
+                            Awaiting your response
                         </small>
 
                     </div>
@@ -693,7 +1193,7 @@ function CompanyDashboard() {
 
 
             {/* =================================================
-                TOUR MANAGEMENT HEADER
+                TOUR MANAGEMENT
             ================================================= */}
 
             <section className="company-tour-section">
@@ -775,10 +1275,6 @@ function CompanyDashboard() {
 
                 ) : (
 
-                    /* =================================================
-                       TOUR GRID
-                    ================================================= */
-
                     <div className="company-tour-grid">
 
                         {visibleTours.map(
@@ -788,22 +1284,37 @@ function CompanyDashboard() {
                                     bookingData[tour._id];
 
                                 const bookedTravelers =
-                                    currentBooking?.count || 0;
+                                    Number(
+                                        currentBooking?.bookedTravelers ??
+                                        currentBooking?.count ??
+                                        0
+                                    );
 
                                 const maxTravelers =
-                                    currentBooking?.maxTravelers ||
-                                    tour.maxTravelers ||
-                                    0;
+                                    Number(
+                                        currentBooking?.maxTravelers ||
+                                        tour.maxTravelers ||
+                                        0
+                                    );
 
                                 const remainingTravelers =
                                     currentBooking
-                                        ? currentBooking.remainingTravelers
+                                        ? Number(
+                                            currentBooking.remainingTravelers ??
+                                            Math.max(
+                                                maxTravelers -
+                                                bookedTravelers,
+                                                0
+                                            )
+                                        )
                                         : maxTravelers;
 
                                 const isFull =
                                     currentBooking
-                                        ? currentBooking.tourCapacity?.isFull ||
-                                          remainingTravelers === 0
+                                        ? Boolean(
+                                            currentBooking.isFull ||
+                                            remainingTravelers === 0
+                                        )
                                         : false;
 
 
@@ -814,9 +1325,8 @@ function CompanyDashboard() {
                                         key={tour._id}
                                     >
 
-                                        {/* =========================
-                                            IMAGE
-                                        ========================= */}
+
+                                        {/* IMAGE */}
 
                                         <div className="company-tour-image-wrapper">
 
@@ -867,9 +1377,7 @@ function CompanyDashboard() {
                                         </div>
 
 
-                                        {/* =========================
-                                            CONTENT
-                                        ========================= */}
+                                        {/* CONTENT */}
 
                                         <div className="company-tour-content">
 
@@ -896,9 +1404,7 @@ function CompanyDashboard() {
                                             </p>
 
 
-                                            {/* =========================
-                                                DATE
-                                            ========================= */}
+                                            {/* DATE */}
 
                                             <div className="tour-info-row">
 
@@ -934,9 +1440,7 @@ function CompanyDashboard() {
                                             </div>
 
 
-                                            {/* =========================
-                                                TOUR META
-                                            ========================= */}
+                                            {/* META */}
 
                                             <div className="tour-meta-row">
 
@@ -957,9 +1461,7 @@ function CompanyDashboard() {
                                             </div>
 
 
-                                            {/* =========================
-                                                BOOKING CAPACITY
-                                            ========================= */}
+                                            {/* BOOKING CAPACITY */}
 
                                             <div className="tour-booking-capacity">
 
@@ -978,9 +1480,11 @@ function CompanyDashboard() {
                                                                     : "booking-available"
                                                             }
                                                         >
+
                                                             {isFull
                                                                 ? "FULL"
                                                                 : `${remainingTravelers} seats left`}
+
                                                         </strong>
 
                                                     )}
@@ -1026,9 +1530,7 @@ function CompanyDashboard() {
                                             </div>
 
 
-                                            {/* =========================
-                                                PRICE
-                                            ========================= */}
+                                            {/* PRICE */}
 
                                             <div className="tour-price-row">
 
@@ -1052,9 +1554,7 @@ function CompanyDashboard() {
                                             </div>
 
 
-                                            {/* =========================
-                                                ACTIONS
-                                            ========================= */}
+                                            {/* ACTIONS */}
 
                                             <div className="company-tour-actions">
 
@@ -1105,9 +1605,7 @@ function CompanyDashboard() {
                                             </div>
 
 
-                                            {/* =========================
-                                                BOOKINGS BUTTON
-                                            ========================= */}
+                                            {/* BOOKINGS BUTTON */}
 
                                             <button
                                                 className="tour-bookings-toggle-btn"
@@ -1133,9 +1631,7 @@ function CompanyDashboard() {
                                             </button>
 
 
-                                            {/* =========================
-                                                BOOKINGS PANEL
-                                            ========================= */}
+                                            {/* BOOKINGS PANEL */}
 
                                             {expandedTour ===
                                                 tour._id && (
@@ -1157,7 +1653,7 @@ function CompanyDashboard() {
                                                                     <strong>
                                                                         {
                                                                             currentBooking.bookedTravelers ??
-                                                                            currentBooking.count
+                                                                            0
                                                                         }
                                                                     </strong>
 
@@ -1172,7 +1668,24 @@ function CompanyDashboard() {
 
                                                                     <strong>
                                                                         {
-                                                                            currentBooking.count
+                                                                            currentBooking.count ??
+                                                                            0
+                                                                        }
+                                                                    </strong>
+
+                                                                </div>
+
+
+                                                                <div>
+
+                                                                    <span>
+                                                                        PENDING
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {
+                                                                            currentBooking.pendingCount ??
+                                                                            0
                                                                         }
                                                                     </strong>
 
@@ -1187,7 +1700,8 @@ function CompanyDashboard() {
 
                                                                     <strong>
                                                                         {
-                                                                            currentBooking.remainingTravelers
+                                                                            currentBooking.remainingTravelers ??
+                                                                            0
                                                                         }
                                                                     </strong>
 
@@ -1202,7 +1716,8 @@ function CompanyDashboard() {
 
                                                                     <strong>
                                                                         {
-                                                                            currentBooking.maxTravelers
+                                                                            currentBooking.maxTravelers ??
+                                                                            tour.maxTravelers
                                                                         }
                                                                     </strong>
 
@@ -1247,6 +1762,28 @@ function CompanyDashboard() {
                                                                                     .trim();
 
 
+                                                                            const travelerName =
+                                                                                booking.contactName ||
+                                                                                fullName ||
+                                                                                user.username ||
+                                                                                "Traveler";
+
+
+                                                                            const isPending =
+                                                                                booking.status ===
+                                                                                "pending";
+
+
+                                                                            const isConfirming =
+                                                                                bookingActionLoading ===
+                                                                                `confirm-${booking._id}`;
+
+
+                                                                            const isRejecting =
+                                                                                bookingActionLoading ===
+                                                                                `reject-${booking._id}`;
+
+
                                                                             return (
 
                                                                                 <div
@@ -1265,10 +1802,7 @@ function CompanyDashboard() {
                                                                                                     user.profileImage
                                                                                                 }
                                                                                                 alt={
-                                                                                                    booking.contactName ||
-                                                                                                    fullName ||
-                                                                                                    user.username ||
-                                                                                                    "Traveler"
+                                                                                                    travelerName
                                                                                                 }
                                                                                             />
 
@@ -1287,10 +1821,7 @@ function CompanyDashboard() {
 
                                                                                         <strong>
                                                                                             {
-                                                                                                booking.contactName ||
-                                                                                                fullName ||
-                                                                                                user.username ||
-                                                                                                "Traveler"
+                                                                                                travelerName
                                                                                             }
                                                                                         </strong>
 
@@ -1304,30 +1835,36 @@ function CompanyDashboard() {
                                                                                         </span>
 
                                                                                         {booking.contactPhone && (
+
                                                                                             <span>
                                                                                                 📞{" "}
                                                                                                 {
                                                                                                     booking.contactPhone
                                                                                                 }
                                                                                             </span>
+
                                                                                         )}
 
                                                                                         {user.username && (
+
                                                                                             <small>
                                                                                                 Account: @
                                                                                                 {
                                                                                                     user.username
                                                                                                 }
                                                                                             </small>
+
                                                                                         )}
 
                                                                                         {booking.specialRequests && (
+
                                                                                             <small className="tour-booking-special-requests">
                                                                                                 📝{" "}
                                                                                                 {
                                                                                                     booking.specialRequests
                                                                                                 }
                                                                                             </small>
+
                                                                                         )}
 
                                                                                     </div>
@@ -1336,17 +1873,89 @@ function CompanyDashboard() {
                                                                                     <div className="tour-booking-meta">
 
                                                                                         <span className="tour-booking-travelers-badge">
+
                                                                                             {
-                                                                                                booking.numberOfTravelers || 1
+                                                                                                booking.numberOfTravelers ||
+                                                                                                1
                                                                                             }{" "}
+
                                                                                             {(booking.numberOfTravelers || 1) === 1
                                                                                                 ? "traveler"
                                                                                                 : "travelers"}
+
                                                                                         </span>
 
-                                                                                        <span className="tour-booking-confirmed">
-                                                                                            Confirmed
+
+                                                                                        <span
+                                                                                            className={
+                                                                                                `tour-booking-status ${
+                                                                                                    booking.status
+                                                                                                }`
+                                                                                            }
+                                                                                        >
+
+                                                                                            {booking.status ===
+                                                                                                "confirmed"
+                                                                                                ? "✓ Confirmed"
+                                                                                                : booking.status ===
+                                                                                                    "rejected"
+                                                                                                    ? "✕ Rejected"
+                                                                                                    : booking.status ===
+                                                                                                        "cancelled"
+                                                                                                        ? "Cancelled"
+                                                                                                        : "⏳ Pending"}
+
                                                                                         </span>
+
+
+                                                                                        {isPending && (
+
+                                                                                            <div className="company-booking-action-buttons">
+
+                                                                                                <button
+                                                                                                    className="booking-confirm-btn"
+                                                                                                    onClick={() =>
+                                                                                                        handleConfirmBooking(
+                                                                                                            booking._id,
+                                                                                                            tour._id
+                                                                                                        )
+                                                                                                    }
+                                                                                                    disabled={
+                                                                                                        isConfirming ||
+                                                                                                        isRejecting
+                                                                                                    }
+                                                                                                >
+
+                                                                                                    {isConfirming
+                                                                                                        ? "..."
+                                                                                                        : "✓ Confirm"}
+
+                                                                                                </button>
+
+
+                                                                                                <button
+                                                                                                    className="booking-reject-btn"
+                                                                                                    onClick={() =>
+                                                                                                        handleRejectBooking(
+                                                                                                            booking._id,
+                                                                                                            tour._id
+                                                                                                        )
+                                                                                                    }
+                                                                                                    disabled={
+                                                                                                        isConfirming ||
+                                                                                                        isRejecting
+                                                                                                    }
+                                                                                                >
+
+                                                                                                    {isRejecting
+                                                                                                        ? "..."
+                                                                                                        : "✕ Reject"}
+
+                                                                                                </button>
+
+                                                                                            </div>
+
+                                                                                        )}
 
                                                                                     </div>
 

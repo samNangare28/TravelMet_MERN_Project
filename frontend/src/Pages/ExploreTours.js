@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { TOUR_THEMES, THEME_ICONS } from "../Data/tourThemes";
 import "../Css/ExploreTours.css";
 
 function ExploreTours() {
-
     const navigate = useNavigate();
 
     // =====================================================
@@ -13,81 +12,126 @@ function ExploreTours() {
     // =====================================================
 
     const [tours, setTours] = useState([]);
-
     const [loading, setLoading] = useState(true);
-
     const [error, setError] = useState("");
 
     const [search, setSearch] = useState("");
-
     const [selectedDestination, setSelectedDestination] =
         useState("All");
-
     const [selectedTheme, setSelectedTheme] =
         useState("All");
-
 
     // =====================================================
     // FETCH ALL TOURS
     // =====================================================
 
-    useEffect(() => {
-
-        const fetchTours = async () => {
-
-            try {
-
+    const fetchTours = useCallback(async (showLoader = true) => {
+        try {
+            if (showLoader) {
                 setLoading(true);
-                setError("");
-
-                const response =
-                    await api.get("/api/tours");
-
-                setTours(
-                    response.data.tours || []
-                );
-
             }
 
-            catch (error) {
+            setError("");
 
-                console.error(
-                    "EXPLORE TOURS ERROR:",
-                    error
-                );
+            const response = await api.get("/api/tours");
+
+            if (response.data?.success) {
+                setTours(response.data.tours || []);
+            } else {
+                setTours([]);
 
                 setError(
-                    error.response?.data?.message ||
+                    response.data?.message ||
                     "Unable to load tours."
                 );
-
             }
+        } catch (error) {
+            console.error(
+                "❌ EXPLORE TOURS ERROR:",
+                error
+            );
 
-            finally {
-
+            setError(
+                error.response?.data?.message ||
+                "Unable to load tours. Please try again."
+            );
+        } finally {
+            if (showLoader) {
                 setLoading(false);
-
             }
-
-        };
-
-
-        fetchTours();
-
+        }
     }, []);
 
+    // =====================================================
+    // INITIAL FETCH
+    // =====================================================
+
+    useEffect(() => {
+        fetchTours(true);
+    }, [fetchTours]);
+
+    // =====================================================
+    // REFRESH WHEN USER RETURNS TO PAGE
+    // =====================================================
+
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "visible") {
+                fetchTours(false);
+            }
+        };
+
+        document.addEventListener(
+            "visibilitychange",
+            handleVisibilityChange
+        );
+
+        return () => {
+            document.removeEventListener(
+                "visibilitychange",
+                handleVisibilityChange
+            );
+        };
+    }, [fetchTours]);
+
+    // =====================================================
+    // REFRESH WHEN WINDOW GETS FOCUS
+    // =====================================================
+
+    useEffect(() => {
+        const handleWindowFocus = () => {
+            fetchTours(false);
+        };
+
+        window.addEventListener(
+            "focus",
+            handleWindowFocus
+        );
+
+        return () => {
+            window.removeEventListener(
+                "focus",
+                handleWindowFocus
+            );
+        };
+    }, [fetchTours]);
 
     // =====================================================
     // FORMAT DATE
     // =====================================================
 
     const formatDate = (date) => {
-
         if (!date) {
             return "N/A";
         }
 
-        return new Date(date).toLocaleDateString(
+        const parsedDate = new Date(date);
+
+        if (Number.isNaN(parsedDate.getTime())) {
+            return "N/A";
+        }
+
+        return parsedDate.toLocaleDateString(
             "en-IN",
             {
                 day: "2-digit",
@@ -95,52 +139,57 @@ function ExploreTours() {
                 year: "numeric"
             }
         );
-
     };
-
 
     // =====================================================
     // GET UNIQUE DESTINATIONS
     // =====================================================
 
-    const destinations = [
-        "All",
-        ...new Set(
-            tours
-                .map(
-                    (tour) =>
-                        tour.destination
-                )
-                .filter(Boolean)
-        )
-    ];
+    const destinations = useMemo(() => {
+        const uniqueDestinations = [
+            ...new Set(
+                tours
+                    .map((tour) =>
+                        tour.destination?.trim()
+                    )
+                    .filter(Boolean)
+            )
+        ];
 
+        return [
+            "All",
+            ...uniqueDestinations
+        ];
+    }, [tours]);
 
     // =====================================================
     // GET THEMES PRESENT IN CURRENT TOURS
     // =====================================================
 
-    const availableThemes = [
-        "All",
-        ...TOUR_THEMES.filter((theme) =>
-            tours.some((tour) => tour.theme === theme)
-        )
-    ];
+    const availableThemes = useMemo(() => {
+        const presentThemes = TOUR_THEMES.filter(
+            (theme) =>
+                tours.some(
+                    (tour) =>
+                        tour.theme === theme
+                )
+        );
 
+        return [
+            "All",
+            ...presentThemes
+        ];
+    }, [tours]);
 
     // =====================================================
     // FILTER TOURS
     // =====================================================
 
-    const filteredTours =
-        tours.filter((tour) => {
+    const filteredTours = useMemo(() => {
+        const searchText =
+            search.toLowerCase().trim();
 
-            const searchText =
-                search
-                    .toLowerCase()
-                    .trim();
-
-
+        return tours.filter((tour) => {
             const matchesSearch =
                 !searchText ||
                 tour.title
@@ -153,37 +202,57 @@ function ExploreTours() {
                     ?.toLowerCase()
                     .includes(searchText);
 
-
             const matchesDestination =
                 selectedDestination === "All" ||
                 tour.destination ===
                     selectedDestination;
 
-
             const matchesTheme =
                 selectedTheme === "All" ||
                 tour.theme === selectedTheme;
-
 
             return (
                 matchesSearch &&
                 matchesDestination &&
                 matchesTheme
             );
-
         });
+    }, [
+        tours,
+        search,
+        selectedDestination,
+        selectedTheme
+    ]);
 
+    // =====================================================
+    // CLEAR FILTERS
+    // =====================================================
+
+    const clearFilters = () => {
+        setSearch("");
+        setSelectedDestination("All");
+        setSelectedTheme("All");
+    };
+
+    // =====================================================
+    // VIEW TOUR
+    // =====================================================
+
+    const handleViewTour = (tourId) => {
+        if (!tourId) {
+            return;
+        }
+
+        navigate(`/tour/${tourId}`);
+    };
 
     // =====================================================
     // LOADING
     // =====================================================
 
     if (loading) {
-
         return (
-
             <div className="explore-tours-loading">
-
                 <div className="explore-loader"></div>
 
                 <h3>
@@ -194,24 +263,17 @@ function ExploreTours() {
                     Finding the best travel experiences
                     for you...
                 </p>
-
             </div>
-
         );
-
     }
-
 
     // =====================================================
     // ERROR
     // =====================================================
 
     if (error) {
-
         return (
-
             <div className="explore-tours-error">
-
                 <div className="explore-error-icon">
                     ⚠️
                 </div>
@@ -225,28 +287,23 @@ function ExploreTours() {
                 </p>
 
                 <button
+                    type="button"
                     onClick={() =>
-                        window.location.reload()
+                        fetchTours(true)
                     }
                 >
                     Try Again
                 </button>
-
             </div>
-
         );
-
     }
-
 
     // =====================================================
     // MAIN PAGE
     // =====================================================
 
     return (
-
         <div className="explore-tours-page">
-
 
             {/* =================================================
                 HERO
@@ -271,10 +328,7 @@ function ExploreTours() {
                         on TravelMet.
                     </p>
 
-
-                    {/* =========================
-                        SEARCH
-                    ========================= */}
+                    {/* SEARCH */}
 
                     <div className="tour-search-box">
 
@@ -291,6 +345,7 @@ function ExploreTours() {
                                     e.target.value
                                 )
                             }
+                            aria-label="Search tours"
                         />
 
                     </div>
@@ -299,13 +354,11 @@ function ExploreTours() {
 
             </section>
 
-
             {/* =================================================
                 CONTENT
             ================================================= */}
 
             <main className="explore-tours-container">
-
 
                 {/* =================================================
                     FILTER BAR
@@ -325,43 +378,45 @@ function ExploreTours() {
 
                     </div>
 
+                    {/* DESTINATION FILTERS */}
 
-                    <div className="destination-filters">
+                    {destinations.length > 1 && (
+                        <div className="destination-filters">
 
-                        {destinations.map(
-                            (destination) => (
-
-                                <button
-                                    key={destination}
-                                    className={
-                                        selectedDestination ===
-                                        destination
-                                            ? "destination-filter active"
-                                            : "destination-filter"
-                                    }
-                                    onClick={() =>
-                                        setSelectedDestination(
+                            {destinations.map(
+                                (destination) => (
+                                    <button
+                                        type="button"
+                                        key={destination}
+                                        className={
+                                            selectedDestination ===
                                             destination
-                                        )
-                                    }
-                                >
-                                    {destination}
-                                </button>
+                                                ? "destination-filter active"
+                                                : "destination-filter"
+                                        }
+                                        onClick={() =>
+                                            setSelectedDestination(
+                                                destination
+                                            )
+                                        }
+                                    >
+                                        {destination}
+                                    </button>
+                                )
+                            )}
 
-                            )
-                        )}
+                        </div>
+                    )}
 
-                    </div>
-
+                    {/* THEME FILTERS */}
 
                     {availableThemes.length > 1 && (
-
                         <div className="theme-filters">
 
                             {availableThemes.map(
                                 (theme) => (
-
                                     <button
+                                        type="button"
                                         key={theme}
                                         className={
                                             selectedTheme ===
@@ -375,23 +430,25 @@ function ExploreTours() {
                                             )
                                         }
                                     >
+
                                         {theme !== "All" && (
                                             <span className="theme-filter-icon">
-                                                {THEME_ICONS[theme] || "🌍"}
+                                                {THEME_ICONS[
+                                                    theme
+                                                ] || "🌍"}
                                             </span>
                                         )}
-                                        {theme}
-                                    </button>
 
+                                        {theme}
+
+                                    </button>
                                 )
                             )}
 
                         </div>
-
                     )}
 
                 </section>
-
 
                 {/* =================================================
                     RESULTS COUNT
@@ -400,21 +457,16 @@ function ExploreTours() {
                 <div className="tour-results-info">
 
                     <p>
-
                         Showing{" "}
-
                         <strong>
                             {filteredTours.length}
                         </strong>{" "}
-
                         {filteredTours.length === 1
                             ? "tour"
                             : "tours"}
-
                     </p>
 
                 </div>
-
 
                 {/* =================================================
                     NO RESULTS
@@ -438,15 +490,8 @@ function ExploreTours() {
                         </p>
 
                         <button
-                            onClick={() => {
-
-                                setSearch("");
-
-                                setSelectedDestination(
-                                    "All"
-                                );
-
-                            }}
+                            type="button"
+                            onClick={clearFilters}
                         >
                             Clear Filters
                         </button>
@@ -462,255 +507,370 @@ function ExploreTours() {
                     <div className="explore-tour-grid">
 
                         {filteredTours.map(
-                            (tour) => (
+                            (tour) => {
 
-                                <article
-                                    className="explore-tour-card"
-                                    key={tour._id}
-                                >
+                                // =================================================
+                                // CAPACITY
+                                // =================================================
 
+                                const maxTravelers = Math.max(
+                                    Number(
+                                        tour.maxTravelers || 0
+                                    ),
+                                    0
+                                );
 
-                                    {/* =========================
-                                        IMAGE
-                                    ========================= */}
+                                const bookedTravelers = Math.max(
+                                    Number(
+                                        tour.bookedTravelers || 0
+                                    ),
+                                    0
+                                );
 
-                                    <div className="explore-tour-image">
+                                let remainingTravelers;
 
-                                        {tour.image ? (
+                                if (
+                                    tour.remainingTravelers !==
+                                    undefined &&
+                                    tour.remainingTravelers !==
+                                    null
+                                ) {
+                                    remainingTravelers =
+                                        Math.max(
+                                            Number(
+                                                tour.remainingTravelers
+                                            ),
+                                            0
+                                        );
+                                } else {
+                                    remainingTravelers =
+                                        Math.max(
+                                            maxTravelers -
+                                                bookedTravelers,
+                                            0
+                                        );
+                                }
 
-                                            <img
-                                                src={
-                                                    tour.image
-                                                }
-                                                alt={
-                                                    tour.title
-                                                }
-                                            />
+                                const isFull =
+                                    Boolean(
+                                        tour.isFull
+                                    ) ||
+                                    remainingTravelers <= 0;
 
-                                        ) : (
+                                // =================================================
+                                // TOUR STATUS
+                                // =================================================
 
-                                            <div className="explore-tour-placeholder">
+                                const isActive =
+                                    !tour.status ||
+                                    tour.status ===
+                                        "active";
 
-                                                <span>
-                                                    ✈️
-                                                </span>
+                                // =================================================
+                                // DISPLAY STATUS
+                                // =================================================
 
-                                                <small>
-                                                    TravelMet
-                                                </small>
+                                const statusText =
+                                    isFull
+                                        ? "FULL"
+                                        : isActive
+                                            ? "✓ Available"
+                                            : "Unavailable";
 
-                                            </div>
+                                // =================================================
+                                // DESCRIPTION
+                                // =================================================
 
-                                        )}
+                                const description =
+                                    tour.description ||
+                                    "Discover an unforgettable travel experience with TravelMet.";
 
+                                const shortDescription =
+                                    description.length >
+                                    110
+                                        ? `${description.substring(
+                                              0,
+                                              110
+                                          )}...`
+                                        : description;
 
-                                        <span className="explore-active-badge">
-                                            ✓ Available
-                                        </span>
+                                return (
+                                    <article
+                                        className="explore-tour-card"
+                                        key={tour._id}
+                                    >
 
-                                        {tour.theme && (
+                                        {/* =================================================
+                                            IMAGE
+                                        ================================================= */}
 
-                                            <span className="explore-theme-badge">
-                                                {THEME_ICONS[tour.theme] || "🌍"}{" "}
-                                                {tour.theme}
-                                            </span>
+                                        <div className="explore-tour-image">
 
-                                        )}
-
-                                    </div>
-
-
-                                    {/* =========================
-                                        CONTENT
-                                    ========================= */}
-
-                                    <div className="explore-tour-content">
-
-
-                                        {/* COMPANY */}
-
-                                        <div className="tour-company">
-
-                                            {tour.company?.logo ? (
-
+                                            {tour.image ? (
                                                 <img
                                                     src={
-                                                        tour.company.logo
+                                                        tour.image
                                                     }
                                                     alt={
-                                                        tour.company.companyName
+                                                        tour.title ||
+                                                        "TravelMet tour"
                                                     }
+                                                    loading="lazy"
                                                 />
-
                                             ) : (
+                                                <div className="explore-tour-placeholder">
 
-                                                <div className="tour-company-placeholder">
-                                                    🏢
+                                                    <span>
+                                                        ✈️
+                                                    </span>
+
+                                                    <small>
+                                                        TravelMet
+                                                    </small>
+
                                                 </div>
-
                                             )}
 
-                                            <div>
+                                            {/* AVAILABILITY */}
 
-                                                <span>
-                                                    ORGANIZED BY
-                                                </span>
-
-                                                <strong>
-                                                    {
-                                                        tour.company
-                                                            ?.companyName ||
-                                                        "Travel Company"
-                                                    }
-                                                </strong>
-
-                                            </div>
-
-                                        </div>
-
-
-                                        {/* DESTINATION */}
-
-                                        <span className="explore-tour-destination">
-
-                                            📍{" "}
-                                            {
-                                                tour.destination
-                                            }
-
-                                        </span>
-
-
-                                        {/* TITLE */}
-
-                                        <h3>
-                                            {tour.title}
-                                        </h3>
-
-
-                                        {/* DESCRIPTION */}
-
-                                        <p className="explore-tour-description">
-
-                                            {tour.description?.length >
-                                                110
-                                                ? `${tour.description.substring(
-                                                    0,
-                                                    110
-                                                )}...`
-                                                : tour.description}
-
-                                        </p>
-
-
-                                        {/* DATES */}
-
-                                        <div className="explore-tour-dates">
-
-                                            <div>
-
-                                                <span>
-                                                    DEPARTURE
-                                                </span>
-
-                                                <strong>
-                                                    {formatDate(
-                                                        tour.startDate
-                                                    )}
-                                                </strong>
-
-                                            </div>
-
-
-                                            <div>
-
-                                                <span>
-                                                    RETURN
-                                                </span>
-
-                                                <strong>
-                                                    {formatDate(
-                                                        tour.endDate
-                                                    )}
-                                                </strong>
-
-                                            </div>
-
-                                        </div>
-
-
-                                        {/* META */}
-
-                                        <div className="explore-tour-meta">
-
-                                            <span>
-                                                ⏱{" "}
-                                                {tour.duration}{" "}
-                                                {tour.duration === 1
-                                                    ? "Day"
-                                                    : "Days"}
-                                            </span>
-
-                                            <span>
-                                                👥{" "}
-                                                {tour.maxTravelers}{" "}
-                                                Seats
-                                            </span>
-
-                                        </div>
-
-
-                                        {/* PRICE */}
-
-                                        <div className="explore-tour-bottom">
-
-                                            <div className="explore-tour-price">
-
-                                                <small>
-                                                    Starting from
-                                                </small>
-
-                                                <strong>
-                                                    ₹
-                                                    {Number(
-                                                        tour.price ||
-                                                        0
-                                                    ).toLocaleString(
-                                                        "en-IN"
-                                                    )}
-                                                </strong>
-
-                                            </div>
-
-
-                                            {/* VIEW */}
-
-                                            <button
-                                                className="explore-view-btn"
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/tour/${tour._id}`
-                                                    )
+                                            <span
+                                                className={
+                                                    isFull
+                                                        ? "explore-active-badge full"
+                                                        : "explore-active-badge"
                                                 }
                                             >
-                                                View Tour →
-                                            </button>
+                                                {statusText}
+                                            </span>
+
+                                            {/* THEME */}
+
+                                            {tour.theme && (
+                                                <span className="explore-theme-badge">
+
+                                                    {
+                                                        THEME_ICONS[
+                                                            tour.theme
+                                                        ] ||
+                                                        "🌍"
+                                                    }{" "}
+
+                                                    {tour.theme}
+
+                                                </span>
+                                            )}
 
                                         </div>
 
-                                    </div>
+                                        {/* =================================================
+                                            CONTENT
+                                        ================================================= */}
 
-                                </article>
+                                        <div className="explore-tour-content">
 
-                            )
+                                            {/* COMPANY */}
+
+                                            <div className="tour-company">
+
+                                                {tour.company?.logo ? (
+                                                    <img
+                                                        src={
+                                                            tour.company.logo
+                                                        }
+                                                        alt={
+                                                            tour.company
+                                                                ?.companyName ||
+                                                            "Travel company"
+                                                        }
+                                                        loading="lazy"
+                                                    />
+                                                ) : (
+                                                    <div className="tour-company-placeholder">
+                                                        🏢
+                                                    </div>
+                                                )}
+
+                                                <div>
+
+                                                    <span>
+                                                        ORGANIZED BY
+                                                    </span>
+
+                                                    <strong>
+                                                        {
+                                                            tour.company
+                                                                ?.companyName ||
+                                                            "Travel Company"
+                                                        }
+                                                    </strong>
+
+                                                </div>
+
+                                            </div>
+
+                                            {/* DESTINATION */}
+
+                                            <span className="explore-tour-destination">
+
+                                                📍{" "}
+
+                                                {
+                                                    tour.destination ||
+                                                    "Destination"
+                                                }
+
+                                            </span>
+
+                                            {/* TITLE */}
+
+                                            <h3>
+                                                {
+                                                    tour.title ||
+                                                    "TravelMet Tour"
+                                                }
+                                            </h3>
+
+                                            {/* DESCRIPTION */}
+
+                                            <p className="explore-tour-description">
+                                                {shortDescription}
+                                            </p>
+
+                                            {/* DATES */}
+
+                                            <div className="explore-tour-dates">
+
+                                                <div>
+
+                                                    <span>
+                                                        DEPARTURE
+                                                    </span>
+
+                                                    <strong>
+                                                        {formatDate(
+                                                            tour.startDate
+                                                        )}
+                                                    </strong>
+
+                                                </div>
+
+                                                <div>
+
+                                                    <span>
+                                                        RETURN
+                                                    </span>
+
+                                                    <strong>
+                                                        {formatDate(
+                                                            tour.endDate
+                                                        )}
+                                                    </strong>
+
+                                                </div>
+
+                                            </div>
+
+                                            {/* META */}
+
+                                            <div className="explore-tour-meta">
+
+                                                <span>
+                                                    ⏱{" "}
+                                                    {tour.duration ||
+                                                        1}{" "}
+                                                    {(Number(
+                                                        tour.duration
+                                                    ) || 1) === 1
+                                                        ? "Day"
+                                                        : "Days"}
+                                                </span>
+
+                                                <span>
+                                                    👥{" "}
+                                                    {maxTravelers}{" "}
+                                                    Seats
+                                                </span>
+
+                                            </div>
+
+                                            {/* =================================================
+                                                LIVE BOOKING STATUS
+                                            ================================================= */}
+
+                                            <div className="explore-tour-booking-status">
+
+                                                <span>
+                                                    👥{" "}
+                                                    <strong>
+                                                        {
+                                                            bookedTravelers
+                                                        }
+                                                    </strong>{" "}
+                                                    booked
+                                                </span>
+
+                                                <span>
+                                                    {isFull
+                                                        ? "Fully booked"
+                                                        : `${remainingTravelers} seat${
+                                                              remainingTravelers ===
+                                                              1
+                                                                  ? ""
+                                                                  : "s"
+                                                          } left`}
+                                                </span>
+
+                                            </div>
+
+                                            {/* =================================================
+                                                PRICE + VIEW BUTTON
+                                            ================================================= */}
+
+                                            <div className="explore-tour-bottom">
+
+                                                <div className="explore-tour-price">
+
+                                                    <small>
+                                                        Starting from
+                                                    </small>
+
+                                                    <strong>
+                                                        ₹
+                                                        {Number(
+                                                            tour.price ||
+                                                                0
+                                                        ).toLocaleString(
+                                                            "en-IN"
+                                                        )}
+                                                    </strong>
+
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    className="explore-view-btn"
+                                                    onClick={() =>
+                                                        handleViewTour(
+                                                            tour._id
+                                                        )
+                                                    }
+                                                >
+                                                    View Tour →
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    </article>
+                                );
+                            }
                         )}
 
                     </div>
-
                 )}
 
             </main>
-
 
             {/* =================================================
                 FOOTER NOTE
@@ -734,9 +894,7 @@ function ExploreTours() {
             </section>
 
         </div>
-
     );
-
 }
 
 export default ExploreTours;
