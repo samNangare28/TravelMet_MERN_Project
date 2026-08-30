@@ -1,16 +1,8 @@
+const mongoose = require("mongoose");
 const Tour = require("../models/Tour");
 const TravelCompany = require("../models/TravelCompany");
 const TourBooking = require("../models/TourBooking");
 const { getBookedTravelerCount } = require("../utils/tourCapacity");
-
-
-// =====================================================
-// ADD TOUR
-// =====================================================
-
-const mongoose = require("mongoose");
-const Tour = require("../models/Tour");
-const TravelCompany = require("../models/TravelCompany");
 
 
 // =====================================================
