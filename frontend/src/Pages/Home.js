@@ -5,68 +5,126 @@ function Home() {
     return (
         <main className="home">
 
-            {/* =====================================================
-                HERO
-            ===================================================== */}
-            <section className="hero">
+           {/* =====================================================
+    HERO
+===================================================== */}
+<section className="hero">
 
-                <div className="hero-overlay"></div>
+    <div className="hero-background"></div>
+    <div className="hero-overlay"></div>
 
-                <div className="hero-inner">
+    <div className="hero-inner">
 
-                    <div className="hero-content">
+        <div className="hero-content">
 
-                        <div className="hero-badge">
-                            <span>✦</span>
-                            AI POWERED TRAVEL PLATFORM
-                        </div>
+            <div className="hero-badge">
+                <span>✦</span>
+                AI POWERED TRAVEL PLATFORM
+            </div>
 
-                        <h1>
-                            Your journey.
-                            <br />
-                            <span>Your way.</span>
-                        </h1>
+            <h1>
+                Your journey.
+                <br />
+                <span>Your way.</span>
+            </h1>
 
-                        <p>
-                            Plan unforgettable trips with AI, discover
-                            inspiring places, connect with travellers and
-                            explore experiences from trusted travel companies.
-                        </p>
+            <p>
+                Plan unforgettable trips with AI, discover inspiring
+                places, connect with travellers and explore experiences
+                from trusted travel companies.
+            </p>
 
-                        <div className="hero-buttons">
+            <div className="hero-buttons">
 
-                            <Link to="/trip-planner">
-                                <button className="primary-btn">
-                                    Plan My Trip
-                                    <span>→</span>
-                                </button>
-                            </Link>
+                <Link to="/trip-planner">
+                    <button className="primary-btn">
+                        Plan My Trip
+                        <span>→</span>
+                    </button>
+                </Link>
 
-                            <Link to="/explore-tours">
-                                <button className="secondary-btn">
-                                    Explore Tours
-                                </button>
-                            </Link>
+                <Link to="/explore-tours">
+                    <button className="secondary-btn">
+                        Explore Tours
+                        <span>→</span>
+                    </button>
+                </Link>
 
-                        </div>
+            </div>
 
-                        <div className="hero-note">
-                            <span>✦</span>
-                            Smart planning. Real experiences. Better travel.
-                        </div>
+            <div className="hero-note">
+                <span>✦</span>
+                Smart planning. Real experiences. Better travel.
+            </div>
 
-                    </div>
+        </div>
 
-                </div>
+    </div>
 
-                <div className="hero-scroll">
-                    <span>SCROLL TO EXPLORE</span>
-                    <div className="scroll-line"></div>
-                </div>
-
-            </section>
+</section>
 
 
+{/* =====================================================
+    STATS
+===================================================== */}
+<section className="stats">
+
+    <div className="stat-item">
+
+        <div className="stat-icon">
+            ✈
+        </div>
+
+        <div>
+            <strong>500+</strong>
+            <span>Trips Planned</span>
+        </div>
+
+    </div>
+
+
+    <div className="stat-item">
+
+        <div className="stat-icon">
+            ◎
+        </div>
+
+        <div>
+            <strong>150+</strong>
+            <span>Destinations</span>
+        </div>
+
+    </div>
+
+
+    <div className="stat-item">
+
+        <div className="stat-icon">
+            ♡
+        </div>
+
+        <div>
+            <strong>1000+</strong>
+            <span>Travellers</span>
+        </div>
+
+    </div>
+
+
+    <div className="stat-item">
+
+        <div className="stat-icon">
+            ✦
+        </div>
+
+        <div>
+            <strong>24×7</strong>
+            <span>AI Assistance</span>
+        </div>
+
+    </div>
+
+</section>
             {/* =====================================================
                 STATS
             ===================================================== */}
