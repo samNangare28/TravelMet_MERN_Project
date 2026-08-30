@@ -8,107 +8,109 @@ function Home() {
             {/* =====================================================
                 HERO
             ===================================================== */}
-            <section className="hero">
+            {/* =====================================================
+    HERO
+===================================================== */}
+<section className="hero">
 
-                <div className="hero-inner">
+    <div className="hero-inner">
 
-                    {/* LEFT CONTENT */}
-                    <div className="hero-content">
+        {/* LEFT CONTENT */}
+        <div className="hero-content">
 
-                        <div className="hero-badge">
-                            <span>✦</span>
-                            AI POWERED TRAVEL PLATFORM
-                        </div>
+            <div className="hero-badge">
+                <span>✦</span>
+                AI POWERED TRAVEL PLATFORM
+            </div>
 
-                        <h1>
-                            Your journey.
-                            <br />
-                            <span>Your way.</span>
-                        </h1>
+            <h1>
+                Your journey.
+                <br />
+                <span>Your way.</span>
+            </h1>
 
-                        <p>
-                            Plan unforgettable trips with AI, discover
-                            inspiring places, connect with travellers and
-                            explore experiences from trusted travel companies.
-                        </p>
+            <p>
+                Plan unforgettable trips with AI, discover
+                inspiring places, connect with travellers and
+                explore experiences from trusted travel companies.
+            </p>
 
-                        <div className="hero-buttons">
+            <div className="hero-buttons">
 
-                            <Link to="/trip-planner">
-                                <button className="primary-btn">
-                                    Plan My Trip
-                                    <span>→</span>
-                                </button>
-                            </Link>
+                <Link to="/trip-planner">
+                    <button className="primary-btn">
+                        Plan My Trip
+                        <span>→</span>
+                    </button>
+                </Link>
 
-                            <Link to="/explore-tours">
-                                <button className="secondary-btn">
-                                    Explore Tours
-                                </button>
-                            </Link>
+                <Link to="/explore-tours">
+                    <button className="secondary-btn">
+                        Explore Tours
+                    </button>
+                </Link>
 
-                        </div>
+            </div>
 
-                        <div className="hero-note">
-                            <span>✦</span>
-                            Smart planning. Real experiences. Better travel.
-                        </div>
+            <div className="hero-note">
+                <span>✦</span>
+                Smart planning. Real experiences. Better travel.
+            </div>
 
+        </div>
+
+
+        {/* RIGHT VISUAL */}
+        <div className="hero-visual">
+
+            <div className="hero-image-card">
+
+                <img
+                    src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?auto=format&fit=crop&w=1000&q=85"
+                    alt="Travellers exploring a beautiful destination"
+                />
+
+                <div className="image-gradient"></div>
+
+                <div className="image-caption">
+
+                    <div>
+                        <span>EXPLORE</span>
+                        <h3>Moments worth travelling for.</h3>
                     </div>
 
-
-                    {/* RIGHT VISUAL */}
-                    <div className="hero-visual">
-
-                        <div className="hero-image-card">
-
-                            <img
-                                src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=85"
-                                alt="Beautiful travel destination"
-                            />
-
-                            <div className="image-gradient"></div>
-
-                            <div className="image-caption">
-
-                                <div>
-                                    <span>DISCOVER</span>
-                                    <h3>Beautiful places await.</h3>
-                                </div>
-
-                                <div className="caption-icon">
-                                    →
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        {/* FLOATING CARD */}
-                        <div className="hero-floating-card">
-
-                            <div className="floating-icon">
-                                ✦
-                            </div>
-
-                            <div>
-                                <strong>AI Trip Planner</strong>
-                                <span>Personalized for you</span>
-                            </div>
-
-                            <div className="floating-check">
-                                ✓
-                            </div>
-
-                        </div>
-
+                    <div className="caption-icon">
+                        →
                     </div>
 
                 </div>
 
-            </section>
+            </div>
 
+
+            {/* FLOATING AI CARD */}
+            <div className="hero-floating-card">
+
+                <div className="floating-icon">
+                    ✦
+                </div>
+
+                <div className="floating-text">
+                    <strong>AI Trip Planner</strong>
+                    <span>Personalized for you</span>
+                </div>
+
+                <div className="floating-check">
+                    ✓
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 
             {/* =====================================================
                 STATS
