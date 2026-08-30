@@ -8,109 +8,64 @@ function Home() {
             {/* =====================================================
                 HERO
             ===================================================== */}
-            {/* =====================================================
-    HERO
-===================================================== */}
-<section className="hero">
+            <section className="hero">
 
-    <div className="hero-inner">
+                <div className="hero-overlay"></div>
 
-        {/* LEFT CONTENT */}
-        <div className="hero-content">
+                <div className="hero-inner">
 
-            <div className="hero-badge">
-                <span>✦</span>
-                AI POWERED TRAVEL PLATFORM
-            </div>
+                    <div className="hero-content">
 
-            <h1>
-                Your journey.
-                <br />
-                <span>Your way.</span>
-            </h1>
+                        <div className="hero-badge">
+                            <span>✦</span>
+                            AI POWERED TRAVEL PLATFORM
+                        </div>
 
-            <p>
-                Plan unforgettable trips with AI, discover
-                inspiring places, connect with travellers and
-                explore experiences from trusted travel companies.
-            </p>
+                        <h1>
+                            Your journey.
+                            <br />
+                            <span>Your way.</span>
+                        </h1>
 
-            <div className="hero-buttons">
+                        <p>
+                            Plan unforgettable trips with AI, discover
+                            inspiring places, connect with travellers and
+                            explore experiences from trusted travel companies.
+                        </p>
 
-                <Link to="/trip-planner">
-                    <button className="primary-btn">
-                        Plan My Trip
-                        <span>→</span>
-                    </button>
-                </Link>
+                        <div className="hero-buttons">
 
-                <Link to="/explore-tours">
-                    <button className="secondary-btn">
-                        Explore Tours
-                    </button>
-                </Link>
+                            <Link to="/trip-planner">
+                                <button className="primary-btn">
+                                    Plan My Trip
+                                    <span>→</span>
+                                </button>
+                            </Link>
 
-            </div>
+                            <Link to="/explore-tours">
+                                <button className="secondary-btn">
+                                    Explore Tours
+                                </button>
+                            </Link>
 
-            <div className="hero-note">
-                <span>✦</span>
-                Smart planning. Real experiences. Better travel.
-            </div>
+                        </div>
 
-        </div>
+                        <div className="hero-note">
+                            <span>✦</span>
+                            Smart planning. Real experiences. Better travel.
+                        </div>
 
-
-        {/* RIGHT VISUAL */}
-        <div className="hero-visual">
-
-            <div className="hero-image-card">
-
-                <img
-                    src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?auto=format&fit=crop&w=1000&q=85"
-                    alt="Travellers exploring a beautiful destination"
-                />
-
-                <div className="image-gradient"></div>
-
-                <div className="image-caption">
-
-                    <div>
-                        <span>EXPLORE</span>
-                        <h3>Moments worth travelling for.</h3>
-                    </div>
-
-                    <div className="caption-icon">
-                        →
                     </div>
 
                 </div>
 
-            </div>
-
-
-            {/* FLOATING AI CARD */}
-            <div className="hero-floating-card">
-
-                <div className="floating-icon">
-                    ✦
+                <div className="hero-scroll">
+                    <span>SCROLL TO EXPLORE</span>
+                    <div className="scroll-line"></div>
                 </div>
 
-                <div className="floating-text">
-                    <strong>AI Trip Planner</strong>
-                    <span>Personalized for you</span>
-                </div>
+            </section>
 
-                <div className="floating-check">
-                    ✓
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
 
             {/* =====================================================
                 STATS
@@ -390,13 +345,19 @@ function Home() {
                         <div className="ai-window-body">
 
                             <div className="ai-welcome">
+
                                 <span>✦</span>
+
                                 <div>
-                                    <strong>Let's plan your journey</strong>
+                                    <strong>
+                                        Let's plan your journey
+                                    </strong>
+
                                     <p>
                                         Tell us about your perfect trip.
                                     </p>
                                 </div>
+
                             </div>
 
 
@@ -404,7 +365,9 @@ function Home() {
 
                                 <div>
                                     <small>DESTINATION</small>
-                                    <strong>Where do you want to go?</strong>
+                                    <strong>
+                                        Where do you want to go?
+                                    </strong>
                                 </div>
 
                                 <span>→</span>
@@ -593,11 +556,14 @@ function Home() {
                     <div className="community-small-image image-b"></div>
 
                     <div className="community-note">
+
                         <span>✦</span>
+
                         <div>
                             <strong>Share your journey</strong>
                             <small>Inspire another traveller</small>
                         </div>
+
                     </div>
 
                 </div>
