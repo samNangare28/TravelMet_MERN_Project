@@ -1,12 +1,10 @@
 const mongoose = require("mongoose");
 
-
 // =====================================================
 // TOUR BOOKING SCHEMA
 // =====================================================
 
 const tourBookingSchema = new mongoose.Schema(
-
     {
 
         // =================================================
@@ -14,15 +12,10 @@ const tourBookingSchema = new mongoose.Schema(
         // =================================================
 
         tour: {
-
             type: mongoose.Schema.Types.ObjectId,
-
             ref: "Tour",
-
             required: true,
-
             index: true
-
         },
 
 
@@ -31,15 +24,10 @@ const tourBookingSchema = new mongoose.Schema(
         // =================================================
 
         user: {
-
             type: mongoose.Schema.Types.ObjectId,
-
             ref: "User",
-
             required: true,
-
             index: true
-
         },
 
 
@@ -48,129 +36,212 @@ const tourBookingSchema = new mongoose.Schema(
         // =================================================
 
         company: {
-
             type: mongoose.Schema.Types.ObjectId,
-
             ref: "TravelCompany",
-
             required: true,
-
             index: true
+        },
 
+
+        // =================================================
+        // CONTACT DETAILS
+        // =================================================
+
+        contactName: {
+            type: String,
+            required: true,
+            trim: true,
+            maxlength: 100
+        },
+
+
+        contactEmail: {
+            type: String,
+            required: true,
+            trim: true,
+            lowercase: true,
+            maxlength: 150
+        },
+
+
+        contactPhone: {
+            type: String,
+            required: true,
+            trim: true,
+            maxlength: 20
+        },
+
+
+        // =================================================
+        // NUMBER OF TRAVELERS
+        // =================================================
+
+        numberOfTravelers: {
+            type: Number,
+            required: true,
+            min: 1,
+            max: 10
+        },
+
+
+        // =================================================
+        // SPECIAL REQUESTS
+        // =================================================
+
+        specialRequests: {
+            type: String,
+            trim: true,
+            maxlength: 500,
+            default: ""
         },
 
 
         // =================================================
         // BOOKING STATUS
         // =================================================
+        //
+        // pending   → User requested booking
+        // confirmed → Company accepted booking
+        // rejected  → Company rejected booking
+        // cancelled → User cancelled confirmed booking
+        //
+        // IMPORTANT:
+        // Booking is NOT confirmed when user submits it.
+        //
+        // =================================================
 
         status: {
-
             type: String,
-
             enum: [
-
+                "pending",
                 "confirmed",
-
+                "rejected",
                 "cancelled"
-
             ],
-
-            default: "confirmed",
-
+            default: "pending",
             index: true
+        },
 
+        rejectionReason: {
+            type: String,
+            trim: true,
+            maxlength: 500,
+            default: ""
+        },
+
+        confirmedAt: {
+            type: Date,
+            default: null
+        },
+
+        rejectedAt: {
+            type: Date,
+            default: null
+        },
+
+
+        // =================================================
+        // COMPANY RESPONSE DETAILS
+        // =================================================
+        //
+        // These fields help us track when and why the
+        // company responded to the booking request.
+        //
+        // =================================================
+
+        companyRespondedAt: {
+            type: Date,
+            default: null
+        },
+
+
+        rejectionReason: {
+            type: String,
+            trim: true,
+            maxlength: 500,
+            default: ""
         }
 
     },
 
     {
-
         timestamps: true
-
     }
-
 );
 
 
 // =====================================================
-// PREVENT DUPLICATE BOOKING
+// ACTIVE BOOKING UNIQUE INDEX
 // =====================================================
 //
-// Same user cannot register for same tour twice.
+// Same user cannot have two CONFIRMED bookings
+// for the same tour.
 //
-// User A + Tour X → Allowed
-// User A + Tour X → Blocked
-// User B + Tour X → Allowed
+// Example:
 //
-// IMPORTANT:
-// This index works even if the user cancels.
-// Therefore, after cancellation the same user cannot
-// create another booking for the same tour.
+// User A + Tour X → confirmed ✅
+// User A + Tour X → blocked ❌
+//
+// If previous booking is:
+//
+// cancelled / rejected
+//
+// User can request/book again.
 //
 // =====================================================
 
 tourBookingSchema.index(
-
     {
-
         tour: 1,
-
         user: 1
-
     },
-
     {
+        unique: true,
 
-        unique: true
-
+        partialFilterExpression: {
+            status: "confirmed"
+        }
     }
-
 );
+
+
+// =====================================================
+// COMPANY + STATUS INDEX
+// =====================================================
+//
+// Useful for company dashboard.
+//
+// Example:
+//
+// Find all pending bookings for company.
+//
+// =====================================================
+
+tourBookingSchema.index({
+    company: 1,
+    status: 1,
+    createdAt: -1
+});
 
 
 // =====================================================
 // COMPANY + TOUR + STATUS INDEX
 // =====================================================
-//
-// Useful for company dashboard:
-//
-// Company → Tour → Confirmed bookings
-//
-// =====================================================
 
 tourBookingSchema.index({
-
     company: 1,
-
     tour: 1,
-
     status: 1
-
 });
 
 
 // =====================================================
 // TOUR + STATUS INDEX
 // =====================================================
-//
-// Makes counting confirmed travelers faster.
-//
-// Example:
-//
-// TourBooking.countDocuments({
-//     tour: tourId,
-//     status: "confirmed"
-// })
-//
-// =====================================================
 
 tourBookingSchema.index({
-
     tour: 1,
-
     status: 1
-
 });
 
 
@@ -179,11 +250,8 @@ tourBookingSchema.index({
 // =====================================================
 
 const TourBooking = mongoose.model(
-
     "TourBooking",
-
     tourBookingSchema
-
 );
 
 

@@ -1,74 +1,86 @@
+const mongoose = require("mongoose");
+
 const Tour = require("../models/Tour");
-
-const TourBooking =
-    require("../models/TourBooking");
-
-const TravelCompany =
-    require("../models/TravelCompany");
+const TourBooking = require("../models/TourBooking");
+const TravelCompany = require("../models/TravelCompany");
 
 const {
     sendTourBookingUserEmail,
     sendTourBookingCompanyEmail
 } = require("../utils/sendEmail");
 
-const { getBookedTravelerCount } =
-    require("../utils/tourCapacity");
+const {
+    getBookedTravelerCount
+} = require("../utils/tourCapacity");
+
+
+// =====================================================
+// HELPER
+// CHECK VALID MONGODB ID
+// =====================================================
+
+const isValidObjectId = (id) => {
+    return mongoose.Types.ObjectId.isValid(id);
+};
 
 
 // =====================================================
 // HELPER
 // GET TOUR CAPACITY
 // =====================================================
+//
+// IMPORTANT:
+// getBookedTravelerCount() should count ONLY
+// confirmed bookings.
+//
+// Pending / rejected / cancelled bookings
+// should NOT occupy seats.
+//
+// =====================================================
 
 const getTourCapacity = async (tourId) => {
 
-    const tour =
-        await Tour.findById(tourId);
+    const tour = await Tour.findById(tourId);
 
     if (!tour) {
         return null;
     }
 
-
     const bookedTravelers =
         await getBookedTravelerCount(tourId);
 
-
     const remainingTravelers =
         Math.max(
-
-            tour.maxTravelers -
-            bookedTravelers,
-
+            tour.maxTravelers - bookedTravelers,
             0
-
         );
 
-
     return {
-
-        maxTravelers:
-            tour.maxTravelers,
-
+        maxTravelers: tour.maxTravelers,
         bookedTravelers,
-
         remainingTravelers,
-
-        isFull:
-            remainingTravelers === 0
-
+        isFull: remainingTravelers <= 0
     };
-
 };
 
 
 // =====================================================
 // BOOK TOUR
+// POST /api/tour-bookings/:tourId
+// USER ONLY
 // =====================================================
 //
-// POST /api/tour-bookings/:tourId
+// FLOW:
 //
-// USER ONLY
+// User books
+//      ↓
+// PENDING
+//      ↓
+// Company gets notification/email
+//      ↓
+// Company confirms/rejects
+//
+// NO USER CONFIRMATION EMAIL HERE.
 //
 // =====================================================
 
@@ -76,11 +88,27 @@ const bookTour = async (req, res) => {
 
     try {
 
-        const { tourId } =
-            req.params;
+        const { tourId } = req.params;
+        const userId = req.user.id;
 
-        const userId =
-            req.user.id;
+
+        // =================================================
+        // VALIDATE TOUR ID
+        // =================================================
+
+        if (!isValidObjectId(tourId)) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Invalid tour ID"
+            });
+
+        }
+
+
+        // =================================================
+        // GET FORM DATA
+        // =================================================
 
         const {
             contactName,
@@ -92,26 +120,87 @@ const bookTour = async (req, res) => {
 
 
         // =================================================
-        // VALIDATE BOOKING FORM
+        // BASIC VALIDATION
         // =================================================
 
-        if (
-            !contactName?.trim() ||
-            !contactEmail?.trim() ||
-            !contactPhone?.trim()
-        ) {
+        if (!contactName?.trim()) {
 
             return res.status(400).json({
-
                 success: false,
-
-                message:
-                    "Please provide your name, email and phone number"
-
+                message: "Please enter your full name"
             });
 
         }
 
+
+        if (!contactEmail?.trim()) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Please enter your email address"
+            });
+
+        }
+
+
+        if (!contactPhone?.trim()) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Please enter your phone number"
+            });
+
+        }
+
+
+        // =================================================
+        // EMAIL VALIDATION
+        // =================================================
+
+        const emailPattern =
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (
+            !emailPattern.test(
+                contactEmail.trim()
+            )
+        ) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Please enter a valid email address"
+            });
+
+        }
+
+
+        // =================================================
+        // PHONE VALIDATION
+        // =================================================
+
+        const cleanPhone =
+            contactPhone
+                .trim()
+                .replace(/[\s-]/g, "");
+
+
+        if (
+            !/^\+?\d{7,15}$/.test(
+                cleanPhone
+            )
+        ) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Please enter a valid phone number"
+            });
+
+        }
+
+
+        // =================================================
+        // TRAVELER VALIDATION
+        // =================================================
 
         const travelers =
             Number(numberOfTravelers);
@@ -123,12 +212,24 @@ const bookTour = async (req, res) => {
         ) {
 
             return res.status(400).json({
-
                 success: false,
-
                 message:
                     "Number of travelers must be at least 1"
+            });
 
+        }
+
+
+        // =================================================
+        // MAX 10 TRAVELERS
+        // =================================================
+
+        if (travelers > 10) {
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Maximum 10 travelers are allowed per booking"
             });
 
         }
@@ -145,300 +246,324 @@ const bookTour = async (req, res) => {
         if (!tour) {
 
             return res.status(404).json({
-
                 success: false,
-
-                message:
-                    "Tour not found"
-
+                message: "Tour not found"
             });
 
         }
 
 
         // =================================================
-        // CHECK TOUR STATUS
+        // TOUR STATUS
         // =================================================
 
         if (tour.status !== "active") {
 
             return res.status(400).json({
-
                 success: false,
-
                 message:
-                    "This tour is no longer available"
-
+                    tour.status === "cancelled"
+                        ? "This tour has been cancelled"
+                        : "This tour is no longer available"
             });
 
         }
 
 
         // =================================================
-        // CHECK TOUR EXPIRY
+        // TOUR EXPIRY
         // =================================================
 
-        const today =
-            new Date();
-
-        today.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
+        const now = new Date();
 
         const tourEndDate =
             new Date(tour.endDate);
 
-        tourEndDate.setHours(
-            0,
-            0,
-            0,
-            0
-        );
 
-
-        if (tourEndDate < today) {
+        if (tourEndDate < now) {
 
             return res.status(400).json({
-
                 success: false,
-
                 message:
                     "This tour has already expired"
-
             });
 
         }
 
 
         // =================================================
-        // CHECK EXISTING BOOKING
+        // CHECK EXISTING ACTIVE REQUEST
+        // =================================================
+        //
+        // User cannot send another request while one
+        // is already pending or confirmed.
+        //
+        // Rejected/cancelled booking can be requested again.
+        //
         // =================================================
 
         const existingBooking =
             await TourBooking.findOne({
-
                 tour: tourId,
-
                 user: userId,
-
-                status: "confirmed"
-
+                status: {
+                    $in: [
+                        "pending",
+                        "confirmed"
+                    ]
+                }
             });
 
 
         if (existingBooking) {
 
+            if (
+                existingBooking.status ===
+                "pending"
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Your booking request is already pending for this tour",
+                    alreadyRequested: true,
+                    booking: existingBooking
+                });
+
+            }
+
+
             return res.status(400).json({
-
                 success: false,
-
                 message:
                     "You have already registered for this tour",
-
-                alreadyBooked: true
-
+                alreadyBooked: true,
+                booking: existingBooking
             });
 
         }
 
 
         // =================================================
-        // COUNT CURRENT BOOKINGS (BY SEATS, NOT DOCUMENTS)
+        // CHECK CURRENT CONFIRMED CAPACITY
+        // =================================================
+        //
+        // IMPORTANT:
+        // Pending bookings do NOT occupy seats.
+        //
+        // Only confirmed bookings are counted.
+        //
         // =================================================
 
         const bookedTravelers =
-            await getBookedTravelerCount(tourId);
+            await getBookedTravelerCount(
+                tourId
+            );
 
 
-        // =================================================
-        // CHECK CAPACITY
-        // =================================================
-
-        const remainingBeforeBooking =
+        const remainingBeforeRequest =
             Math.max(
-                tour.maxTravelers - bookedTravelers,
+                tour.maxTravelers -
+                bookedTravelers,
                 0
             );
 
 
+        // =================================================
+        // FULL TOUR
+        // =================================================
+
         if (
-            travelers >
-            remainingBeforeBooking
+            remainingBeforeRequest <= 0
         ) {
 
             return res.status(400).json({
-
                 success: false,
-
                 message:
-                    remainingBeforeBooking === 0
-                        ? "This tour is fully booked"
-                        : `Only ${remainingBeforeBooking} seat(s) left for this tour`,
-
-                isFull:
-                    remainingBeforeBooking === 0,
-
+                    "This tour is fully booked",
+                isFull: true,
                 tourCapacity: {
+                    maxTravelers:
+                        tour.maxTravelers,
 
+                    bookedTravelers,
+
+                    remainingTravelers: 0,
+
+                    isFull: true
+                }
+            });
+
+        }
+
+
+        // =================================================
+        // REQUESTED TRAVELERS > AVAILABLE SEATS
+        // =================================================
+
+        if (
+            travelers >
+            remainingBeforeRequest
+        ) {
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    `Only ${remainingBeforeRequest} seat(s) left for this tour`,
+                isFull: false,
+                tourCapacity: {
                     maxTravelers:
                         tour.maxTravelers,
 
                     bookedTravelers,
 
                     remainingTravelers:
-                        remainingBeforeBooking,
+                        remainingBeforeRequest,
 
-                    isFull:
-                        remainingBeforeBooking === 0
-
+                    isFull: false
                 }
-
             });
 
         }
 
 
         // =================================================
-        // CREATE BOOKING
+        // CREATE PENDING BOOKING
         // =================================================
 
-        const booking =
-            await TourBooking.create({
-
-                tour: tourId,
-
-                user: userId,
-
-                company:
-                    tour.company,
-
-                status: "confirmed",
-
-                numberOfTravelers:
-                    travelers,
-
-                contactName:
-                    contactName.trim(),
-
-                contactEmail:
-                    contactEmail.trim().toLowerCase(),
-
-                contactPhone:
-                    contactPhone.trim(),
-
-                specialRequests:
-                    specialRequests?.trim() || ""
-
-            });
+        let booking;
 
 
-        // =================================================
-        // UPDATED CAPACITY
-        // =================================================
+        try {
 
-        const updatedBookedTravelers =
-            bookedTravelers + travelers;
+            booking =
+                await TourBooking.create({
 
+                    tour: tourId,
 
-        const remainingTravelers =
-            Math.max(
+                    user: userId,
 
-                tour.maxTravelers -
-                updatedBookedTravelers,
+                    company:
+                        tour.company,
 
-                0
+                    contactName:
+                        contactName.trim(),
 
-            );
+                    contactEmail:
+                        contactEmail
+                            .trim()
+                            .toLowerCase(),
 
+                    contactPhone:
+                        cleanPhone,
 
-        // =================================================
-        // OPTIONAL:
-        // MARK TOUR FULL
-        // =================================================
+                    numberOfTravelers:
+                        travelers,
 
-        if (
-            remainingTravelers === 0
-        ) {
+                    specialRequests:
+                        specialRequests?.trim() || "",
 
-            tour.status =
-                "completed";
+                    status:
+                        "pending"
 
-            await tour.save();
-
-        }
-
-
-        // =================================================
-        // NOTIFY USER + COMPANY BY EMAIL
-        // =================================================
-        //
-        // Booking is already confirmed at this point — an
-        // email failure here should never fail the booking
-        // itself, so this is best-effort and logged only.
-        //
-        // =================================================
-
-        (async () => {
-
-            try {
-
-                const company =
-                    await TravelCompany.findById(tour.company);
-
-                if (company?.email) {
-
-                    await sendTourBookingCompanyEmail({
-                        companyOwnerName: company.ownerName,
-                        companyEmail: company.email,
-                        tourTitle: tour.title,
-                        destination: tour.destination,
-                        startDate: tour.startDate,
-                        endDate: tour.endDate,
-                        contactName: booking.contactName,
-                        contactEmail: booking.contactEmail,
-                        contactPhone: booking.contactPhone,
-                        numberOfTravelers: booking.numberOfTravelers,
-                        specialRequests: booking.specialRequests
-                    });
-
-                }
-
-            } catch (emailError) {
-
-                console.error(
-                    "❌ COMPANY BOOKING EMAIL ERROR:",
-                    emailError.message
-                );
-
-            }
-
-
-            try {
-
-                await sendTourBookingUserEmail({
-                    name: booking.contactName,
-                    email: booking.contactEmail,
-                    tourTitle: tour.title,
-                    destination: tour.destination,
-                    startDate: tour.startDate,
-                    endDate: tour.endDate,
-                    numberOfTravelers: booking.numberOfTravelers
                 });
 
-            } catch (emailError) {
+        }
+        catch (createError) {
 
-                console.error(
-                    "❌ USER BOOKING EMAIL ERROR:",
-                    emailError.message
-                );
+            // =============================================
+            // DUPLICATE KEY
+            // =============================================
+
+            if (
+                createError.code === 11000
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "You already have an active booking for this tour",
+                    alreadyBooked: true
+                });
 
             }
 
-        })();
+            throw createError;
+
+        }
+
+
+        // =================================================
+        // SEND COMPANY NOTIFICATION EMAIL
+        // =================================================
+        //
+        // Company receives booking request.
+        //
+        // User DOES NOT receive confirmation email here.
+        //
+        // =================================================
+
+        try {
+
+            const company =
+                await TravelCompany.findById(
+                    tour.company
+                );
+
+
+            if (company?.email) {
+
+                await sendTourBookingCompanyEmail({
+
+                    companyOwnerName:
+                        company.ownerName,
+
+                    companyEmail:
+                        company.email,
+
+                    tourTitle:
+                        tour.title,
+
+                    destination:
+                        tour.destination,
+
+                    startDate:
+                        tour.startDate,
+
+                    endDate:
+                        tour.endDate,
+
+                    contactName:
+                        booking.contactName,
+
+                    contactEmail:
+                        booking.contactEmail,
+
+                    contactPhone:
+                        booking.contactPhone,
+
+                    numberOfTravelers:
+                        booking.numberOfTravelers,
+
+                    specialRequests:
+                        booking.specialRequests,
+
+                    bookingId:
+                        booking._id
+
+                });
+
+            }
+
+        }
+        catch (emailError) {
+
+            console.error(
+                "❌ COMPANY BOOKING EMAIL ERROR:",
+                emailError.message
+            );
+
+        }
 
 
         // =================================================
@@ -450,7 +575,296 @@ const bookTour = async (req, res) => {
             success: true,
 
             message:
-                "Tour registered successfully 🎉",
+                "Booking request sent successfully. Waiting for company confirmation.",
+
+            booking,
+
+            bookingStatus:
+                "pending",
+
+            tourCapacity: {
+
+                maxTravelers:
+                    tour.maxTravelers,
+
+                bookedTravelers,
+
+                remainingTravelers:
+                    remainingBeforeRequest,
+
+                isFull:
+                    remainingBeforeRequest <= 0
+
+            }
+
+        });
+
+    }
+    catch (error) {
+
+        console.error(
+            "❌ BOOK TOUR ERROR:",
+            error
+        );
+
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to send booking request"
+        });
+
+    }
+
+};
+
+
+// =====================================================
+// CONFIRM TOUR BOOKING
+// PATCH /api/tour-bookings/company/:bookingId/confirm
+// COMPANY ONLY
+// =====================================================
+//
+// Company confirms pending booking.
+//
+// THEN:
+// booking → confirmed
+// user → confirmation email
+//
+// =====================================================
+
+const confirmBooking = async (req, res) => {
+
+    try {
+
+        const { bookingId } = req.params;
+
+        const companyId =
+            req.company.id;
+
+
+        // =================================================
+        // VALIDATE BOOKING ID
+        // =================================================
+
+        if (
+            !isValidObjectId(
+                bookingId
+            )
+        ) {
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Invalid booking ID"
+            });
+
+        }
+
+
+        // =================================================
+        // FIND PENDING BOOKING
+        // =================================================
+
+        const booking =
+            await TourBooking.findOne({
+                _id: bookingId,
+                company: companyId,
+                status: "pending"
+            });
+
+
+        if (!booking) {
+
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Pending booking not found or already processed"
+            });
+
+        }
+
+
+        // =================================================
+        // FIND TOUR
+        // =================================================
+
+        const tour =
+            await Tour.findOne({
+                _id: booking.tour,
+                company: companyId
+            });
+
+
+        if (!tour) {
+
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Tour not found or you do not have permission"
+            });
+
+        }
+
+
+        // =================================================
+        // TOUR STATUS
+        // =================================================
+
+        if (
+            tour.status !== "active"
+        ) {
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "This tour is no longer available"
+            });
+
+        }
+
+
+        // =================================================
+        // CHECK CAPACITY AGAIN
+        // =================================================
+        //
+        // Another booking may have been confirmed
+        // after this request was created.
+        //
+        // Therefore capacity MUST be checked again.
+        //
+        // =================================================
+
+        const bookedTravelers =
+            await getBookedTravelerCount(
+                tour._id
+            );
+
+
+        const remainingTravelers =
+            Math.max(
+                tour.maxTravelers -
+                bookedTravelers,
+                0
+            );
+
+
+        if (
+            booking.numberOfTravelers >
+            remainingTravelers
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    `Cannot confirm. Only ${remainingTravelers} seat(s) are available.`,
+
+                tourCapacity: {
+
+                    maxTravelers:
+                        tour.maxTravelers,
+
+                    bookedTravelers,
+
+                    remainingTravelers,
+
+                    isFull:
+                        remainingTravelers <= 0
+
+                }
+
+            });
+
+        }
+
+
+        // =================================================
+        // CONFIRM BOOKING
+        // =================================================
+
+        booking.status =
+            "confirmed";
+
+        booking.companyRespondedAt =
+            new Date();
+
+        booking.rejectionReason =
+            "";
+
+        await booking.save();
+
+
+        // =================================================
+        // SEND CONFIRMATION EMAIL TO USER
+        // =================================================
+
+        try {
+
+            await sendTourBookingUserEmail({
+
+                name:
+                    booking.contactName,
+
+                email:
+                    booking.contactEmail,
+
+                tourTitle:
+                    tour.title,
+
+                destination:
+                    tour.destination,
+
+                startDate:
+                    tour.startDate,
+
+                endDate:
+                    tour.endDate,
+
+                numberOfTravelers:
+                    booking.numberOfTravelers
+
+            });
+
+        }
+        catch (emailError) {
+
+            console.error(
+                "❌ USER CONFIRMATION EMAIL ERROR:",
+                emailError.message
+            );
+
+        }
+
+
+        // =================================================
+        // UPDATED CAPACITY
+        // =================================================
+
+        const updatedBookedTravelers =
+            bookedTravelers +
+            booking.numberOfTravelers;
+
+
+        const updatedRemainingTravelers =
+            Math.max(
+                tour.maxTravelers -
+                updatedBookedTravelers,
+                0
+            );
+
+
+        // =================================================
+        // RESPONSE
+        // =================================================
+
+        return res.status(200).json({
+
+            success: true,
+
+            message:
+                "Booking confirmed successfully. Confirmation email sent to the user.",
 
             booking,
 
@@ -462,54 +876,220 @@ const bookTour = async (req, res) => {
                 bookedTravelers:
                     updatedBookedTravelers,
 
-                remainingTravelers,
+                remainingTravelers:
+                    updatedRemainingTravelers,
 
                 isFull:
-                    remainingTravelers === 0
+                    updatedRemainingTravelers <= 0
 
             }
 
         });
 
     }
-
     catch (error) {
 
         console.error(
-            "❌ BOOK TOUR ERROR:",
+            "❌ CONFIRM BOOKING ERROR:",
             error
         );
 
 
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to confirm booking"
+        });
+
+    }
+
+};
+
+
+// =====================================================
+// REJECT TOUR BOOKING
+// PATCH /api/tour-bookings/company/:bookingId/reject
+// COMPANY ONLY
+// =====================================================
+//
+// Company rejects pending booking.
+//
+// booking → rejected
+//
+// User receives rejection email.
+//
+// =====================================================
+
+const rejectBooking = async (req, res) => {
+
+    try {
+
+        const { bookingId } = req.params;
+
+        const companyId =
+            req.company.id;
+
+        const {
+            rejectionReason
+        } = req.body;
+
+
         // =================================================
-        // DUPLICATE BOOKING
+        // VALIDATE BOOKING ID
         // =================================================
 
         if (
-            error.code === 11000
+            !isValidObjectId(
+                bookingId
+            )
         ) {
 
             return res.status(400).json({
-
                 success: false,
-
                 message:
-                    "You have already registered for this tour",
-
-                alreadyBooked: true
-
+                    "Invalid booking ID"
             });
 
         }
 
 
-        return res.status(500).json({
+        // =================================================
+        // FIND PENDING BOOKING
+        // =================================================
 
-            success: false,
+        const booking =
+            await TourBooking.findOne({
+                _id: bookingId,
+                company: companyId,
+                status: "pending"
+            });
+
+
+        if (!booking) {
+
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Pending booking not found or already processed"
+            });
+
+        }
+
+
+        // =================================================
+        // FIND TOUR
+        // =================================================
+
+        const tour =
+            await Tour.findOne({
+                _id: booking.tour,
+                company: companyId
+            });
+
+
+        if (!tour) {
+
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Tour not found"
+            });
+
+        }
+
+
+        // =================================================
+        // UPDATE BOOKING
+        // =================================================
+
+        booking.status =
+            "rejected";
+
+        booking.companyRespondedAt =
+            new Date();
+
+        booking.rejectionReason =
+            rejectionReason?.trim() || "";
+
+        await booking.save();
+
+
+        // =================================================
+        // USER REJECTION EMAIL
+        // =================================================
+
+        try {
+
+            await sendTourBookingUserEmail({
+
+                name:
+                    booking.contactName,
+
+                email:
+                    booking.contactEmail,
+
+                tourTitle:
+                    tour.title,
+
+                destination:
+                    tour.destination,
+
+                startDate:
+                    tour.startDate,
+
+                endDate:
+                    tour.endDate,
+
+                numberOfTravelers:
+                    booking.numberOfTravelers,
+
+                status:
+                    "rejected",
+
+                rejectionReason:
+                    booking.rejectionReason
+
+            });
+
+        }
+        catch (emailError) {
+
+            console.error(
+                "❌ USER REJECTION EMAIL ERROR:",
+                emailError.message
+            );
+
+        }
+
+
+        // =================================================
+        // RESPONSE
+        // =================================================
+
+        return res.status(200).json({
+
+            success: true,
 
             message:
-                "Unable to register for this tour"
+                "Booking request rejected successfully",
 
+            booking
+
+        });
+
+    }
+    catch (error) {
+
+        console.error(
+            "❌ REJECT BOOKING ERROR:",
+            error
+        );
+
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to reject booking"
         });
 
     }
@@ -519,12 +1099,15 @@ const bookTour = async (req, res) => {
 
 // =====================================================
 // CANCEL TOUR BOOKING
+// DELETE /api/tour-bookings/:tourId
+// USER ONLY
 // =====================================================
 //
-// DELETE /api/tour-bookings/:tourId
+// Only CONFIRMED booking can be cancelled.
 //
-// USER ONLY
-//
+// Pending request should NOT use this endpoint.
+// We can add separate cancel-request endpoint later
+// if needed.
 // =====================================================
 
 const cancelBooking = async (
@@ -542,7 +1125,24 @@ const cancelBooking = async (
 
 
         // =================================================
-        // FIND BOOKING
+        // VALIDATE TOUR ID
+        // =================================================
+
+        if (
+            !isValidObjectId(tourId)
+        ) {
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Invalid tour ID"
+            });
+
+        }
+
+
+        // =================================================
+        // FIND CONFIRMED BOOKING
         // =================================================
 
         const booking =
@@ -560,12 +1160,9 @@ const cancelBooking = async (
         if (!booking) {
 
             return res.status(404).json({
-
                 success: false,
-
                 message:
-                    "Active booking not found"
-
+                    "Active confirmed booking not found"
             });
 
         }
@@ -582,73 +1179,13 @@ const cancelBooking = async (
 
 
         // =================================================
-        // GET UPDATED CAPACITY
+        // UPDATED CAPACITY
         // =================================================
 
         const capacity =
             await getTourCapacity(
                 tourId
             );
-
-
-        // =================================================
-        // IF TOUR EXISTS
-        // =================================================
-
-        if (capacity) {
-
-            const tour =
-                await Tour.findById(
-                    tourId
-                );
-
-
-            // If tour was automatically marked
-            // completed because it became full,
-            // make it active again after cancellation.
-
-            if (
-                tour &&
-                tour.status === "completed" &&
-                capacity.remainingTravelers > 0
-            ) {
-
-                const today =
-                    new Date();
-
-                today.setHours(
-                    0,
-                    0,
-                    0,
-                    0
-                );
-
-
-                const endDate =
-                    new Date(
-                        tour.endDate
-                    );
-
-                endDate.setHours(
-                    0,
-                    0,
-                    0,
-                    0
-                );
-
-
-                if (endDate >= today) {
-
-                    tour.status =
-                        "active";
-
-                    await tour.save();
-
-                }
-
-            }
-
-        }
 
 
         // =================================================
@@ -668,7 +1205,6 @@ const cancelBooking = async (
         });
 
     }
-
     catch (error) {
 
         console.error(
@@ -678,12 +1214,9 @@ const cancelBooking = async (
 
 
         return res.status(500).json({
-
             success: false,
-
             message:
                 "Unable to cancel tour booking"
-
         });
 
     }
@@ -693,12 +1226,8 @@ const cancelBooking = async (
 
 // =====================================================
 // GET TOUR BOOKING COUNT
-// =====================================================
-//
 // GET /api/tour-bookings/:tourId/count
-//
 // PUBLIC
-//
 // =====================================================
 
 const getTourBookingCount =
@@ -710,6 +1239,23 @@ const getTourBookingCount =
                 req.params;
 
 
+            // =================================================
+            // VALIDATE TOUR ID
+            // =================================================
+
+            if (
+                !isValidObjectId(tourId)
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Invalid tour ID"
+                });
+
+            }
+
+
             const capacity =
                 await getTourCapacity(
                     tourId
@@ -719,12 +1265,9 @@ const getTourBookingCount =
             if (!capacity) {
 
                 return res.status(404).json({
-
                     success: false,
-
                     message:
                         "Tour not found"
-
                 });
 
             }
@@ -740,7 +1283,6 @@ const getTourBookingCount =
             });
 
         }
-
         catch (error) {
 
             console.error(
@@ -750,12 +1292,9 @@ const getTourBookingCount =
 
 
             return res.status(500).json({
-
                 success: false,
-
                 message:
                     "Unable to get tour availability"
-
             });
 
         }
@@ -765,12 +1304,19 @@ const getTourBookingCount =
 
 // =====================================================
 // GET MY TOUR BOOKING
+// GET /api/tour-bookings/:tourId/my-booking
+// USER ONLY
 // =====================================================
 //
-// GET /api/tour-bookings/:tourId/my-booking
+// Returns pending OR confirmed booking.
 //
-// USER ONLY
+// This is important because user needs to see:
 //
+// PENDING 🟡
+// CONFIRMED 🟢
+// REJECTED 🔴
+//
+/* Rejected bookings can also be fetched if needed */
 // =====================================================
 
 const getMyTourBooking =
@@ -785,15 +1331,37 @@ const getMyTourBooking =
                 req.user.id;
 
 
+            // =================================================
+            // VALIDATE TOUR ID
+            // =================================================
+
+            if (
+                !isValidObjectId(tourId)
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Invalid tour ID"
+                });
+
+            }
+
+
+            // =================================================
+            // FIND LATEST BOOKING
+            // =================================================
+
             const booking =
                 await TourBooking.findOne({
 
                     tour: tourId,
 
-                    user: userId,
+                    user: userId
 
-                    status: "confirmed"
-
+                })
+                .sort({
+                    createdAt: -1
                 });
 
 
@@ -802,7 +1370,14 @@ const getMyTourBooking =
                 success: true,
 
                 booked:
+                    booking?.status ===
+                    "confirmed",
+
+                hasRequest:
                     !!booking,
+
+                status:
+                    booking?.status || null,
 
                 booking:
                     booking || null
@@ -810,7 +1385,6 @@ const getMyTourBooking =
             });
 
         }
-
         catch (error) {
 
             console.error(
@@ -820,12 +1394,9 @@ const getMyTourBooking =
 
 
             return res.status(500).json({
-
                 success: false,
-
                 message:
                     "Unable to check your booking"
-
             });
 
         }
@@ -835,11 +1406,16 @@ const getMyTourBooking =
 
 // =====================================================
 // GET TOUR BOOKINGS
+// COMPANY ONLY
+// GET /api/tour-bookings/company/:tourId
 // =====================================================
 //
-// COMPANY SIDE
+// Company sees:
 //
-// GET /api/tour-bookings/company/:tourId
+// pending
+// confirmed
+// rejected
+// cancelled
 //
 // =====================================================
 
@@ -853,6 +1429,23 @@ const getTourBookings =
 
             const companyId =
                 req.company.id;
+
+
+            // =================================================
+            // VALIDATE TOUR ID
+            // =================================================
+
+            if (
+                !isValidObjectId(tourId)
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Invalid tour ID"
+                });
+
+            }
 
 
             // =================================================
@@ -872,12 +1465,9 @@ const getTourBookings =
             if (!tour) {
 
                 return res.status(404).json({
-
                     success: false,
-
                     message:
                         "Tour not found or you do not have permission"
-
                 });
 
             }
@@ -892,37 +1482,75 @@ const getTourBookings =
 
                     tour: tourId,
 
-                    status: "confirmed"
+                    company: companyId
 
                 })
-
                 .populate(
-
                     "user",
-
                     "firstName lastName username email profileImage"
-
                 )
-
                 .sort({
-
-                    createdAt: 1
-
+                    createdAt: -1
                 });
 
 
             // =================================================
-            // TOTAL SEATS BOOKED (NOT BOOKING DOCUMENTS)
+            // CALCULATE CONFIRMED TRAVELERS
             // =================================================
 
+            const confirmedBookings =
+                bookings.filter(
+                    (booking) =>
+                        booking.status ===
+                        "confirmed"
+                );
+
+
             const bookedTravelers =
-                bookings.reduce(
+                confirmedBookings.reduce(
+                    (total, booking) => {
 
-                    (total, booking) =>
-                        total + (booking.numberOfTravelers || 1),
+                        return total +
+                            (
+                                Number(
+                                    booking.numberOfTravelers
+                                ) || 0
+                            );
 
+                    },
                     0
+                );
 
+
+            const pendingBookings =
+                bookings.filter(
+                    (booking) =>
+                        booking.status ===
+                        "pending"
+                );
+
+
+            const pendingTravelers =
+                pendingBookings.reduce(
+                    (total, booking) => {
+
+                        return total +
+                            (
+                                Number(
+                                    booking.numberOfTravelers
+                                ) || 0
+                            );
+
+                    },
+                    0
+                );
+
+
+            const remainingTravelers =
+                Math.max(
+                    tour.maxTravelers -
+                    bookedTravelers,
+                    0
                 );
 
 
@@ -937,27 +1565,29 @@ const getTourBookings =
                 count:
                     bookings.length,
 
+                pendingCount:
+                    pendingBookings.length,
+
+                confirmedCount:
+                    confirmedBookings.length,
+
                 bookedTravelers,
+
+                pendingTravelers,
 
                 maxTravelers:
                     tour.maxTravelers,
 
-                remainingTravelers:
-                    Math.max(
+                remainingTravelers,
 
-                        tour.maxTravelers -
-                        bookedTravelers,
-
-                        0
-
-                    ),
+                isFull:
+                    remainingTravelers <= 0,
 
                 bookings
 
             });
 
         }
-
         catch (error) {
 
             console.error(
@@ -967,11 +1597,84 @@ const getTourBookings =
 
 
             return res.status(500).json({
+                success: false,
+                message:
+                    "Unable to fetch tour bookings"
+            });
+
+        }
+
+    };
+
+
+// =====================================================
+// GET ALL COMPANY PENDING BOOKINGS
+// GET /api/tour-bookings/company/pending
+// COMPANY ONLY
+// =====================================================
+//
+// This will be useful for the COMPANY DASHBOARD.
+//
+// Company can see all pending requests from all its tours.
+//
+// =====================================================
+
+const getCompanyPendingBookings =
+    async (req, res) => {
+
+        try {
+
+            const companyId =
+                req.company.id;
+
+
+            const bookings =
+                await TourBooking.find({
+
+                    company: companyId,
+
+                    status: "pending"
+
+                })
+                .populate(
+                    "user",
+                    "firstName lastName username email profileImage"
+                )
+                .populate(
+                    "tour",
+                    "title destination startDate endDate maxTravelers"
+                )
+                .sort({
+                    createdAt: -1
+                });
+
+
+            return res.status(200).json({
+
+                success: true,
+
+                count:
+                    bookings.length,
+
+                bookings
+
+            });
+
+        }
+        catch (error) {
+
+            console.error(
+                "❌ GET COMPANY PENDING BOOKINGS ERROR:",
+                error
+            );
+
+
+            return res.status(500).json({
 
                 success: false,
 
                 message:
-                    "Unable to fetch tour bookings"
+                    "Unable to fetch pending booking requests"
 
             });
 
@@ -985,9 +1688,21 @@ const getTourBookings =
 // =====================================================
 
 module.exports = {
+
     bookTour,
+
+    confirmBooking,
+
+    rejectBooking,
+
     cancelBooking,
+
     getTourBookingCount,
+
     getMyTourBooking,
-    getTourBookings
+
+    getTourBookings,
+
+    getCompanyPendingBookings
+
 };

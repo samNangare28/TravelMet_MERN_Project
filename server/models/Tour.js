@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 // =====================================================
@@ -15,7 +14,8 @@ const tourSchema = new mongoose.Schema(
         company: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "TravelCompany",
-            required: true
+            required: true,
+            index: true
         },
 
         // =================================================
@@ -51,6 +51,30 @@ const tourSchema = new mongoose.Schema(
             type: String,
             default: "",
             trim: true
+        },
+
+        // =================================================
+        // TOUR THEME
+        // =================================================
+
+        theme: {
+            type: String,
+
+            enum: [
+                "Adventure",
+                "Beach",
+                "Honeymoon",
+                "Wildlife",
+                "Pilgrimage",
+                "Hill Station",
+                "Cultural",
+                "Family",
+                "Cruise",
+                "Trekking",
+                "Other"
+            ],
+
+            default: "Other"
         },
 
         // =================================================
@@ -110,7 +134,9 @@ const tourSchema = new mongoose.Schema(
                 "completed"
             ],
 
-            default: "active"
+            default: "active",
+
+            index: true
         }
 
     },
@@ -125,9 +151,7 @@ const tourSchema = new mongoose.Schema(
 // VALIDATE TOUR DATES
 // =====================================================
 
-tourSchema.pre("save", function () {
-
-    // End date cannot be before start date
+tourSchema.pre("save", function (next) {
 
     if (
         this.startDate &&
@@ -135,11 +159,15 @@ tourSchema.pre("save", function () {
         this.endDate < this.startDate
     ) {
 
-        throw new Error(
-            "End date cannot be before start date"
+        return next(
+            new Error(
+                "End date cannot be before start date"
+            )
         );
 
     }
+
+    next();
 
 });
 
@@ -161,6 +189,15 @@ tourSchema.index({
 tourSchema.index({
     status: 1,
     endDate: 1
+});
+
+
+// Theme filtering
+
+tourSchema.index({
+    theme: 1,
+    status: 1,
+    startDate: 1
 });
 
 

@@ -15,6 +15,7 @@ const companyAuth =
 // =====================================================
 // BOOK TOUR
 // USER ONLY
+//
 // POST /api/tour-bookings/:tourId
 // =====================================================
 
@@ -30,10 +31,6 @@ router.post(
 // PUBLIC
 //
 // GET /api/tour-bookings/:tourId/count
-//
-// Used by:
-// - TourDetails
-// - ExploreTours
 // =====================================================
 
 router.get(
@@ -71,18 +68,70 @@ router.delete(
 
 
 // =====================================================
+// GET COMPANY PENDING BOOKINGS
+// COMPANY ONLY
+//
+// GET /api/tour-bookings/company/pending
+//
+// Company dashboard साठी.
+// =====================================================
+
+router.get(
+    "/company/pending",
+    companyAuth,
+    tourBookingController.getCompanyPendingBookings
+);
+
+
+// =====================================================
 // GET TOUR BOOKINGS
 // COMPANY ONLY
 //
 // GET /api/tour-bookings/company/:tourId
 //
-// Company can see users registered for its tour.
+// Company आपल्या specific tour च्या bookings पाहू शकते.
 // =====================================================
 
 router.get(
     "/company/:tourId",
     companyAuth,
     tourBookingController.getTourBookings
+);
+
+
+// =====================================================
+// ACCEPT BOOKING
+// COMPANY ONLY
+//
+// PATCH /api/tour-bookings/company/:bookingId/accept
+//
+// Company booking accept केल्यावर:
+// pending → confirmed
+// आणि मग user ला confirmation email.
+// =====================================================
+
+router.patch(
+    "/company/:bookingId/accept",
+    companyAuth,
+    tourBookingController.acceptBooking
+);
+
+
+// =====================================================
+// REJECT BOOKING
+// COMPANY ONLY
+//
+// PATCH /api/tour-bookings/company/:bookingId/reject
+//
+// Company booking reject केल्यावर:
+// pending → rejected
+// आणि user ला rejection email.
+// =====================================================
+
+router.patch(
+    "/company/:bookingId/reject",
+    companyAuth,
+    tourBookingController.rejectBooking
 );
 
 
