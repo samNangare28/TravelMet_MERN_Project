@@ -8,52 +8,56 @@ const { getBookedTravelerCount } = require("../utils/tourCapacity");
 // ADD TOUR
 // =====================================================
 
+const mongoose = require("mongoose");
+const Tour = require("../models/Tour");
+const TravelCompany = require("../models/TravelCompany");
+
+
+// =====================================================
+// ADD NEW TOUR
+// =====================================================
+
 const addTour = async (req, res) => {
 
     try {
 
-        const {
-            title,
-            destination,
-            description,
-            price,
-            startDate,
-            endDate,
-            duration,
-            maxTravelers,
-            image,
-            theme
-        } = req.body;
-
-
-        const VALID_THEMES = [
-            "Adventure",
-            "Beach",
-            "Honeymoon",
-            "Wildlife",
-            "Pilgrimage",
-            "Hill Station",
-            "Cultural",
-            "Family",
-            "Cruise",
-            "Trekking",
-            "Other"
-        ];
+        console.log("=================================");
+        console.log("🚀 ADD TOUR REQUEST");
+        console.log("COMPANY:", req.company);
+        console.log("BODY:", req.body);
+        console.log("=================================");
 
 
         // =================================================
-        // CHECK REQUIRED FIELDS
+        // CHECK COMPANY AUTH
+        // =================================================
+
+        if (!req.company || !req.company.id) {
+
+            return res.status(401).json({
+
+                success: false,
+
+                message:
+                    "Company authentication required"
+
+            });
+
+        }
+
+
+        const companyId =
+            req.company.id;
+
+
+        // =================================================
+        // VALIDATE COMPANY ID
         // =================================================
 
         if (
-            !title ||
-            !destination ||
-            !description ||
-            price === undefined ||
-            !startDate ||
-            !endDate ||
-            !duration ||
-            !maxTravelers
+            !mongoose.Types.ObjectId.isValid(
+                companyId
+            )
         ) {
 
             return res.status(400).json({
@@ -61,7 +65,7 @@ const addTour = async (req, res) => {
                 success: false,
 
                 message:
-                    "Please fill all required tour fields"
+                    "Invalid company ID"
 
             });
 
@@ -69,12 +73,12 @@ const addTour = async (req, res) => {
 
 
         // =================================================
-        // GET COMPANY
+        // FIND COMPANY
         // =================================================
 
         const company =
             await TravelCompany.findById(
-                req.company.id
+                companyId
             );
 
 
@@ -93,7 +97,7 @@ const addTour = async (req, res) => {
 
 
         // =================================================
-        // ONLY VERIFIED COMPANY CAN ADD TOUR
+        // CHECK VERIFICATION
         // =================================================
 
         if (
@@ -107,6 +111,119 @@ const addTour = async (req, res) => {
 
                 message:
                     "Only verified companies can add tours"
+
+            });
+
+        }
+
+
+        // =================================================
+        // GET FORM DATA
+        // =================================================
+
+        const {
+            title,
+            destination,
+            description,
+            price,
+            startDate,
+            endDate,
+            duration,
+            maxTravelers,
+            image,
+            theme
+        } = req.body;
+
+
+        // =================================================
+        // VALIDATION
+        // =================================================
+
+        if (
+            !title ||
+            !destination ||
+            !description ||
+            price === undefined ||
+            price === null ||
+            !startDate ||
+            !endDate ||
+            duration === undefined ||
+            duration === null ||
+            maxTravelers === undefined ||
+            maxTravelers === null
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Please fill all required tour fields"
+
+            });
+
+        }
+
+
+        // =================================================
+        // NUMBER VALIDATION
+        // =================================================
+
+        const tourPrice =
+            Number(price);
+
+        const tourDuration =
+            Number(duration);
+
+        const tourMaxTravelers =
+            Number(maxTravelers);
+
+
+        if (
+            !Number.isFinite(tourPrice) ||
+            tourPrice < 0
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Invalid tour price"
+
+            });
+
+        }
+
+
+        if (
+            !Number.isFinite(tourDuration) ||
+            tourDuration < 1
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Invalid tour duration"
+
+            });
+
+        }
+
+
+        if (
+            !Number.isFinite(tourMaxTravelers) ||
+            tourMaxTravelers < 1
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Invalid maximum travelers"
 
             });
 
@@ -156,60 +273,6 @@ const addTour = async (req, res) => {
 
 
         // =================================================
-        // PREVENT PAST TOUR
-        // =================================================
-
-        const today =
-            new Date();
-
-        today.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
-
-        if (end < today) {
-
-            return res.status(400).json({
-
-                success: false,
-
-                message:
-                    "Tour end date cannot be in the past"
-
-            });
-
-        }
-
-
-        // =================================================
-        // VALIDATE MAX TRAVELERS
-        // =================================================
-
-        const travelers =
-            Number(maxTravelers);
-
-
-        if (
-            !Number.isInteger(travelers) ||
-            travelers <= 0
-        ) {
-
-            return res.status(400).json({
-
-                success: false,
-
-                message:
-                    "Maximum travelers must be a positive number"
-
-            });
-
-        }
-
-
-        // =================================================
         // CREATE TOUR
         // =================================================
 
@@ -217,7 +280,7 @@ const addTour = async (req, res) => {
             new Tour({
 
                 company:
-                    company._id,
+                    companyId,
 
                 title:
                     title.trim(),
@@ -228,8 +291,14 @@ const addTour = async (req, res) => {
                 description:
                     description.trim(),
 
+                image:
+                    image?.trim() || "",
+
+                theme:
+                    theme || "Other",
+
                 price:
-                    Number(price),
+                    tourPrice,
 
                 startDate:
                     start,
@@ -238,23 +307,28 @@ const addTour = async (req, res) => {
                     end,
 
                 duration:
-                    Number(duration),
+                    tourDuration,
 
                 maxTravelers:
-                    travelers,
+                    tourMaxTravelers,
 
-                image:
-                    image?.trim() || "",
-
-                theme:
-                    VALID_THEMES.includes(theme) ?
-                        theme :
-                        "Other"
+                status:
+                    "active"
 
             });
 
 
+        // =================================================
+        // SAVE TOUR
+        // =================================================
+
         await tour.save();
+
+
+        console.log(
+            "✅ TOUR CREATED:",
+            tour._id
+        );
 
 
         // =================================================
@@ -266,20 +340,9 @@ const addTour = async (req, res) => {
             success: true,
 
             message:
-                "Tour added successfully ✅",
+                "Tour added successfully",
 
-            tour: {
-
-                ...tour.toObject(),
-
-                bookedTravelers: 0,
-
-                remainingTravelers:
-                    travelers,
-
-                isFull: false
-
-            }
+            tour
 
         });
 
@@ -288,17 +351,63 @@ const addTour = async (req, res) => {
     catch (error) {
 
         console.error(
-            "❌ ADD TOUR ERROR:",
+            "❌ ADD TOUR ERROR:"
+        );
+
+        console.error(
+            "MESSAGE:",
+            error.message
+        );
+
+        console.error(
+            "NAME:",
+            error.name
+        );
+
+        console.error(
+            "ERROR:",
             error
         );
 
+
+        // =================================================
+        // MONGOOSE VALIDATION ERROR
+        // =================================================
+
+        if (
+            error.name ===
+            "ValidationError"
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    Object.values(
+                        error.errors
+                    )
+                    .map(
+                        (err) =>
+                            err.message
+                    )
+                    .join(", ")
+
+            });
+
+        }
+
+
+        // =================================================
+        // DEFAULT ERROR
+        // =================================================
 
         return res.status(500).json({
 
             success: false,
 
             message:
-                "Unable to add tour"
+                "Unable to add tour."
 
         });
 
@@ -307,6 +416,9 @@ const addTour = async (req, res) => {
 };
 
 
+module.exports = {
+    addTour
+};
 
 // =====================================================
 // GET COMPANY TOURS
