@@ -1142,7 +1142,13 @@ const cancelBooking = async (
 
 
         // =================================================
-        // FIND CONFIRMED BOOKING
+        // FIND ACTIVE BOOKING (PENDING OR CONFIRMED)
+        // =================================================
+        //
+        // A user should be able to withdraw a request that's
+        // still pending, not just cancel one that's already
+        // been confirmed.
+        //
         // =================================================
 
         const booking =
@@ -1152,7 +1158,9 @@ const cancelBooking = async (
 
                 user: userId,
 
-                status: "confirmed"
+                status: {
+                    $in: ["pending", "confirmed"]
+                }
 
             });
 
@@ -1162,10 +1170,14 @@ const cancelBooking = async (
             return res.status(404).json({
                 success: false,
                 message:
-                    "Active confirmed booking not found"
+                    "Active booking not found"
             });
 
         }
+
+
+        const wasConfirmed =
+            booking.status === "confirmed";
 
 
         // =================================================
@@ -1197,7 +1209,9 @@ const cancelBooking = async (
             success: true,
 
             message:
-                "Tour booking cancelled successfully",
+                wasConfirmed
+                    ? "Tour booking cancelled successfully"
+                    : "Booking request withdrawn successfully",
 
             tourCapacity:
                 capacity

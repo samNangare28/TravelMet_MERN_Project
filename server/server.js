@@ -54,6 +54,9 @@ const contactRoutes =
 const tourRoutes =
     require("./routes/tourRoutes");
 
+const tourBookingRoutes =
+    require("./routes/tourBookingRoutes");
+
 
 // APP
 
@@ -260,6 +263,30 @@ app.use(
 app.use(
     "/api/tours",
     tourRoutes
+);
+
+
+// -----------------------------------------------------
+// TOUR BOOKINGS (request → confirm/reject workflow)
+// -----------------------------------------------------
+//
+// User:
+//   POST   /api/tour-bookings/:tourId
+//   DELETE /api/tour-bookings/:tourId
+//   GET    /api/tour-bookings/:tourId/count
+//   GET    /api/tour-bookings/:tourId/my-booking
+//
+// Company:
+//   GET    /api/tour-bookings/company/pending
+//   GET    /api/tour-bookings/company/:tourId
+//   PATCH  /api/tour-bookings/company/:bookingId/confirm
+//   PATCH  /api/tour-bookings/company/:bookingId/reject
+//
+// -----------------------------------------------------
+
+app.use(
+    "/api/tour-bookings",
+    tourBookingRoutes
 );
 
 

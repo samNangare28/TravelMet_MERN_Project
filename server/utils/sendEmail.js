@@ -150,7 +150,9 @@ async function sendTourBookingUserEmail(data) {
         destination,
         startDate,
         endDate,
-        numberOfTravelers
+        numberOfTravelers,
+        status,
+        rejectionReason
     } = data;
 
     if (!process.env.BREVO_API_KEY) {
@@ -158,8 +160,50 @@ async function sendTourBookingUserEmail(data) {
         return;
     }
 
+    const isRejected = status === "rejected";
+
     try {
-        console.log("📧 Sending booking confirmation to:", email);
+        console.log(
+            isRejected
+                ? "📧 Sending booking rejection to:"
+                : "📧 Sending booking confirmation to:",
+            email
+        );
+
+        const subject = isRejected
+            ? `Update on your booking request: ${tourTitle}`
+            : `🎉 Booking Confirmed: ${tourTitle}`;
+
+        const htmlContent = isRejected ? `
+                <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:30px; color:#333;">
+                    <h1 style="text-align:center;">Booking Request Update</h1>
+                    <p>Hey ${name},</p>
+                    <p>Unfortunately, the travel company was unable to confirm your request for <strong>${tourTitle}</strong> (${destination}, ${formatDate(startDate)} – ${formatDate(endDate)}).</p>
+                    ${rejectionReason ? `
+                    <table style="width:100%; border-collapse:collapse; margin:20px 0;">
+                        <tr><td style="padding:8px; font-weight:bold; background:#f7f7f7;">Reason</td><td style="padding:8px; white-space:pre-wrap;">${rejectionReason}</td></tr>
+                    </table>
+                    ` : ""}
+                    <p>You're welcome to browse other available tours on TravelMet, or reach out to the company directly for more details.</p>
+                    <p style="text-align:center;">Team TravelMet 💙</p>
+                </div>
+            ` : `
+                <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:30px; color:#333;">
+                    <h1 style="text-align:center;">🎉 Your Tour is Confirmed!</h1>
+                    <p>Hey ${name},</p>
+                    <p>Great news — your registration for <strong>${tourTitle}</strong> has been confirmed by the travel company. Here are your booking details:</p>
+                    <table style="width:100%; border-collapse:collapse; margin:20px 0;">
+                        <tr><td style="padding:8px; font-weight:bold;">Destination</td><td style="padding:8px;">${destination}</td></tr>
+                        <tr style="background:#f7f7f7;"><td style="padding:8px; font-weight:bold;">Start Date</td><td style="padding:8px;">${formatDate(startDate)}</td></tr>
+                        <tr><td style="padding:8px; font-weight:bold;">End Date</td><td style="padding:8px;">${formatDate(endDate)}</td></tr>
+                        <tr style="background:#f7f7f7;"><td style="padding:8px; font-weight:bold;">Travelers</td><td style="padding:8px;">${numberOfTravelers}</td></tr>
+                    </table>
+                    <p style="text-align:center; font-size:16px; font-weight:bold; color:#166534;">✅ We're all set and ready to pick you up at ${destination}!</p>
+                    <p>The travel company may reach out with any further pickup instructions before your trip begins.</p>
+                    <h2 style="text-align:center;">Happy Travels! 🌍✈️</h2>
+                    <p style="text-align:center;">With love,<br><strong>Team TravelMet 💙</strong></p>
+                </div>
+            `;
 
         const result = await brevo.transactionalEmails.sendTransacEmail({
             sender: {
@@ -167,30 +211,20 @@ async function sendTourBookingUserEmail(data) {
                 email: "samnangare28@gmail.com"
             },
             to: [{ email, name }],
-            subject: `🎉 Booking Confirmed: ${tourTitle}`,
-            htmlContent: `
-                <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:30px; color:#333;">
-                    <h1 style="text-align:center;">🎉 Your Tour is Booked!</h1>
-                    <p>Hey ${name},</p>
-                    <p>Your registration for <strong>${tourTitle}</strong> has been confirmed. Here are your booking details:</p>
-                    <table style="width:100%; border-collapse:collapse; margin:20px 0;">
-                        <tr><td style="padding:8px; font-weight:bold;">Destination</td><td style="padding:8px;">${destination}</td></tr>
-                        <tr style="background:#f7f7f7;"><td style="padding:8px; font-weight:bold;">Start Date</td><td style="padding:8px;">${formatDate(startDate)}</td></tr>
-                        <tr><td style="padding:8px; font-weight:bold;">End Date</td><td style="padding:8px;">${formatDate(endDate)}</td></tr>
-                        <tr style="background:#f7f7f7;"><td style="padding:8px; font-weight:bold;">Travelers</td><td style="padding:8px;">${numberOfTravelers}</td></tr>
-                    </table>
-                    <p>The travel company can now see your details and will reach out with any further instructions.</p>
-                    <h2 style="text-align:center;">Happy Travels! 🌍✈️</h2>
-                    <p style="text-align:center;">With love,<br><strong>Team TravelMet 💙</strong></p>
-                </div>
-            `
+            subject,
+            htmlContent
         });
 
-        console.log("✅ BOOKING CONFIRMATION EMAIL SENT!", result.messageId);
+        console.log(
+            isRejected
+                ? "✅ BOOKING REJECTION EMAIL SENT!"
+                : "✅ BOOKING CONFIRMATION EMAIL SENT!",
+            result.messageId
+        );
         return result;
 
     } catch (error) {
-        console.log("❌ SEND BOOKING CONFIRMATION EMAIL ERROR:", error.message);
+        console.log("❌ SEND BOOKING STATUS EMAIL ERROR:", error.message);
         throw error;
     }
 }
@@ -225,12 +259,12 @@ async function sendTourBookingCompanyEmail(data) {
                 email: "samnangare28@gmail.com"
             },
             to: [{ email: companyEmail, name: companyOwnerName }],
-            subject: `📥 New Booking: ${tourTitle} (${numberOfTravelers} traveler${numberOfTravelers > 1 ? "s" : ""})`,
+            subject: `🔔 New Booking Request: ${tourTitle} (${numberOfTravelers} traveler${numberOfTravelers > 1 ? "s" : ""})`,
             htmlContent: `
                 <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:30px; color:#333;">
-                    <h1 style="text-align:center;">📥 New Tour Booking</h1>
+                    <h1 style="text-align:center;">🔔 New Booking Request</h1>
                     <p>Hey ${companyOwnerName},</p>
-                    <p>You have a new booking for <strong>${tourTitle}</strong> (${destination}, ${formatDate(startDate)} – ${formatDate(endDate)}).</p>
+                    <p>You have a new booking <strong>request</strong> awaiting your review for <strong>${tourTitle}</strong> (${destination}, ${formatDate(startDate)} – ${formatDate(endDate)}).</p>
                     <table style="width:100%; border-collapse:collapse; margin:20px 0;">
                         <tr><td style="padding:8px; font-weight:bold;">Traveler Name</td><td style="padding:8px;">${contactName}</td></tr>
                         <tr style="background:#f7f7f7;"><td style="padding:8px; font-weight:bold;">Email</td><td style="padding:8px;">${contactEmail}</td></tr>
@@ -238,7 +272,8 @@ async function sendTourBookingCompanyEmail(data) {
                         <tr style="background:#f7f7f7;"><td style="padding:8px; font-weight:bold;">Number of Travelers</td><td style="padding:8px;">${numberOfTravelers}</td></tr>
                         <tr><td style="padding:8px; font-weight:bold;">Special Requests</td><td style="padding:8px; white-space:pre-wrap;">${specialRequests || "None"}</td></tr>
                     </table>
-                    <p>Log in to your TravelMet company dashboard to view the full traveler list for this tour.</p>
+                    <p style="text-align:center; font-weight:bold;">⚠️ This request is not confirmed yet.</p>
+                    <p>Log in to your TravelMet company dashboard's <strong>Pending Booking Requests</strong> section to Confirm or Reject it. The traveler is notified by email either way.</p>
                     <p style="text-align:center;">Team TravelMet 💙</p>
                 </div>
             `

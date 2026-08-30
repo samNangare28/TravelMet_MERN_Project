@@ -5,8 +5,9 @@ const router = express.Router();
 const tourBookingController =
     require("../controllers/tourBookingController");
 
-const authMiddleware =
-    require("../middleware/authMiddleware");
+const {
+    protect: authMiddleware
+} = require("../middleware/authMiddleware");
 
 const companyAuth =
     require("../middleware/companyAuth");
@@ -111,9 +112,9 @@ router.get(
 // =====================================================
 
 router.patch(
-    "/company/:bookingId/accept",
+    "/company/:bookingId/confirm",
     companyAuth,
-    tourBookingController.acceptBooking
+    tourBookingController.confirmBooking
 );
 
 

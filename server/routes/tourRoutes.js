@@ -10,9 +10,6 @@ const router = express.Router();
 const tourController =
     require("../controllers/tourController");
 
-const tourBookingController =
-    require("../controllers/tourBookingController");
-
 
 // =====================================================
 // MIDDLEWARE
@@ -89,117 +86,6 @@ router.get(
 
 
 // =====================================================
-// GET TOUR AVAILABILITY
-// =====================================================
-//
-// Public route.
-//
-// Used by TourDetails to display:
-//
-// - maximum travelers
-// - booked travelers
-// - remaining seats
-// - full status
-//
-// GET /api/tours/:tourId/booking-count
-//
-// =====================================================
-
-router.get(
-
-    "/:tourId/booking-count",
-
-    tourBookingController.getTourBookingCount
-
-);
-
-
-// =====================================================
-// GET MY BOOKING
-// =====================================================
-//
-// Logged-in user only.
-//
-// GET /api/tours/:tourId/my-booking
-//
-// =====================================================
-
-router.get(
-
-    "/:tourId/my-booking",
-
-    auth,
-
-    tourBookingController.getMyTourBooking
-
-);
-
-
-// =====================================================
-// BOOK TOUR
-// =====================================================
-//
-// Logged-in user only.
-//
-// POST /api/tours/:tourId/book
-//
-// =====================================================
-
-router.post(
-
-    "/:tourId/book",
-
-    auth,
-
-    tourBookingController.bookTour
-
-);
-
-
-// =====================================================
-// CANCEL TOUR BOOKING
-// =====================================================
-//
-// Logged-in user only.
-//
-// DELETE /api/tours/:tourId/book
-//
-// =====================================================
-
-router.delete(
-
-    "/:tourId/book",
-
-    auth,
-
-    tourBookingController.cancelBooking
-
-);
-
-
-// =====================================================
-// GET TOUR BOOKINGS - COMPANY
-// =====================================================
-//
-// Only the company that owns the tour should be able
-// to view its bookings.
-//
-// GET /api/tours/:tourId/bookings
-//
-// =====================================================
-
-router.get(
-
-    "/:tourId/bookings",
-
-    companyAuth,
-
-    tourBookingController.getTourBookings
-
-);
-
-
-// =====================================================
 // GET SINGLE TOUR
 // =====================================================
 //
@@ -208,12 +94,13 @@ router.get(
 // above so that:
 //
 // /company/my-tours
-// /:tourId/booking-count
-// /:tourId/my-booking
-// /:tourId/book
-// /:tourId/bookings
 //
-// are matched correctly.
+// is matched correctly first.
+//
+// Booking-related routes (booking-count, my-booking,
+// book, cancel, bookings-for-tour, confirm, reject,
+// pending) all now live under /api/tour-bookings —
+// see routes/tourBookingRoutes.js.
 //
 // GET /api/tours/:id
 //
