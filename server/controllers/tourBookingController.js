@@ -3,6 +3,17 @@ const Tour = require("../models/Tour");
 const TourBooking =
     require("../models/TourBooking");
 
+const TravelCompany =
+    require("../models/TravelCompany");
+
+const {
+    sendTourBookingUserEmail,
+    sendTourBookingCompanyEmail
+} = require("../utils/sendEmail");
+
+const { getBookedTravelerCount } =
+    require("../utils/tourCapacity");
+
 
 // =====================================================
 // HELPER
@@ -20,13 +31,7 @@ const getTourCapacity = async (tourId) => {
 
 
     const bookedTravelers =
-        await TourBooking.countDocuments({
-
-            tour: tourId,
-
-            status: "confirmed"
-
-        });
+        await getBookedTravelerCount(tourId);
 
 
     const remainingTravelers =
@@ -76,6 +81,57 @@ const bookTour = async (req, res) => {
 
         const userId =
             req.user.id;
+
+        const {
+            contactName,
+            contactEmail,
+            contactPhone,
+            numberOfTravelers,
+            specialRequests
+        } = req.body;
+
+
+        // =================================================
+        // VALIDATE BOOKING FORM
+        // =================================================
+
+        if (
+            !contactName?.trim() ||
+            !contactEmail?.trim() ||
+            !contactPhone?.trim()
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Please provide your name, email and phone number"
+
+            });
+
+        }
+
+
+        const travelers =
+            Number(numberOfTravelers);
+
+
+        if (
+            !Number.isInteger(travelers) ||
+            travelers < 1
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Number of travelers must be at least 1"
+
+            });
+
+        }
 
 
         // =================================================
@@ -191,26 +247,27 @@ const bookTour = async (req, res) => {
 
 
         // =================================================
-        // COUNT CURRENT BOOKINGS
+        // COUNT CURRENT BOOKINGS (BY SEATS, NOT DOCUMENTS)
         // =================================================
 
         const bookedTravelers =
-            await TourBooking.countDocuments({
-
-                tour: tourId,
-
-                status: "confirmed"
-
-            });
+            await getBookedTravelerCount(tourId);
 
 
         // =================================================
         // CHECK CAPACITY
         // =================================================
 
+        const remainingBeforeBooking =
+            Math.max(
+                tour.maxTravelers - bookedTravelers,
+                0
+            );
+
+
         if (
-            bookedTravelers >=
-            tour.maxTravelers
+            travelers >
+            remainingBeforeBooking
         ) {
 
             return res.status(400).json({
@@ -218,9 +275,12 @@ const bookTour = async (req, res) => {
                 success: false,
 
                 message:
-                    "This tour is fully booked",
+                    remainingBeforeBooking === 0
+                        ? "This tour is fully booked"
+                        : `Only ${remainingBeforeBooking} seat(s) left for this tour`,
 
-                isFull: true,
+                isFull:
+                    remainingBeforeBooking === 0,
 
                 tourCapacity: {
 
@@ -229,9 +289,11 @@ const bookTour = async (req, res) => {
 
                     bookedTravelers,
 
-                    remainingTravelers: 0,
+                    remainingTravelers:
+                        remainingBeforeBooking,
 
-                    isFull: true
+                    isFull:
+                        remainingBeforeBooking === 0
 
                 }
 
@@ -254,7 +316,22 @@ const bookTour = async (req, res) => {
                 company:
                     tour.company,
 
-                status: "confirmed"
+                status: "confirmed",
+
+                numberOfTravelers:
+                    travelers,
+
+                contactName:
+                    contactName.trim(),
+
+                contactEmail:
+                    contactEmail.trim().toLowerCase(),
+
+                contactPhone:
+                    contactPhone.trim(),
+
+                specialRequests:
+                    specialRequests?.trim() || ""
 
             });
 
@@ -264,7 +341,7 @@ const bookTour = async (req, res) => {
         // =================================================
 
         const updatedBookedTravelers =
-            bookedTravelers + 1;
+            bookedTravelers + travelers;
 
 
         const remainingTravelers =
@@ -293,6 +370,75 @@ const bookTour = async (req, res) => {
             await tour.save();
 
         }
+
+
+        // =================================================
+        // NOTIFY USER + COMPANY BY EMAIL
+        // =================================================
+        //
+        // Booking is already confirmed at this point — an
+        // email failure here should never fail the booking
+        // itself, so this is best-effort and logged only.
+        //
+        // =================================================
+
+        (async () => {
+
+            try {
+
+                const company =
+                    await TravelCompany.findById(tour.company);
+
+                if (company?.email) {
+
+                    await sendTourBookingCompanyEmail({
+                        companyOwnerName: company.ownerName,
+                        companyEmail: company.email,
+                        tourTitle: tour.title,
+                        destination: tour.destination,
+                        startDate: tour.startDate,
+                        endDate: tour.endDate,
+                        contactName: booking.contactName,
+                        contactEmail: booking.contactEmail,
+                        contactPhone: booking.contactPhone,
+                        numberOfTravelers: booking.numberOfTravelers,
+                        specialRequests: booking.specialRequests
+                    });
+
+                }
+
+            } catch (emailError) {
+
+                console.error(
+                    "❌ COMPANY BOOKING EMAIL ERROR:",
+                    emailError.message
+                );
+
+            }
+
+
+            try {
+
+                await sendTourBookingUserEmail({
+                    name: booking.contactName,
+                    email: booking.contactEmail,
+                    tourTitle: tour.title,
+                    destination: tour.destination,
+                    startDate: tour.startDate,
+                    endDate: tour.endDate,
+                    numberOfTravelers: booking.numberOfTravelers
+                });
+
+            } catch (emailError) {
+
+                console.error(
+                    "❌ USER BOOKING EMAIL ERROR:",
+                    emailError.message
+                );
+
+            }
+
+        })();
 
 
         // =================================================
@@ -766,6 +912,21 @@ const getTourBookings =
 
 
             // =================================================
+            // TOTAL SEATS BOOKED (NOT BOOKING DOCUMENTS)
+            // =================================================
+
+            const bookedTravelers =
+                bookings.reduce(
+
+                    (total, booking) =>
+                        total + (booking.numberOfTravelers || 1),
+
+                    0
+
+                );
+
+
+            // =================================================
             // RESPONSE
             // =================================================
 
@@ -776,6 +937,8 @@ const getTourBookings =
                 count:
                     bookings.length,
 
+                bookedTravelers,
+
                 maxTravelers:
                     tour.maxTravelers,
 
@@ -783,7 +946,7 @@ const getTourBookings =
                     Math.max(
 
                         tour.maxTravelers -
-                        bookings.length,
+                        bookedTravelers,
 
                         0
 

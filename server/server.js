@@ -9,6 +9,12 @@ const { generalLimiter } =
 const connectDB =
     require("./config/db");
 
+const cron =
+    require("node-cron");
+
+const cleanupExpiredTours =
+    require("./utils/cleanupExpiredTours");
+
 
 // ROUTES
 
@@ -49,12 +55,6 @@ const tourRoutes =
     require("./routes/tourRoutes");
 
 
-// TOUR BOOKING ROUTES
-
-const tourBookingRoutes =
-    require("./routes/tourBookingRoutes");
-
-
 // APP
 
 const app =
@@ -64,6 +64,22 @@ const app =
 // DATABASE
 
 connectDB();
+
+
+// =====================================================
+// AUTO CLEANUP OF EXPIRED TOURS
+// =====================================================
+//
+// Runs once shortly after startup, then every day at
+// 00:15 server time — deletes tours whose end date has
+// passed (plus a short grace period) along with all of
+// their bookings and the travelers' personal details.
+//
+// =====================================================
+
+setTimeout(cleanupExpiredTours, 10_000);
+
+cron.schedule("15 0 * * *", cleanupExpiredTours);
 
 
 // MIDDLEWARE
@@ -244,28 +260,6 @@ app.use(
 app.use(
     "/api/tours",
     tourRoutes
-);
-
-
-// TOUR BOOKINGS
-//
-// User:
-// POST   /api/tour-bookings/:tourId
-// DELETE /api/tour-bookings/:tourId
-//
-// Public:
-// GET    /api/tour-bookings/:tourId/count
-//
-// User:
-// GET    /api/tour-bookings/:tourId/my-booking
-//
-// Company:
-// GET    /api/tour-bookings/company/:tourId
-//
-
-app.use(
-    "/api/tour-bookings",
-    tourBookingRoutes
 );
 
 

@@ -1,6 +1,7 @@
 const Tour = require("../models/Tour");
 const TravelCompany = require("../models/TravelCompany");
 const TourBooking = require("../models/TourBooking");
+const { getBookedTravelerCount } = require("../utils/tourCapacity");
 
 
 // =====================================================
@@ -20,8 +21,24 @@ const addTour = async (req, res) => {
             endDate,
             duration,
             maxTravelers,
-            image
+            image,
+            theme
         } = req.body;
+
+
+        const VALID_THEMES = [
+            "Adventure",
+            "Beach",
+            "Honeymoon",
+            "Wildlife",
+            "Pilgrimage",
+            "Hill Station",
+            "Cultural",
+            "Family",
+            "Cruise",
+            "Trekking",
+            "Other"
+        ];
 
 
         // =================================================
@@ -227,7 +244,12 @@ const addTour = async (req, res) => {
                     travelers,
 
                 image:
-                    image?.trim() || ""
+                    image?.trim() || "",
+
+                theme:
+                    VALID_THEMES.includes(theme) ?
+                        theme :
+                        "Other"
 
             });
 
@@ -333,15 +355,9 @@ const getCompanyTours = async (req, res) => {
                     async (tour) => {
 
                         const bookedTravelers =
-                            await TourBooking.countDocuments({
-
-                                tour:
-                                    tour._id,
-
-                                status:
-                                    "confirmed"
-
-                            });
+                            await getBookedTravelerCount(
+                                tour._id
+                            );
 
 
                         const remainingTravelers =
@@ -445,20 +461,37 @@ const getAllTours = async (req, res) => {
 
 
         // =================================================
+        // OPTIONAL THEME FILTER
+        // =================================================
+        //
+        // GET /api/tours?theme=Adventure
+        //
+        // =================================================
+
+        const { theme } = req.query;
+
+        const query = {
+
+            status:
+                "active",
+
+            endDate: {
+                $gte: today
+            }
+
+        };
+
+        if (theme && theme !== "All") {
+            query.theme = theme;
+        }
+
+
+        // =================================================
         // FIND ACTIVE + NON-EXPIRED TOURS
         // =================================================
 
         const tours =
-            await Tour.find({
-
-                status:
-                    "active",
-
-                endDate: {
-                    $gte: today
-                }
-
-            })
+            await Tour.find(query)
 
             .populate(
 
@@ -503,15 +536,9 @@ const getAllTours = async (req, res) => {
                     async (tour) => {
 
                         const bookedTravelers =
-                            await TourBooking.countDocuments({
-
-                                tour:
-                                    tour._id,
-
-                                status:
-                                    "confirmed"
-
-                            });
+                            await getBookedTravelerCount(
+                                tour._id
+                            );
 
 
                         const remainingTravelers =
@@ -699,15 +726,9 @@ const getSingleTour = async (req, res) => {
         // =================================================
 
         const bookedTravelers =
-            await TourBooking.countDocuments({
-
-                tour:
-                    tour._id,
-
-                status:
-                    "confirmed"
-
-            });
+            await getBookedTravelerCount(
+                tour._id
+            );
 
 
         const remainingTravelers =
@@ -829,8 +850,23 @@ const updateTour = async (req, res) => {
             duration,
             maxTravelers,
             image,
-            status
+            status,
+            theme
         } = req.body;
+
+        const VALID_THEMES = [
+            "Adventure",
+            "Beach",
+            "Honeymoon",
+            "Wildlife",
+            "Pilgrimage",
+            "Hill Station",
+            "Cultural",
+            "Family",
+            "Cruise",
+            "Trekking",
+            "Other"
+        ];
 
 
         // =================================================
@@ -1072,15 +1108,9 @@ const updateTour = async (req, res) => {
             // =================================================
 
             const bookedTravelers =
-                await TourBooking.countDocuments({
-
-                    tour:
-                        tour._id,
-
-                    status:
-                        "confirmed"
-
-                });
+                await getBookedTravelerCount(
+                    tour._id
+                );
 
 
             if (
@@ -1112,6 +1142,17 @@ const updateTour = async (req, res) => {
 
             tour.image =
                 image.trim();
+
+        }
+
+
+        if (
+            theme !== undefined &&
+            VALID_THEMES.includes(theme)
+        ) {
+
+            tour.theme =
+                theme;
 
         }
 
@@ -1197,15 +1238,9 @@ const updateTour = async (req, res) => {
         // =================================================
 
         const bookedTravelers =
-            await TourBooking.countDocuments({
-
-                tour:
-                    tour._id,
-
-                status:
-                    "confirmed"
-
-            });
+            await getBookedTravelerCount(
+                tour._id
+            );
 
 
         const remainingTravelers =
