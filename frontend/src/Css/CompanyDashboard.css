@@ -1,40 +1,69 @@
+/* =========================================================
+   TRAVELMET — COMPANY DASHBOARD
+   PREMIUM BUSINESS / TRAVEL MANAGEMENT UI
+   ========================================================= */
 
 .company-dashboard {
     --cd-navy: #172033;
-    --cd-navy-soft: #25334d;
+    --cd-navy-2: #202d45;
+    --cd-navy-soft: #2b3b58;
+
     --cd-gold: #c59b5f;
+    --cd-gold-light: #d9bb88;
     --cd-gold-dark: #a67c43;
 
-    --cd-bg: #f7f8fa;
+    --cd-bg: #f6f7f9;
     --cd-card: #ffffff;
-    --cd-border: #e7eaf0;
+    --cd-border: #e6e9ee;
 
     --cd-text: #172033;
     --cd-text-soft: #667085;
     --cd-text-muted: #98a1af;
 
-    --cd-green: #197344;
+    --cd-green: #167447;
+    --cd-green-bg: #edf8f1;
+
     --cd-red: #b42318;
+    --cd-red-bg: #fff4f2;
+
     --cd-blue: #3538cd;
+    --cd-blue-bg: #eef2ff;
 
     min-height: 100vh;
-    padding: 110px 6% 70px;
+    padding: 115px 5.5% 70px;
 
     background:
         radial-gradient(
-            circle at 90% 0%,
-            rgba(197, 155, 95, 0.11),
-            transparent 28%
+            circle at 92% 2%,
+            rgba(197, 155, 95, 0.13),
+            transparent 24%
         ),
         radial-gradient(
-            circle at 0% 35%,
-            rgba(23, 32, 51, 0.025),
+            circle at 2% 28%,
+            rgba(23, 32, 51, 0.035),
             transparent 25%
         ),
-        var(--cd-bg);
+        linear-gradient(
+            180deg,
+            #fafbfc 0%,
+            #f6f7f9 100%
+        );
 
     color: var(--cd-text);
-    font-family: "DM Sans", "Manrope", Arial, sans-serif;
+
+    font-family:
+        "DM Sans",
+        "Manrope",
+        Arial,
+        sans-serif;
+
+    box-sizing: border-box;
+}
+
+.company-dashboard *,
+.company-dashboard *::before,
+.company-dashboard *::after {
+    box-sizing: border-box;
 }
 
 
@@ -43,63 +72,85 @@
    ========================================================= */
 
 .company-dashboard-hero {
-    max-width: 1400px;
-    margin: 0 auto 28px;
-    padding: 40px 44px;
-
     position: relative;
-    overflow: hidden;
+
+    max-width: 1450px;
+    min-height: 235px;
+
+    margin: 0 auto 28px;
+    padding: 42px 46px;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 35px;
 
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
+    gap: 40px;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius: 26px;
 
     background:
+        radial-gradient(
+            circle at 90% 10%,
+            rgba(197, 155, 95, 0.18),
+            transparent 28%
+        ),
         linear-gradient(
             135deg,
-            #141d2e 0%,
-            #1d2a41 50%,
-            #30415d 100%
+            #121a2a 0%,
+            #1b2940 52%,
+            #2c3c58 100%
         );
 
     color: #ffffff;
 
     box-shadow:
-        0 20px 50px rgba(23, 32, 51, 0.15);
+        0 25px 60px rgba(23, 32, 51, 0.15);
+
+    isolation: isolate;
 }
 
 .company-dashboard-hero::before {
     content: "";
 
     position: absolute;
-    width: 330px;
-    height: 330px;
 
-    right: -125px;
-    top: -165px;
+    width: 430px;
+    height: 430px;
+
+    right: -190px;
+    top: -220px;
 
     border-radius: 50%;
 
-    background: rgba(255, 255, 255, 0.045);
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.06);
+
+    background:
+        rgba(255, 255, 255, 0.035);
 }
 
 .company-dashboard-hero::after {
     content: "";
 
     position: absolute;
-    width: 220px;
-    height: 220px;
 
-    right: 18%;
-    bottom: -170px;
+    width: 280px;
+    height: 280px;
+
+    right: 20%;
+    bottom: -225px;
 
     border-radius: 50%;
 
-    background: rgba(197, 155, 95, 0.11);
+    background:
+        rgba(197, 155, 95, 0.09);
 }
 
 .company-dashboard-hero-content {
@@ -111,53 +162,70 @@
     display: inline-flex;
     align-items: center;
 
-    margin-bottom: 11px;
+    margin-bottom: 13px;
 
-    color: #d8b982;
+    color: var(--cd-gold-light);
 
     font-size: 10px;
     font-weight: 900;
-    letter-spacing: 2px;
+
+    letter-spacing: 2.5px;
     text-transform: uppercase;
 }
 
 .company-dashboard-eyebrow::before {
     content: "";
 
-    width: 22px;
+    width: 25px;
     height: 1px;
 
-    margin-right: 9px;
+    margin-right: 10px;
 
-    background: #c59b5f;
+    background:
+        linear-gradient(
+            90deg,
+            var(--cd-gold),
+            transparent
+        );
 }
 
 .company-dashboard-hero h1 {
     margin: 0;
 
-    font-size: clamp(30px, 4vw, 46px);
-    line-height: 1.08;
+    max-width: 800px;
+
+    font-size: clamp(32px, 4vw, 50px);
+    line-height: 1.05;
+
     font-weight: 800;
-    letter-spacing: -1.5px;
+
+    letter-spacing: -1.8px;
 }
 
 .company-dashboard-hero p {
-    max-width: 650px;
+    max-width: 680px;
 
-    margin: 15px 0 0;
+    margin: 16px 0 0;
 
-    color: rgba(255, 255, 255, 0.72);
+    color:
+        rgba(255, 255, 255, 0.70);
 
     font-size: 14px;
     line-height: 1.75;
 }
 
+
+/* =========================================================
+   HERO ACTIONS
+   ========================================================= */
+
 .company-dashboard-hero-actions {
     position: relative;
-    z-index: 3;
+    z-index: 4;
 
     display: flex;
     align-items: center;
+
     gap: 10px;
 
     flex-shrink: 0;
@@ -165,54 +233,65 @@
 
 .dashboard-profile-btn,
 .dashboard-logout-btn {
-    min-height: 45px;
+    min-height: 46px;
 
-    padding: 0 20px;
+    padding: 0 21px;
 
-    border-radius: 11px;
+    border-radius: 12px;
 
     font-family: inherit;
+
     font-size: 12px;
     font-weight: 800;
 
     cursor: pointer;
 
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease,
-        border-color 0.2s ease;
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        background 0.22s ease,
+        border-color 0.22s ease;
 }
 
 .dashboard-profile-btn {
     border: 1px solid #ffffff;
 
     background: #ffffff;
+
     color: var(--cd-navy);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .dashboard-profile-btn:hover {
     transform: translateY(-2px);
 
     box-shadow:
-        0 9px 22px rgba(0, 0, 0, 0.18);
+        0 12px 27px rgba(0, 0, 0, 0.20);
 }
 
 .dashboard-logout-btn {
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.20);
 
-    background: rgba(255, 255, 255, 0.08);
+    background:
+        rgba(255, 255, 255, 0.07);
+
     color: #ffffff;
 
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
 }
 
 .dashboard-logout-btn:hover {
     transform: translateY(-2px);
 
-    background: rgba(255, 255, 255, 0.15);
+    background:
+        rgba(255, 255, 255, 0.13);
 
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color:
+        rgba(255, 255, 255, 0.32);
 }
 
 
@@ -221,27 +300,31 @@
    ========================================================= */
 
 .company-dashboard-status {
-    max-width: 1400px;
+    max-width: 1450px;
 
     margin: 0 auto 30px;
     padding: 17px 21px;
 
     display: flex;
     align-items: center;
+
     gap: 14px;
 
     border: 1px solid var(--cd-border);
     border-radius: 15px;
 
-    background: var(--cd-card);
+    background:
+        rgba(255, 255, 255, 0.92);
 
     box-shadow:
-        0 6px 25px rgba(20, 30, 50, 0.045);
+        0 8px 30px rgba(20, 30, 50, 0.045);
+
+    backdrop-filter: blur(10px);
 }
 
 .dashboard-status-icon {
-    width: 43px;
-    height: 43px;
+    width: 45px;
+    height: 45px;
 
     flex-shrink: 0;
 
@@ -249,13 +332,22 @@
     align-items: center;
     justify-content: center;
 
-    border-radius: 12px;
+    border-radius: 13px;
 
-    background: #edf8f1;
+    background:
+        linear-gradient(
+            135deg,
+            #edf9f1,
+            #e5f5eb
+        );
+
     color: var(--cd-green);
 
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 900;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(22, 116, 71, 0.05);
 }
 
 .company-dashboard-status span {
@@ -267,7 +359,8 @@
 
     font-size: 9px;
     font-weight: 900;
-    letter-spacing: 1.5px;
+
+    letter-spacing: 1.6px;
     text-transform: uppercase;
 }
 
@@ -284,162 +377,363 @@
    ========================================================= */
 
 .company-dashboard-error {
-    max-width: 1400px;
+    max-width: 1450px;
 
     margin: 0 auto 25px;
-    padding: 13px 17px;
+    padding: 14px 17px;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     gap: 15px;
 
-    border: 1px solid #ffd8d5;
-    border-radius: 12px;
+    border: 1px solid #ffd7d3;
+    border-radius: 13px;
 
-    background: #fff5f4;
+    background:
+        linear-gradient(
+            135deg,
+            #fff8f7,
+            #fff3f1
+        );
+
     color: var(--cd-red);
 
     font-size: 13px;
+
+    box-shadow:
+        0 7px 20px rgba(180, 35, 24, 0.04);
 }
 
 .company-dashboard-error button {
     border: none;
-
     background: transparent;
+
     color: var(--cd-red);
 
     font-family: inherit;
+
     font-size: 12px;
     font-weight: 800;
 
     cursor: pointer;
+
     text-decoration: underline;
 }
 
 
 /* =========================================================
-   STATISTICS
+   PENDING BOOKING SECTION
    ========================================================= */
 
-.company-dashboard-stats {
-    max-width: 1400px;
+.company-pending-bookings-section {
+    max-width: 1450px;
 
-    margin: 0 auto 50px;
-
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-
-    gap: 17px;
+    margin: 0 auto 52px;
 }
 
-.dashboard-stat-card {
-    min-height: 132px;
-
-    padding: 22px;
-
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-
-    border: 1px solid var(--cd-border);
-    border-radius: 17px;
-
-    background: var(--cd-card);
-
-    box-shadow:
-        0 7px 27px rgba(20, 30, 50, 0.045);
-
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease,
-        border-color 0.25s ease;
+.company-pending-bookings-section
+.company-tour-section-header {
+    margin-bottom: 22px;
 }
 
-.dashboard-stat-card:hover {
-    transform: translateY(-4px);
+.pending-booking-count {
+    min-width: 92px;
 
-    border-color: #dfe3e9;
+    padding: 9px 14px;
 
-    box-shadow:
-        0 15px 36px rgba(20, 30, 50, 0.085);
-}
+    border:
+        1px solid
+        rgba(197, 155, 95, 0.25);
 
-.dashboard-stat-icon {
-    width: 46px;
-    height: 46px;
+    border-radius: 999px;
 
-    flex-shrink: 0;
+    background:
+        linear-gradient(
+            135deg,
+            #fffaf2,
+            #fdf5e8
+        );
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 13px;
-
-    background: #f2f4f7;
-
-    font-size: 19px;
-}
-
-.dashboard-stat-card.active .dashboard-stat-icon {
-    background: #edf8f1;
-}
-
-.dashboard-stat-card.upcoming .dashboard-stat-icon {
-    background: #fff7e9;
-}
-
-.dashboard-stat-card.completed .dashboard-stat-icon {
-    background: #eef3fb;
-}
-
-.dashboard-stat-card.bookings .dashboard-stat-icon {
-    background: #f2effb;
-    font-size: 21px;
-}
-
-.dashboard-stat-card span {
-    display: block;
-
-    margin-bottom: 6px;
-
-    color: #7d8797;
+    color: var(--cd-gold-dark);
 
     font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.2px;
-}
+    font-weight: 900;
 
-.dashboard-stat-card strong {
-    display: block;
-
-    color: var(--cd-navy);
-
-    font-size: 29px;
-    line-height: 1;
-
-    font-weight: 800;
-    letter-spacing: -0.5px;
-}
-
-.dashboard-stat-card small {
-    display: block;
-
-    margin-top: 8px;
-
-    color: #9aa2af;
-
-    font-size: 10px;
+    text-align: center;
 }
 
 
 /* =========================================================
-   TOUR SECTION
+   PENDING BOOKING LIST
+   ========================================================= */
+
+.company-pending-bookings-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+.company-pending-booking-card {
+    position: relative;
+
+    padding: 19px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 14px;
+
+    border:
+        1px solid
+        var(--cd-border);
+
+    border-radius: 17px;
+
+    background:
+        rgba(255, 255, 255, 0.96);
+
+    box-shadow:
+        0 8px 28px rgba(20, 30, 50, 0.045);
+
+    transition:
+        transform 0.23s ease,
+        box-shadow 0.23s ease,
+        border-color 0.23s ease;
+}
+
+.company-pending-booking-card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 17px;
+    bottom: 17px;
+
+    width: 3px;
+
+    border-radius: 0 4px 4px 0;
+
+    background:
+        var(--cd-gold);
+}
+
+.company-pending-booking-card:hover {
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(197, 155, 95, 0.35);
+
+    box-shadow:
+        0 16px 36px rgba(20, 30, 50, 0.08);
+}
+
+.company-pending-booking-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.company-pending-booking-info > strong {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #252d3b;
+
+    font-size: 13px;
+    font-weight: 850;
+}
+
+.company-pending-booking-info > span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #788293;
+
+    font-size: 10px;
+}
+
+.pending-booking-tour-info {
+    margin-top: 12px;
+    padding: 11px 12px;
+
+    border:
+        1px solid
+        #edf0f3;
+
+    border-radius: 10px;
+
+    background:
+        #fafbfc;
+}
+
+.pending-booking-tour-info strong {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #343d4d;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.pending-booking-tour-info span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #7e8795;
+
+    font-size: 9.5px;
+}
+
+.company-pending-booking-meta {
+    min-width: 110px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    gap: 8px;
+}
+
+.pending-booking-status {
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    background:
+        #fff6e7;
+
+    color:
+        #9a681e;
+
+    font-size: 8px !important;
+    font-weight: 900 !important;
+
+    text-transform: uppercase;
+}
+
+.tour-booking-travelers-badge {
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    background:
+        var(--cd-blue-bg);
+
+    color:
+        var(--cd-blue);
+
+    font-size: 9px;
+    font-weight: 900;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   BOOKING ACTION BUTTONS
+   ========================================================= */
+
+.company-booking-action-buttons {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+.booking-confirm-btn,
+.booking-reject-btn {
+    min-height: 31px;
+
+    padding: 0 10px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+
+    font-size: 9px;
+    font-weight: 850;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.booking-confirm-btn {
+    border:
+        1px solid
+        #c9e8d5;
+
+    background:
+        #effaf3;
+
+    color:
+        #167447;
+}
+
+.booking-confirm-btn:hover {
+    transform: translateY(-1px);
+
+    background:
+        #e2f6e9;
+
+    box-shadow:
+        0 5px 12px rgba(22, 116, 71, 0.10);
+}
+
+.booking-reject-btn {
+    border:
+        1px solid
+        #f1cfcb;
+
+    background:
+        #fff7f6;
+
+    color:
+        var(--cd-red);
+}
+
+.booking-reject-btn:hover {
+    transform: translateY(-1px);
+
+    background:
+        #ffefed;
+
+    box-shadow:
+        0 5px 12px rgba(180, 35, 24, 0.08);
+}
+
+.booking-confirm-btn:disabled,
+.booking-reject-btn:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   SECTION HEADERS
    ========================================================= */
 
 .company-tour-section {
-    max-width: 1400px;
+    max-width: 1450px;
 
     margin: 0 auto 55px;
 }
@@ -457,13 +751,14 @@
 .section-eyebrow {
     display: block;
 
-    margin-bottom: 7px;
+    margin-bottom: 8px;
 
     color: var(--cd-gold-dark);
 
     font-size: 9px;
     font-weight: 900;
-    letter-spacing: 1.8px;
+
+    letter-spacing: 2px;
     text-transform: uppercase;
 }
 
@@ -475,48 +770,62 @@
     font-size: 28px;
     line-height: 1.2;
 
-    font-weight: 800;
-    letter-spacing: -0.7px;
+    font-weight: 850;
+
+    letter-spacing: -0.8px;
 }
 
 .company-tour-section-header p {
-    margin: 7px 0 0;
+    margin: 8px 0 0;
 
     color: #7e8796;
 
     font-size: 13px;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
-.add-tour-btn {
-    min-height: 44px;
 
-    padding: 0 18px;
+/* =========================================================
+   ADD TOUR
+   ========================================================= */
+
+.add-tour-btn {
+    min-height: 45px;
+
+    padding: 0 19px;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
     gap: 9px;
 
     border: none;
-    border-radius: 11px;
+    border-radius: 12px;
 
-    background: var(--cd-navy);
+    background:
+        linear-gradient(
+            135deg,
+            #172033,
+            #293955
+        );
+
     color: #ffffff;
 
     font-family: inherit;
+
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 850;
 
     cursor: pointer;
 
     box-shadow:
-        0 8px 20px rgba(23, 32, 51, 0.14);
+        0 10px 23px rgba(23, 32, 51, 0.15);
 
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        background 0.22s ease;
 }
 
 .add-tour-btn span {
@@ -527,43 +836,71 @@
 .add-tour-btn:hover {
     transform: translateY(-2px);
 
-    background: #25334d;
+    background:
+        linear-gradient(
+            135deg,
+            #25334d,
+            #344967
+        );
 
     box-shadow:
-        0 12px 26px rgba(23, 32, 51, 0.2);
+        0 14px 30px rgba(23, 32, 51, 0.20);
 }
 
 
 /* =========================================================
-   EMPTY TOUR STATE
+   EMPTY STATE
    ========================================================= */
 
 .company-tour-empty {
-    padding: 65px 30px;
+    padding: 68px 30px;
 
-    border: 1px dashed #d8dde6;
-    border-radius: 20px;
+    border:
+        1px dashed
+        #d5dae2;
 
-    background: #ffffff;
+    border-radius: 21px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #fbfcfd
+        );
 
     text-align: center;
+
+    box-shadow:
+        0 7px 25px rgba(20, 30, 50, 0.025);
 }
 
 .empty-tour-icon {
-    width: 68px;
-    height: 68px;
+    width: 70px;
+    height: 70px;
 
-    margin: 0 auto 18px;
+    margin: 0 auto 19px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    border-radius: 21px;
+    border-radius: 22px;
 
-    background: #f4f1eb;
+    background:
+        linear-gradient(
+            135deg,
+            #f5f1e9,
+            #eee9df
+        );
+
+    color:
+        var(--cd-gold-dark);
 
     font-size: 27px;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(197, 155, 95, 0.10);
 }
 
 .company-tour-empty h3 {
@@ -572,13 +909,13 @@
     color: var(--cd-navy);
 
     font-size: 19px;
-    font-weight: 800;
+    font-weight: 850;
 }
 
 .company-tour-empty p {
-    max-width: 470px;
+    max-width: 480px;
 
-    margin: 0 auto 22px;
+    margin: 0 auto 23px;
 
     color: #818a99;
 
@@ -587,31 +924,216 @@
 }
 
 .empty-add-tour-btn {
-    min-height: 41px;
+    min-height: 42px;
 
-    padding: 0 18px;
+    padding: 0 19px;
 
     border: none;
     border-radius: 10px;
 
-    background: var(--cd-gold);
+    background:
+        linear-gradient(
+            135deg,
+            var(--cd-gold),
+            #d2aa70
+        );
+
     color: #ffffff;
 
     font-family: inherit;
+
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 850;
 
     cursor: pointer;
 
+    box-shadow:
+        0 8px 20px
+        rgba(197, 155, 95, 0.18);
+
     transition:
         transform 0.2s ease,
-        background 0.2s ease;
+        box-shadow 0.2s ease;
 }
 
 .empty-add-tour-btn:hover {
     transform: translateY(-2px);
 
-    background: var(--cd-gold-dark);
+    box-shadow:
+        0 12px 25px
+        rgba(197, 155, 95, 0.25);
+}
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+.company-dashboard-stats {
+    max-width: 1450px;
+
+    margin: 0 auto 52px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+.dashboard-stat-card {
+    position: relative;
+
+    min-height: 137px;
+
+    padding: 22px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 15px;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        var(--cd-border);
+
+    border-radius: 18px;
+
+    background:
+        rgba(255, 255, 255, 0.95);
+
+    box-shadow:
+        0 8px 28px
+        rgba(20, 30, 50, 0.045);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.dashboard-stat-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 90px;
+    height: 90px;
+
+    right: -35px;
+    bottom: -45px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(23, 32, 51, 0.025);
+}
+
+.dashboard-stat-card:hover {
+    transform: translateY(-4px);
+
+    border-color:
+        #d9dee6;
+
+    box-shadow:
+        0 17px 38px
+        rgba(20, 30, 50, 0.085);
+}
+
+.dashboard-stat-icon {
+    width: 47px;
+    height: 47px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background:
+        #f2f4f7;
+
+    font-size: 19px;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(23, 32, 51, 0.025);
+}
+
+.dashboard-stat-card.active
+.dashboard-stat-icon {
+    background:
+        var(--cd-green-bg);
+}
+
+.dashboard-stat-card.upcoming
+.dashboard-stat-icon {
+    background:
+        #fff7e9;
+}
+
+.dashboard-stat-card.completed
+.dashboard-stat-icon {
+    background:
+        #eef3fb;
+}
+
+.dashboard-stat-card.bookings
+.dashboard-stat-icon {
+    background:
+        #f2effb;
+
+    font-size: 21px;
+}
+
+.dashboard-stat-card span {
+    position: relative;
+    z-index: 2;
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #7d8797;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.2px;
+}
+
+.dashboard-stat-card strong {
+    position: relative;
+    z-index: 2;
+
+    display: block;
+
+    color: var(--cd-navy);
+
+    font-size: 29px;
+    line-height: 1;
+
+    font-weight: 850;
+
+    letter-spacing: -0.7px;
+}
+
+.dashboard-stat-card small {
+    position: relative;
+    z-index: 2;
+
+    display: block;
+
+    margin-top: 8px;
+
+    color: #9aa2af;
+
+    font-size: 10px;
 }
 
 
@@ -636,27 +1158,34 @@
 .company-tour-card {
     overflow: hidden;
 
-    border: 1px solid var(--cd-border);
-    border-radius: 20px;
+    border:
+        1px solid
+        var(--cd-border);
 
-    background: #ffffff;
+    border-radius: 21px;
+
+    background:
+        #ffffff;
 
     box-shadow:
-        0 8px 30px rgba(20, 30, 50, 0.05);
+        0 9px 32px
+        rgba(20, 30, 50, 0.05);
 
     transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease,
-        border-color 0.25s ease;
+        transform 0.28s ease,
+        box-shadow 0.28s ease,
+        border-color 0.28s ease;
 }
 
 .company-tour-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
 
-    border-color: #dfe3e9;
+    border-color:
+        #d9dee6;
 
     box-shadow:
-        0 18px 42px rgba(20, 30, 50, 0.105);
+        0 20px 46px
+        rgba(20, 30, 50, 0.105);
 }
 
 
@@ -665,12 +1194,14 @@
    ========================================================= */
 
 .company-tour-image-wrapper {
-    height: 205px;
+    height: 215px;
 
     position: relative;
+
     overflow: hidden;
 
-    background: #edf0f4;
+    background:
+        #edf0f4;
 }
 
 .company-tour-image {
@@ -682,11 +1213,18 @@
     object-fit: cover;
 
     transition:
-        transform 0.55s ease;
+        transform 0.65s cubic-bezier(
+            0.2,
+            0.65,
+            0.25,
+            1
+        );
 }
 
-.company-tour-card:hover .company-tour-image {
-    transform: scale(1.045);
+.company-tour-card:hover
+.company-tour-image {
+    transform:
+        scale(1.055);
 }
 
 .company-tour-image-placeholder {
@@ -695,6 +1233,7 @@
 
     display: flex;
     flex-direction: column;
+
     align-items: center;
     justify-content: center;
 
@@ -704,7 +1243,7 @@
         linear-gradient(
             135deg,
             #e9edf2,
-            #f6f7f9
+            #f8f9fa
         );
 
     color: #758094;
@@ -716,7 +1255,8 @@
 
 .company-tour-image-placeholder small {
     font-size: 9px;
-    font-weight: 800;
+    font-weight: 850;
+
     letter-spacing: 1px;
     text-transform: uppercase;
 }
@@ -729,17 +1269,22 @@
 .tour-status-badge {
     position: absolute;
 
-    top: 13px;
-    right: 13px;
+    top: 14px;
+    right: 14px;
 
-    padding: 6px 10px;
+    padding: 7px 11px;
 
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.60);
+
     border-radius: 999px;
 
-    background: rgba(255, 255, 255, 0.94);
+    background:
+        rgba(255, 255, 255, 0.92);
 
-    backdrop-filter: blur(10px);
+    backdrop-filter:
+        blur(12px);
 
     font-size: 9px;
     font-weight: 900;
@@ -747,7 +1292,8 @@
     text-transform: capitalize;
 
     box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.08);
+        0 6px 16px
+        rgba(0, 0, 0, 0.08);
 }
 
 .tour-status-badge.active {
@@ -768,7 +1314,7 @@
    ========================================================= */
 
 .company-tour-content {
-    padding: 21px;
+    padding: 22px;
 }
 
 .tour-destination {
@@ -776,11 +1322,13 @@
 
     margin-bottom: 7px;
 
-    color: var(--cd-gold-dark);
+    color:
+        var(--cd-gold-dark);
 
     font-size: 9px;
     font-weight: 900;
-    letter-spacing: 0.9px;
+
+    letter-spacing: 1px;
     text-transform: uppercase;
 }
 
@@ -792,7 +1340,9 @@
     font-size: 19px;
     line-height: 1.3;
 
-    font-weight: 800;
+    font-weight: 850;
+
+    letter-spacing: -0.2px;
 }
 
 .tour-description {
@@ -815,12 +1365,17 @@
     padding: 14px 0;
 
     display: grid;
-    grid-template-columns: 1fr 1fr;
+
+    grid-template-columns:
+        1fr 1fr;
 
     gap: 12px;
 
-    border-top: 1px solid #edf0f3;
-    border-bottom: 1px solid #edf0f3;
+    border-top:
+        1px solid #edf0f3;
+
+    border-bottom:
+        1px solid #edf0f3;
 }
 
 .tour-info-row div {
@@ -830,7 +1385,8 @@
 .tour-info-row div + div {
     padding-left: 12px;
 
-    border-left: 1px solid #edf0f3;
+    border-left:
+        1px solid #edf0f3;
 }
 
 .tour-info-row span {
@@ -842,6 +1398,7 @@
 
     font-size: 8px;
     font-weight: 900;
+
     letter-spacing: 1px;
     text-transform: uppercase;
 }
@@ -865,6 +1422,7 @@
 
     display: flex;
     align-items: center;
+
     gap: 14px;
 
     flex-wrap: wrap;
@@ -884,13 +1442,14 @@
 
 .tour-price-row {
     margin-top: 2px;
+
     padding-bottom: 17px;
 }
 
 .tour-price-row small {
     display: block;
 
-    margin-bottom: 2px;
+    margin-bottom: 3px;
 
     color: #929aaa;
 
@@ -900,8 +1459,8 @@
 .tour-price-row strong {
     color: var(--cd-navy);
 
-    font-size: 22px;
-    font-weight: 800;
+    font-size: 23px;
+    font-weight: 850;
 }
 
 
@@ -919,20 +1478,22 @@
 }
 
 .company-tour-actions button {
-    min-height: 38px;
+    min-height: 39px;
 
     border-radius: 10px;
 
     font-family: inherit;
+
     font-size: 10px;
-    font-weight: 800;
+    font-weight: 850;
 
     cursor: pointer;
 
     transition:
         transform 0.2s ease,
         background 0.2s ease,
-        border-color 0.2s ease;
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .company-tour-actions button:hover {
@@ -942,38 +1503,65 @@
 .tour-view-btn {
     border: none;
 
-    background: var(--cd-navy);
+    background:
+        linear-gradient(
+            135deg,
+            #172033,
+            #2a3a56
+        );
+
     color: #ffffff;
+
+    box-shadow:
+        0 7px 17px
+        rgba(23, 32, 51, 0.12);
 }
 
 .tour-view-btn:hover {
-    background: var(--cd-navy-soft);
+    background:
+        linear-gradient(
+            135deg,
+            #24334d,
+            #344866
+        );
 }
 
 .tour-edit-btn {
     padding: 0 14px;
 
-    border: 1px solid #dfe3e9;
+    border:
+        1px solid
+        #dfe3e9;
 
-    background: #ffffff;
-    color: #344054;
+    background:
+        #ffffff;
+
+    color:
+        #344054;
 }
 
 .tour-edit-btn:hover {
-    background: #f5f6f8;
+    background:
+        #f5f6f8;
 }
 
 .tour-delete-btn {
     padding: 0 13px;
 
-    border: 1px solid #f0c9c6;
+    border:
+        1px solid
+        #f0c9c6;
 
-    background: #fff7f6;
-    color: var(--cd-red);
+    background:
+        #fff7f6;
+
+    color:
+        var(--cd-red);
 }
 
 .tour-delete-btn:hover {
-    background: #ffefed;
+    background:
+        #ffefed;
 }
 
 .tour-delete-btn:disabled {
@@ -986,17 +1574,26 @@
 
 
 /* =========================================================
-   TOUR BOOKING CAPACITY
+   BOOKING CAPACITY
    ========================================================= */
 
 .tour-booking-capacity {
     margin-top: 18px;
+
     padding: 15px;
 
-    border: 1px solid #eceef0;
-    border-radius: 12px;
+    border:
+        1px solid
+        #eceef0;
 
-    background: #f8f9fa;
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8f9fa,
+            #fbfbfc
+        );
 }
 
 .tour-booking-capacity-header {
@@ -1014,13 +1611,14 @@
 
     font-size: 10px;
     font-weight: 900;
+
     letter-spacing: 0.7px;
     text-transform: uppercase;
 }
 
 .tour-booking-capacity-header strong {
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 850;
 }
 
 .booking-available {
@@ -1038,22 +1636,29 @@
 
 .tour-booking-progress {
     width: 100%;
-    height: 6px;
+    height: 7px;
 
     overflow: hidden;
 
     border-radius: 20px;
 
-    background: #e4e7eb;
+    background:
+        #e4e7eb;
 }
 
 .tour-booking-progress-bar {
     height: 100%;
+
     min-width: 0;
 
     border-radius: 20px;
 
-    background: var(--cd-navy);
+    background:
+        linear-gradient(
+            90deg,
+            #172033,
+            #c59b5f
+        );
 
     transition:
         width 0.4s ease;
@@ -1074,45 +1679,61 @@
 
 
 /* =========================================================
-   VIEW BOOKINGS BUTTON
+   VIEW BOOKINGS
    ========================================================= */
 
 .tour-bookings-toggle-btn {
     width: 100%;
 
     margin-top: 12px;
+
     padding: 10px 14px;
 
-    border: 1px solid #dfe2e5;
+    border:
+        1px solid
+        #dfe2e5;
+
     border-radius: 10px;
 
-    background: #ffffff;
-    color: #30343a;
+    background:
+        #ffffff;
+
+    color:
+        #30343a;
 
     font-family: inherit;
+
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 850;
 
     cursor: pointer;
 
     transition:
         transform 0.2s ease,
         background 0.2s ease,
-        border-color 0.2s ease;
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .tour-bookings-toggle-btn:hover {
     transform: translateY(-1px);
 
-    background: #f5f6f7;
+    background:
+        #f8f9fa;
 
-    border-color: #c9cdd2;
+    border-color:
+        #c9cdd2;
+
+    box-shadow:
+        0 5px 14px
+        rgba(20, 30, 50, 0.05);
 }
 
 .tour-bookings-toggle-btn:disabled {
     opacity: 0.6;
 
     cursor: not-allowed;
+
     transform: none;
 }
 
@@ -1123,26 +1744,40 @@
 
 .tour-bookings-panel {
     margin-top: 14px;
+
     padding: 17px;
 
-    border: 1px solid #e5e7ea;
-    border-radius: 13px;
+    border:
+        1px solid
+        #e5e7ea;
 
-    background: #fafafa;
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fafafa,
+            #f8f9fa
+        );
 
     animation:
-        bookingPanelOpen 0.25s ease;
+        bookingPanelOpen
+        0.25s ease;
 }
 
 @keyframes bookingPanelOpen {
     from {
         opacity: 0;
-        transform: translateY(-5px);
+
+        transform:
+            translateY(-6px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+
+        transform:
+            translateY(0);
     }
 }
 
@@ -1155,22 +1790,26 @@
     display: grid;
 
     grid-template-columns:
-        repeat(4, 1fr);
+        repeat(5, 1fr);
 
-    gap: 8px;
+    gap: 7px;
 
     margin-bottom: 18px;
 }
 
 .tour-bookings-summary > div {
-    padding: 11px 7px;
+    padding: 11px 6px;
 
     text-align: center;
 
-    border: 1px solid #eceef0;
+    border:
+        1px solid
+        #eceef0;
+
     border-radius: 9px;
 
-    background: #ffffff;
+    background:
+        #ffffff;
 }
 
 .tour-bookings-summary span {
@@ -1182,7 +1821,9 @@
 
     font-size: 8px;
     font-weight: 900;
+
     letter-spacing: 0.5px;
+
     text-transform: uppercase;
 }
 
@@ -1192,7 +1833,7 @@
     color: #22272b;
 
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 850;
 }
 
 
@@ -1206,7 +1847,7 @@
     color: #292e33;
 
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 850;
 }
 
 .tour-booking-user {
@@ -1214,9 +1855,11 @@
 
     display: flex;
     align-items: center;
+
     gap: 11px;
 
-    border-bottom: 1px solid #e8eaed;
+    border-bottom:
+        1px solid #e8eaed;
 }
 
 .tour-booking-user:last-child {
@@ -1226,8 +1869,8 @@
 }
 
 .tour-booking-user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 41px;
+    height: 41px;
 
     flex-shrink: 0;
 
@@ -1239,7 +1882,12 @@
 
     border-radius: 50%;
 
-    background: #eceff1;
+    background:
+        linear-gradient(
+            135deg,
+            #eef0f3,
+            #e7eaee
+        );
 
     font-size: 16px;
 }
@@ -1253,6 +1901,7 @@
 
 .tour-booking-user-info {
     min-width: 0;
+
     flex: 1;
 }
 
@@ -1264,7 +1913,7 @@
     color: #252a2f;
 
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 850;
 
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1275,7 +1924,7 @@
 
     overflow: hidden;
 
-    margin-top: 2px;
+    margin-top: 3px;
 
     color: #777e87;
 
@@ -1288,7 +1937,7 @@
 .tour-booking-user-info small {
     display: block;
 
-    margin-top: 2px;
+    margin-top: 3px;
 
     color: #969ba2;
 
@@ -1296,17 +1945,24 @@
 }
 
 .tour-booking-special-requests {
-    margin-top: 5px !important;
-    padding: 6px 9px;
+    margin-top: 6px !important;
 
-    border-left: 2px solid #f97316;
+    padding: 7px 9px;
+
+    border-left:
+        2px solid
+        #f97316;
+
     border-radius: 6px;
 
-    background: #fff7ed;
+    background:
+        #fff7ed;
 
-    color: #7c4a1e !important;
+    color:
+        #7c4a1e !important;
 
     font-size: 10px !important;
+
     line-height: 1.45;
 
     white-space: normal !important;
@@ -1317,23 +1973,10 @@
 
     display: flex;
     flex-direction: column;
+
     align-items: flex-end;
 
     gap: 6px;
-}
-
-.tour-booking-travelers-badge {
-    padding: 4px 8px;
-
-    border-radius: 20px;
-
-    background: #eef2ff;
-    color: var(--cd-blue);
-
-    font-size: 9px;
-    font-weight: 900;
-
-    white-space: nowrap;
 }
 
 .tour-booking-confirmed {
@@ -1343,10 +1986,14 @@
 
     border-radius: 20px;
 
-    background: #edf8f1;
-    color: #197a46;
+    background:
+        #edf8f1;
+
+    color:
+        #197a46;
 
     font-size: 8px;
+
     font-weight: 900;
 
     text-transform: uppercase;
@@ -1358,7 +2005,7 @@
    ========================================================= */
 
 .no-tour-bookings {
-    padding: 18px 8px;
+    padding: 19px 8px;
 
     text-align: center;
 }
@@ -1377,12 +2024,13 @@
     color: #858b92;
 
     font-size: 11px;
+
     line-height: 1.5;
 }
 
 
 /* =========================================================
-   SMALL LOADER
+   LOADER
    ========================================================= */
 
 .tour-booking-small-loader {
@@ -1391,18 +2039,24 @@
 
     margin: 0 auto 10px;
 
-    border: 3px solid #e4e7eb;
-    border-top-color: var(--cd-navy);
+    border:
+        3px solid
+        #e4e7eb;
+
+    border-top-color:
+        var(--cd-navy);
 
     border-radius: 50%;
 
     animation:
-        bookingSpin 0.7s linear infinite;
+        bookingSpin
+        0.7s linear infinite;
 }
 
 @keyframes bookingSpin {
     to {
-        transform: rotate(360deg);
+        transform:
+            rotate(360deg);
     }
 }
 
@@ -1412,18 +2066,24 @@
    ========================================================= */
 
 .company-quick-actions {
-    max-width: 1400px;
+    max-width: 1450px;
 
-    margin: 0 auto 40px;
-    padding: 30px;
+    margin: 0 auto 42px;
 
-    border: 1px solid var(--cd-border);
-    border-radius: 20px;
+    padding: 31px;
 
-    background: #ffffff;
+    border:
+        1px solid
+        var(--cd-border);
+
+    border-radius: 21px;
+
+    background:
+        rgba(255, 255, 255, 0.96);
 
     box-shadow:
-        0 8px 28px rgba(20, 30, 50, 0.045);
+        0 9px 30px
+        rgba(20, 30, 50, 0.045);
 }
 
 .company-quick-actions h2 {
@@ -1432,7 +2092,8 @@
     color: var(--cd-navy);
 
     font-size: 20px;
-    font-weight: 800;
+    font-weight: 850;
+
     letter-spacing: -0.3px;
 }
 
@@ -1446,7 +2107,7 @@
 }
 
 .quick-action-grid button {
-    min-height: 76px;
+    min-height: 78px;
 
     padding: 15px;
 
@@ -1455,37 +2116,54 @@
 
     gap: 13px;
 
-    border: 1px solid #e8ebf0;
+    border:
+        1px solid
+        #e8ebf0;
+
     border-radius: 14px;
 
-    background: #fafbfc;
+    background:
+        linear-gradient(
+            135deg,
+            #fafbfc,
+            #f8f9fa
+        );
 
     font-family: inherit;
+
     text-align: left;
 
     cursor: pointer;
 
     transition:
-        transform 0.2s ease,
-        border-color 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease;
+        transform 0.22s ease,
+        border-color 0.22s ease,
+        background 0.22s ease,
+        box-shadow 0.22s ease;
 }
 
 .quick-action-grid button:hover {
-    transform: translateY(-2px);
+    transform:
+        translateY(-3px);
 
-    border-color: #d3b37d;
+    border-color:
+        #d3b37d;
 
-    background: #fffdf9;
+    background:
+        linear-gradient(
+            135deg,
+            #fffdf9,
+            #fffaf2
+        );
 
     box-shadow:
-        0 7px 18px rgba(20, 30, 50, 0.055);
+        0 10px 24px
+        rgba(20, 30, 50, 0.065);
 }
 
 .quick-action-grid button > span {
-    width: 40px;
-    height: 40px;
+    width: 41px;
+    height: 41px;
 
     flex-shrink: 0;
 
@@ -1495,7 +2173,15 @@
 
     border-radius: 11px;
 
-    background: #f1eee8;
+    background:
+        linear-gradient(
+            135deg,
+            #f3eee5,
+            #ece6da
+        );
+
+    color:
+        var(--cd-gold-dark);
 
     font-size: 18px;
 }
@@ -1508,7 +2194,7 @@
     color: #273247;
 
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 850;
 }
 
 .quick-action-grid small {
@@ -1517,16 +2203,17 @@
     color: #929aaa;
 
     font-size: 9px;
+
     line-height: 1.4;
 }
 
 
 /* =========================================================
-   DASHBOARD FOOTER
+   FOOTER
    ========================================================= */
 
 .company-dashboard-footer {
-    max-width: 1400px;
+    max-width: 1450px;
 
     margin: 0 auto;
 
@@ -1538,15 +2225,20 @@
 
     gap: 20px;
 
-    border-top: 1px solid #e2e5ea;
+    border-top:
+        1px solid
+        #e2e5ea;
 }
 
 .company-dashboard-footer span {
-    color: var(--cd-gold-dark);
+    color:
+        var(--cd-gold-dark);
 
     font-size: 9px;
     font-weight: 900;
+
     letter-spacing: 1.8px;
+
     text-transform: uppercase;
 }
 
@@ -1570,36 +2262,51 @@
 
     display: flex;
     flex-direction: column;
+
     align-items: center;
     justify-content: flex-start;
 
-    background: var(--cd-bg);
+    background:
+        linear-gradient(
+            180deg,
+            #fafbfc,
+            #f5f6f8
+        );
 
     text-align: center;
 }
 
 .company-dashboard-loader {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
 
     margin-bottom: 18px;
 
-    border: 3px solid #e1e5eb;
-    border-top-color: var(--cd-gold);
+    border:
+        3px solid
+        #e1e5eb;
+
+    border-top-color:
+        var(--cd-gold);
+
+    border-right-color:
+        var(--cd-navy);
 
     border-radius: 50%;
 
     animation:
-        companyDashboardSpin 0.8s linear infinite;
+        companyDashboardSpin
+        0.8s linear infinite;
 }
 
 .company-dashboard-loading h3 {
     margin: 0 0 7px;
 
-    color: var(--cd-navy);
+    color:
+        var(--cd-navy);
 
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 850;
 }
 
 .company-dashboard-loading p {
@@ -1612,24 +2319,31 @@
 
 @keyframes companyDashboardSpin {
     from {
-        transform: rotate(0deg);
+        transform:
+            rotate(0deg);
     }
 
     to {
-        transform: rotate(360deg);
+        transform:
+            rotate(360deg);
     }
 }
 
 
 /* =========================================================
-   RESPONSIVE — TABLET
+   LARGE TABLET
    ========================================================= */
 
-@media (max-width: 1150px) {
+@media (max-width: 1250px) {
 
     .company-dashboard {
         padding-left: 4%;
         padding-right: 4%;
+    }
+
+    .company-dashboard-stats {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
     }
 
     .company-tour-grid {
@@ -1637,28 +2351,27 @@
             repeat(2, minmax(0, 1fr));
     }
 
-    .company-dashboard-stats {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
+    .company-pending-bookings-list {
+        grid-template-columns: 1fr;
     }
 }
 
 
 /* =========================================================
-   RESPONSIVE — SMALL TABLET
+   TABLET
    ========================================================= */
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
 
     .company-dashboard {
-        padding-top: 95px;
-        padding-bottom: 50px;
+        padding-top: 100px;
     }
 
     .company-dashboard-hero {
-        padding: 30px 25px;
+        padding: 34px 30px;
 
         flex-direction: column;
+
         align-items: flex-start;
     }
 
@@ -1671,51 +2384,53 @@
         flex: 1;
     }
 
-    .company-tour-section-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .add-tour-btn {
-        width: 100%;
+    .company-dashboard-stats {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
     .quick-action-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
-    .company-dashboard-footer {
-        align-items: flex-start;
-        flex-direction: column;
+    .tour-bookings-summary {
+        grid-template-columns:
+            repeat(3, 1fr);
     }
 }
 
 
 /* =========================================================
-   RESPONSIVE — MOBILE
+   MOBILE
    ========================================================= */
 
-@media (max-width: 600px) {
+@media (max-width: 650px) {
 
     .company-dashboard {
-        padding-top: 90px;
-        padding-left: 15px;
-        padding-right: 15px;
-        padding-bottom: 45px;
+        padding:
+            90px 15px 45px;
     }
 
     .company-dashboard-hero {
-        padding: 25px 20px;
+        min-height: auto;
 
-        border-radius: 18px;
+        padding: 28px 21px;
+
+        border-radius: 19px;
+
+        gap: 25px;
     }
 
     .company-dashboard-hero h1 {
-        font-size: 28px;
+        font-size: 29px;
+
+        letter-spacing: -1px;
     }
 
     .company-dashboard-hero p {
         font-size: 12px;
+
         line-height: 1.65;
     }
 
@@ -1725,9 +2440,9 @@
 
     .dashboard-profile-btn,
     .dashboard-logout-btn {
-        min-height: 42px;
+        min-height: 43px;
 
-        padding: 0 14px;
+        padding: 0 13px;
 
         font-size: 11px;
     }
@@ -1752,68 +2467,86 @@
         padding: 18px;
     }
 
-    .company-tour-grid {
-        grid-template-columns: 1fr;
+    .company-tour-section-header {
+        flex-direction: column;
 
-        gap: 16px;
+        align-items: flex-start;
     }
 
     .company-tour-section-header h2 {
         font-size: 24px;
     }
 
+    .add-tour-btn {
+        width: 100%;
+    }
+
+    .company-tour-grid {
+        grid-template-columns: 1fr;
+
+        gap: 16px;
+    }
+
     .company-tour-empty {
-        padding: 45px 20px;
+        padding: 46px 20px;
+    }
+
+    .company-tour-image-wrapper {
+        height: 210px;
     }
 
     .company-quick-actions {
-        padding: 22px 18px;
+        padding: 23px 18px;
 
         border-radius: 17px;
     }
 
-    .company-tour-actions {
-        grid-template-columns:
-            1fr 1fr;
-
-        gap: 8px;
+    .quick-action-grid {
+        grid-template-columns: 1fr;
     }
 
-    .tour-view-btn {
-        grid-column: 1 / -1;
+    .company-dashboard-footer {
+        align-items: flex-start;
+
+        flex-direction: column;
     }
 
-    .tour-edit-btn,
-    .tour-delete-btn {
+    .company-pending-booking-card {
+        flex-direction: column;
+    }
+
+    .company-pending-booking-meta {
         width: 100%;
+
+        align-items: stretch;
+    }
+
+    .company-pending-booking-meta
+    .company-booking-action-buttons {
+        width: 100%;
+    }
+
+    .company-pending-booking-meta
+    .company-booking-action-buttons button {
+        flex: 1;
     }
 
     .tour-bookings-summary {
         grid-template-columns:
-            repeat(3, 1fr);
-    }
-
-    .tour-bookings-summary strong {
-        font-size: 14px;
+            repeat(2, 1fr);
     }
 
     .tour-booking-user {
         align-items: flex-start;
     }
-
-    .tour-booking-confirmed {
-        font-size: 8px;
-
-        padding: 4px 6px;
-    }
 }
 
 
 /* =========================================================
-   RESPONSIVE — VERY SMALL MOBILE
+   SMALL MOBILE
    ========================================================= */
 
-@media (max-width: 420px) {
+@media (max-width: 440px) {
 
     .company-dashboard-hero-actions {
         flex-direction: column;
@@ -1830,18 +2563,45 @@
 
     .tour-info-row div + div {
         padding-left: 0;
+
         padding-top: 10px;
 
         border-left: none;
-        border-top: 1px solid #edf0f3;
+
+        border-top:
+            1px solid #edf0f3;
+    }
+
+    .company-tour-actions {
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+    .tour-view-btn {
+        grid-column:
+            1 / -1;
+    }
+
+    .tour-edit-btn,
+    .tour-delete-btn {
+        width: 100%;
     }
 
     .tour-bookings-panel {
         padding: 13px;
     }
 
+    .tour-bookings-summary {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .tour-bookings-summary strong {
+        font-size: 14px;
+    }
+
     .tour-booking-user-info span {
-        max-width: 130px;
+        max-width: 150px;
     }
 
     .tour-booking-confirmed {
@@ -1850,5 +2610,80 @@
 
     .tour-booking-meta {
         gap: 4px;
+    }
+
+    .company-booking-action-buttons {
+        width: 100%;
+    }
+
+    .company-booking-action-buttons button {
+        flex: 1;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL DEVICES
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+    .company-dashboard {
+        padding-left: 11px;
+        padding-right: 11px;
+    }
+
+    .company-dashboard-hero {
+        padding:
+            24px 17px;
+    }
+
+    .company-dashboard-hero h1 {
+        font-size: 26px;
+    }
+
+    .company-tour-content {
+        padding: 18px;
+    }
+
+    .company-pending-booking-card {
+        padding: 16px;
+    }
+
+    .tour-bookings-summary {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+.company-dashboard
+button:focus-visible {
+    outline:
+        3px solid
+        rgba(197, 155, 95, 0.35);
+
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .company-dashboard *,
+    .company-dashboard *::before,
+    .company-dashboard *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+
+        scroll-behavior: auto !important;
+
+        transition-duration: 0.01ms !important;
     }
 }
