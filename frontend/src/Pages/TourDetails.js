@@ -359,6 +359,16 @@ function TourDetails() {
 
         }
 
+        if (isPendingRequest) {
+
+            setBookingMessage(
+                "Your booking request is already pending confirmation from the company."
+            );
+
+            return;
+
+        }
+
         if (isFull) {
 
             setBookingError(
@@ -475,8 +485,12 @@ function TourDetails() {
                 // -------------------------------------------------
                 // UPDATE BOOKING STATE
                 // -------------------------------------------------
-
-                setIsBooked(true);
+                //
+                // A freshly submitted request is always "pending"
+                // — isBooked only becomes true once the company
+                // actually confirms it (see checkMyBooking).
+                //
+                // -------------------------------------------------
 
                 setBooking(
                     response.data.booking ||
@@ -485,6 +499,12 @@ function TourDetails() {
 
                 // -------------------------------------------------
                 // UPDATE CAPACITY IMMEDIATELY
+                // -------------------------------------------------
+                //
+                // Pending requests don't occupy seats, so this
+                // capacity snapshot won't show this request as
+                // booked yet — that's expected.
+                //
                 // -------------------------------------------------
 
                 if (
@@ -501,32 +521,9 @@ function TourDetails() {
 
                 }
 
-                // -------------------------------------------------
-                // UPDATE TOUR STATUS IF NECESSARY
-                // -------------------------------------------------
-
-                if (
-                    response.data.tourCapacity?.isFull
-                ) {
-
-                    setTour((previousTour) => {
-
-                        if (!previousTour) {
-                            return previousTour;
-                        }
-
-                        return {
-                            ...previousTour,
-                            status: "completed"
-                        };
-
-                    });
-
-                }
-
                 setBookingMessage(
                     response.data.message ||
-                    "Tour registered successfully 🎉"
+                    "Booking request sent successfully. Waiting for company confirmation."
                 );
 
                 setShowBookingModal(false);
@@ -561,10 +558,9 @@ function TourDetails() {
             // -------------------------------------------------
 
             if (
-                error.response?.data?.alreadyBooked
+                error.response?.data?.alreadyBooked ||
+                error.response?.data?.alreadyRequested
             ) {
-
-                setIsBooked(true);
 
                 await checkMyBooking();
 
@@ -812,6 +808,18 @@ function TourDetails() {
         isExpired ||
         isCancelled ||
         isCompleted;
+
+    // =====================================================
+    // PENDING REQUEST
+    // =====================================================
+    //
+    // A booking can exist and not yet be confirmed —
+    // isBooked only becomes true once the company confirms.
+    //
+    // =====================================================
+
+    const isPendingRequest =
+        booking?.status === "pending";
 
     // =====================================================
     // CAPACITY
@@ -1463,6 +1471,35 @@ function TourDetails() {
                                     {cancelLoading
                                         ? "Cancelling..."
                                         : "Cancel Booking"}
+
+                                </button>
+
+                            </>
+
+                        ) : isPendingRequest ? (
+
+                            <>
+
+                                <button
+                                    className="tour-booked-btn tour-booked-pending"
+                                    disabled
+                                >
+                                    ⏳ Request Pending Confirmation
+                                </button>
+
+                                <button
+                                    className="tour-cancel-btn"
+                                    onClick={
+                                        handleCancelBooking
+                                    }
+                                    disabled={
+                                        cancelLoading
+                                    }
+                                >
+
+                                    {cancelLoading
+                                        ? "Withdrawing..."
+                                        : "Withdraw Request"}
 
                                 </button>
 
