@@ -64,6 +64,69 @@ function Home() {
 </section>
 
 
+{/* =====================================================
+    STATS
+===================================================== */}
+<section className="stats">
+
+    <div className="stat-item">
+
+        <div className="stat-icon">
+            ✈
+        </div>
+
+        <div>
+            <strong>500+</strong>
+            <span>Trips Planned</span>
+        </div>
+
+    </div>
+
+
+    <div className="stat-item">
+
+        <div className="stat-icon">
+            ◎
+        </div>
+
+        <div>
+            <strong>150+</strong>
+            <span>Destinations</span>
+        </div>
+
+    </div>
+
+
+    <div className="stat-item">
+
+        <div className="stat-icon">
+            ♡
+        </div>
+
+        <div>
+            <strong>1000+</strong>
+            <span>Travellers</span>
+        </div>
+
+    </div>
+
+
+    <div className="stat-item">
+
+        <div className="stat-icon">
+            ✦
+        </div>
+
+        <div>
+            <strong>24×7</strong>
+            <span>AI Assistance</span>
+        </div>
+
+    </div>
+
+</section>
+        
+
 
             {/* =====================================================
                 INTRO
