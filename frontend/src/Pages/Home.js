@@ -5,50 +5,104 @@ function Home() {
     return (
         <main className="home">
 
-            {/* ================= HERO ================= */}
+            {/* =====================================================
+                HERO
+            ===================================================== */}
             <section className="hero">
 
-                <div className="hero-overlay"></div>
+                <div className="hero-inner">
 
-                <div className="hero-content">
+                    {/* LEFT CONTENT */}
+                    <div className="hero-content">
 
-                    <div className="hero-badge">
-                        <span>✦</span>
-                        AI Powered Travel Platform
+                        <div className="hero-badge">
+                            <span>✦</span>
+                            AI POWERED TRAVEL PLATFORM
+                        </div>
+
+                        <h1>
+                            Your journey.
+                            <br />
+                            <span>Your way.</span>
+                        </h1>
+
+                        <p>
+                            Plan unforgettable trips with AI, discover
+                            inspiring places, connect with travellers and
+                            explore experiences from trusted travel companies.
+                        </p>
+
+                        <div className="hero-buttons">
+
+                            <Link to="/trip-planner">
+                                <button className="primary-btn">
+                                    Plan My Trip
+                                    <span>→</span>
+                                </button>
+                            </Link>
+
+                            <Link to="/explore-tours">
+                                <button className="secondary-btn">
+                                    Explore Tours
+                                </button>
+                            </Link>
+
+                        </div>
+
+                        <div className="hero-note">
+                            <span>✦</span>
+                            Smart planning. Real experiences. Better travel.
+                        </div>
+
                     </div>
 
-                    <h1>
-                        Travel More.
-                        <br />
-                        <span>Experience More.</span>
-                    </h1>
 
-                    <p>
-                        Plan smarter with AI, discover inspiring destinations,
-                        connect with fellow travellers and find unforgettable
-                        travel experiences — all in one place.
-                    </p>
+                    {/* RIGHT VISUAL */}
+                    <div className="hero-visual">
 
-                    <div className="hero-buttons">
+                        <div className="hero-image-card">
 
-                        <Link to="/trip-planner">
-                            <button className="primary-btn">
-                                Plan My Trip
-                                <span>→</span>
-                            </button>
-                        </Link>
+                            <img
+                                src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=85"
+                                alt="Beautiful travel destination"
+                            />
 
-                        <Link to="/explore-tours">
-                            <button className="secondary-btn">
-                                Explore Tours
-                            </button>
-                        </Link>
+                            <div className="image-gradient"></div>
 
-                    </div>
+                            <div className="image-caption">
 
-                    <div className="hero-trust">
-                        <span>✦</span>
-                        Plan your next adventure with TravelMet
+                                <div>
+                                    <span>DISCOVER</span>
+                                    <h3>Beautiful places await.</h3>
+                                </div>
+
+                                <div className="caption-icon">
+                                    →
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* FLOATING CARD */}
+                        <div className="hero-floating-card">
+
+                            <div className="floating-icon">
+                                ✦
+                            </div>
+
+                            <div>
+                                <strong>AI Trip Planner</strong>
+                                <span>Personalized for you</span>
+                            </div>
+
+                            <div className="floating-check">
+                                ✓
+                            </div>
+
+                        </div>
+
                     </div>
 
                 </div>
@@ -56,137 +110,326 @@ function Home() {
             </section>
 
 
-            {/* ================= STATS ================= */}
+            {/* =====================================================
+                STATS
+            ===================================================== */}
             <section className="stats">
 
-                <div className="stat-box">
-                    <div className="stat-icon">✈</div>
-                    <div>
-                        <h2>500+</h2>
-                        <p>Trips Planned</p>
+                <div className="stat-item">
+
+                    <div className="stat-icon">
+                        ✈
                     </div>
+
+                    <div>
+                        <strong>500+</strong>
+                        <span>Trips Planned</span>
+                    </div>
+
                 </div>
 
-                <div className="stat-box">
-                    <div className="stat-icon">◎</div>
-                    <div>
-                        <h2>150+</h2>
-                        <p>Destinations</p>
+
+                <div className="stat-item">
+
+                    <div className="stat-icon">
+                        ◎
                     </div>
+
+                    <div>
+                        <strong>150+</strong>
+                        <span>Destinations</span>
+                    </div>
+
                 </div>
 
-                <div className="stat-box">
-                    <div className="stat-icon">♡</div>
-                    <div>
-                        <h2>1000+</h2>
-                        <p>Travellers</p>
+
+                <div className="stat-item">
+
+                    <div className="stat-icon">
+                        ♡
                     </div>
+
+                    <div>
+                        <strong>1000+</strong>
+                        <span>Travellers</span>
+                    </div>
+
                 </div>
 
-                <div className="stat-box">
-                    <div className="stat-icon">✦</div>
-                    <div>
-                        <h2>24×7</h2>
-                        <p>AI Assistance</p>
+
+                <div className="stat-item">
+
+                    <div className="stat-icon">
+                        ✦
                     </div>
+
+                    <div>
+                        <strong>24×7</strong>
+                        <span>AI Assistance</span>
+                    </div>
+
                 </div>
 
             </section>
 
 
-            {/* ================= INTRO ================= */}
+            {/* =====================================================
+                INTRO
+            ===================================================== */}
             <section className="intro-section">
 
-                <div className="intro-heading">
+                <div className="section-heading">
 
                     <span className="section-label">
-                        THE TRAVELMET EXPERIENCE
+                        WHY TRAVELMET
                     </span>
 
                     <h2>
                         Everything you need
                         <br />
-                        <span>for a better journey.</span>
+                        <span>for your next journey.</span>
                     </h2>
 
                 </div>
 
-                <p className="intro-description">
-                    TravelMet brings trip planning, travel inspiration,
-                    community experiences and organized tours together
-                    to make your journey simpler and more memorable.
-                </p>
+                <div className="intro-text">
+
+                    <p>
+                        TravelMet brings intelligent trip planning,
+                        travel inspiration, community experiences and
+                        organized tours together in one simple platform.
+                    </p>
+
+                    <Link to="/trip-planner" className="text-link">
+                        Discover TravelMet
+                        <span>→</span>
+                    </Link>
+
+                </div>
 
             </section>
 
 
-            {/* ================= AI PLANNER ================= */}
+            {/* =====================================================
+                FEATURE CARDS
+            ===================================================== */}
+            <section className="feature-section">
+
+                <div className="feature-grid">
+
+                    {/* AI */}
+                    <article className="feature-card feature-main">
+
+                        <div className="feature-top">
+
+                            <div className="feature-icon orange">
+                                ✦
+                            </div>
+
+                            <span>01</span>
+
+                        </div>
+
+                        <h3>
+                            Plan with AI
+                        </h3>
+
+                        <p>
+                            Get a personalized itinerary based on your
+                            destination, budget, dates and travel style.
+                        </p>
+
+                        <Link to="/trip-planner" className="feature-link">
+                            Try AI Planner
+                            <span>→</span>
+                        </Link>
+
+                    </article>
+
+
+                    {/* COMMUNITY */}
+                    <article className="feature-card">
+
+                        <div className="feature-top">
+
+                            <div className="feature-icon gold">
+                                ♡
+                            </div>
+
+                            <span>02</span>
+
+                        </div>
+
+                        <h3>
+                            Travel Community
+                        </h3>
+
+                        <p>
+                            Share your journeys, discover travel stories
+                            and connect with people who love travelling.
+                        </p>
+
+                        <Link to="/community" className="feature-link">
+                            Explore Community
+                            <span>→</span>
+                        </Link>
+
+                    </article>
+
+
+                    {/* BLOG */}
+                    <article className="feature-card">
+
+                        <div className="feature-top">
+
+                            <div className="feature-icon blue">
+                                ◌
+                            </div>
+
+                            <span>03</span>
+
+                        </div>
+
+                        <h3>
+                            Travel Stories
+                        </h3>
+
+                        <p>
+                            Find destination guides, travel tips and
+                            experiences shared by fellow travellers.
+                        </p>
+
+                        <Link to="/blogs" className="feature-link">
+                            Read Blogs
+                            <span>→</span>
+                        </Link>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            {/* =====================================================
+                AI SECTION
+            ===================================================== */}
             <section className="ai-section">
 
                 <div className="ai-content">
 
                     <span className="section-label light">
-                        ✦ AI TRIP PLANNER
+                        ✦ SMART TRAVEL PLANNING
                     </span>
 
                     <h2>
-                        Your journey,
+                        Stop planning.
                         <br />
-                        <span>planned by AI.</span>
+                        <span>Start travelling.</span>
                     </h2>
 
                     <p>
-                        Tell TravelMet where you want to go, your budget,
-                        travel dates and preferences. Our AI creates a
-                        personalized day-by-day travel plan for you.
+                        Give TravelMet a few details about your trip and
+                        let AI create a day-by-day itinerary designed
+                        around you.
                     </p>
 
+                    <div className="ai-points">
+
+                        <div>
+                            <span>✓</span>
+                            Personalized itinerary
+                        </div>
+
+                        <div>
+                            <span>✓</span>
+                            Budget-friendly planning
+                        </div>
+
+                        <div>
+                            <span>✓</span>
+                            Day-by-day recommendations
+                        </div>
+
+                    </div>
+
                     <Link to="/trip-planner">
-                        <button className="primary-btn light-btn">
-                            Create My Itinerary
+                        <button className="primary-btn light-button">
+                            Create My Trip
                             <span>→</span>
                         </button>
                     </Link>
 
                 </div>
 
-                <div className="ai-visual">
 
-                    <div className="ai-orbit orbit-one"></div>
-                    <div className="ai-orbit orbit-two"></div>
+                <div className="ai-preview">
 
-                    <div className="ai-center-card">
+                    <div className="ai-window">
 
-                        <div className="ai-card-top">
-                            <span className="ai-spark">✦</span>
+                        <div className="ai-window-header">
+
+                            <div className="window-dots">
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                            </div>
+
                             <span>TravelMet AI</span>
-                            <span className="ai-status"></span>
+
+                            <div className="ai-live">
+                                <b></b>
+                                Ready
+                            </div>
+
                         </div>
 
-                        <div className="ai-card-line large"></div>
-                        <div className="ai-card-line"></div>
-                        <div className="ai-card-line short"></div>
 
-                        <div className="ai-mini-grid">
-                            <div>
-                                <span>📍</span>
-                                Destination
+                        <div className="ai-window-body">
+
+                            <div className="ai-welcome">
+                                <span>✦</span>
+                                <div>
+                                    <strong>Let's plan your journey</strong>
+                                    <p>
+                                        Tell us about your perfect trip.
+                                    </p>
+                                </div>
                             </div>
 
-                            <div>
-                                <span>📅</span>
-                                Duration
+
+                            <div className="ai-input-row">
+
+                                <div>
+                                    <small>DESTINATION</small>
+                                    <strong>Where do you want to go?</strong>
+                                </div>
+
+                                <span>→</span>
+
                             </div>
 
-                            <div>
-                                <span>₹</span>
-                                Budget
+
+                            <div className="ai-input-grid">
+
+                                <div>
+                                    <small>DATES</small>
+                                    <strong>Choose dates</strong>
+                                </div>
+
+                                <div>
+                                    <small>BUDGET</small>
+                                    <strong>Your preference</strong>
+                                </div>
+
                             </div>
 
-                            <div>
-                                <span>♡</span>
-                                Travel Style
+
+                            <div className="ai-generate">
+                                Generate itinerary
+                                <span>✦</span>
                             </div>
+
                         </div>
 
                     </div>
@@ -196,44 +439,67 @@ function Home() {
             </section>
 
 
-            {/* ================= TRAVEL COMPANY ================= */}
+            {/* =====================================================
+                TRAVEL COMPANY
+            ===================================================== */}
             <section className="company-section">
 
                 <div className="company-visual">
 
-                    <div className="company-main-card">
+                    <div className="company-card">
 
-                        <div className="company-card-header">
-                            <div className="company-logo">
-                                W
+                        <div className="company-header">
+
+                            <div className="company-avatar">
+                                T
                             </div>
 
                             <div>
-                                <strong>Travel Company</strong>
-                                <span>Verified Partner</span>
+                                <strong>Travel Partner</strong>
+                                <span>Verified Company</span>
                             </div>
 
-                            <span className="verified">✓</span>
+                            <div className="verified">
+                                ✓
+                            </div>
+
                         </div>
 
-                        <div className="company-card-content">
-                            <span>GROUP EXPERIENCE</span>
+
+                        <div className="company-divider"></div>
+
+
+                        <div className="company-body">
+
+                            <span className="company-small-title">
+                                ORGANIZED EXPERIENCES
+                            </span>
 
                             <h3>
                                 Discover India
                                 <br />
-                                Together
+                                with people.
                             </h3>
 
-                            <div className="company-meta">
-                                <span>📍 Multiple Destinations</span>
-                                <span>👥 Group Tours</span>
-                            </div>
+                            <p>
+                                Group tours created by travel companies
+                                for unforgettable experiences.
+                            </p>
+
+                        </div>
+
+
+                        <div className="company-footer">
+
+                            <span>👥 Group Tours</span>
+                            <span>📍 Multiple Places</span>
+
                         </div>
 
                     </div>
 
                 </div>
+
 
                 <div className="company-content">
 
@@ -242,39 +508,41 @@ function Home() {
                     </span>
 
                     <h2>
-                        Turn your tours
+                        Bring your tours
                         <br />
-                        into <span>experiences.</span>
+                        to <span>TravelMet.</span>
                     </h2>
 
                     <p>
-                        Travel companies can create and publish their
-                        tours on TravelMet, reach new travellers and
-                        build memorable group experiences.
+                        Travel companies can register on TravelMet,
+                        create their tour packages and connect with
+                        travellers looking for their next adventure.
                     </p>
 
-                    <div className="company-points">
+
+                    <div className="company-list">
 
                         <div>
-                            <span>01</span>
-                            <p>Create & publish tours</p>
+                            <b>01</b>
+                            <span>Create and publish your tours</span>
                         </div>
 
                         <div>
-                            <span>02</span>
-                            <p>Reach interested travellers</p>
+                            <b>02</b>
+                            <span>Reach interested travellers</span>
                         </div>
 
                         <div>
-                            <span>03</span>
-                            <p>Manage your tour participants</p>
+                            <b>03</b>
+                            <span>Build memorable group experiences</span>
                         </div>
 
                     </div>
 
+
                     <Link to="/explore-tours">
                         <button className="outline-btn">
-                            Explore Organized Tours
+                            Explore Tours
                             <span>→</span>
                         </button>
                     </Link>
@@ -284,78 +552,50 @@ function Home() {
             </section>
 
 
-            {/* ================= COMMUNITY ================= */}
+            {/* =====================================================
+                COMMUNITY
+            ===================================================== */}
             <section className="community-section">
 
-                <div className="community-heading">
+                <div className="community-content">
 
                     <span className="section-label">
                         TRAVEL COMMUNITY
                     </span>
 
                     <h2>
-                        Travel stories
+                        Real journeys.
                         <br />
-                        worth <span>sharing.</span>
+                        <span>Real stories.</span>
                     </h2>
 
                     <p>
-                        Discover experiences from fellow travellers,
-                        share your own journeys and get inspired for
-                        your next adventure.
+                        Get inspired by the experiences of other travellers
+                        and share the moments that made your journey special.
                     </p>
 
                     <Link to="/community">
-                        <button className="primary-btn dark-btn">
-                            Explore Community
+                        <button className="dark-btn">
+                            Visit Community
                             <span>→</span>
                         </button>
                     </Link>
 
                 </div>
 
-                <div className="community-cards">
 
-                    <div className="story-card story-large">
+                <div className="community-visual">
 
-                        <div className="story-image image-one"></div>
+                    <div className="community-image image-a"></div>
 
-                        <div className="story-content">
-                            <span>ADVENTURE</span>
-                            <h3>
-                                Stories from the road
-                            </h3>
-                            <p>
-                                Real journeys. Real experiences.
-                            </p>
+                    <div className="community-small-image image-b"></div>
+
+                    <div className="community-note">
+                        <span>✦</span>
+                        <div>
+                            <strong>Share your journey</strong>
+                            <small>Inspire another traveller</small>
                         </div>
-
-                    </div>
-
-                    <div className="story-card">
-
-                        <div className="story-image image-two"></div>
-
-                        <div className="story-content">
-                            <span>NATURE</span>
-                            <h3>
-                                Find your next escape
-                            </h3>
-                        </div>
-
-                    </div>
-
-                    <div className="story-card">
-
-                        <div className="story-image image-three"></div>
-
-                        <div className="story-content">
-                            <span>DISCOVER</span>
-                            <h3>
-                                See the world differently
-                            </h3>
-                        </div>
-
                     </div>
 
                 </div>
@@ -363,70 +603,80 @@ function Home() {
             </section>
 
 
-            {/* ================= BLOG ================= */}
-            <section className="blog-cta">
+            {/* =====================================================
+                BLOG
+            ===================================================== */}
+            <section className="blog-section">
 
                 <div>
+
                     <span className="section-label">
-                        TRAVEL STORIES
+                        TRAVEL BLOGS
                     </span>
 
                     <h2>
-                        Read. Discover.
+                        Go somewhere.
                         <br />
-                        <span>Get inspired.</span>
+                        <span>Read about it first.</span>
                     </h2>
 
-                    <p>
-                        Explore travel blogs, destination guides and
-                        useful tips shared by the TravelMet community.
-                    </p>
                 </div>
 
-                <Link to="/blogs">
-                    <button className="outline-btn">
-                        Explore Blogs
+                <div className="blog-right">
+
+                    <p>
+                        Discover destination guides, useful travel tips
+                        and experiences from the TravelMet community.
+                    </p>
+
+                    <Link to="/blogs" className="text-link">
+                        Explore Travel Blogs
                         <span>→</span>
-                    </button>
-                </Link>
+                    </Link>
+
+                </div>
 
             </section>
 
 
-            {/* ================= FINAL CTA ================= */}
-            <section className="cta">
+            {/* =====================================================
+                FINAL CTA
+            ===================================================== */}
+            <section className="final-cta">
 
-                <div className="cta-decoration"></div>
+                <div className="cta-inner">
 
-                <span className="section-label light">
-                    YOUR NEXT ADVENTURE AWAITS
-                </span>
+                    <span className="section-label light">
+                        YOUR NEXT ADVENTURE
+                    </span>
 
-                <h2>
-                    Where will you
-                    <br />
-                    <span>go next?</span>
-                </h2>
+                    <h2>
+                        Where will you
+                        <br />
+                        <span>go next?</span>
+                    </h2>
 
-                <p>
-                    Start planning your next unforgettable journey
-                    with TravelMet.
-                </p>
+                    <p>
+                        Start planning your next unforgettable journey
+                        with TravelMet.
+                    </p>
 
-                <div className="cta-buttons">
+                    <div className="cta-buttons">
 
-                    <Link to="/trip-planner">
-                        <button className="primary-btn">
-                            Start Planning
-                            <span>→</span>
-                        </button>
-                    </Link>
+                        <Link to="/trip-planner">
+                            <button className="primary-btn">
+                                Start Planning
+                                <span>→</span>
+                            </button>
+                        </Link>
 
-                    <Link to="/community">
-                        <button className="secondary-btn">
-                            Join Community
-                        </button>
-                    </Link>
+                        <Link to="/community">
+                            <button className="secondary-btn">
+                                Join Community
+                            </button>
+                        </Link>
+
+                    </div>
 
                 </div>
 
