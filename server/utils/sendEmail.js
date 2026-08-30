@@ -132,4 +132,131 @@ async function sendPasswordResetEmail(data) {
         throw error;
     }
 }
-module.exports = { sendWelcomeEmail, sendContactMessage, sendPasswordResetEmail };
+function formatDate(date) {
+    if (!date) return "N/A";
+    return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+    });
+}
+
+async function sendTourBookingUserEmail(data) {
+
+    const {
+        name,
+        email,
+        tourTitle,
+        destination,
+        startDate,
+        endDate,
+        numberOfTravelers
+    } = data;
+
+    if (!process.env.BREVO_API_KEY) {
+        console.log("⚠️ BREVO_API_KEY missing");
+        return;
+    }
+
+    try {
+        console.log("📧 Sending booking confirmation to:", email);
+
+        const result = await brevo.transactionalEmails.sendTransacEmail({
+            sender: {
+                name: "TravelMet 🌍",
+                email: "samnangare28@gmail.com"
+            },
+            to: [{ email, name }],
+            subject: `🎉 Booking Confirmed: ${tourTitle}`,
+            htmlContent: `
+                <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:30px; color:#333;">
+                    <h1 style="text-align:center;">🎉 Your Tour is Booked!</h1>
+                    <p>Hey ${name},</p>
+                    <p>Your registration for <strong>${tourTitle}</strong> has been confirmed. Here are your booking details:</p>
+                    <table style="width:100%; border-collapse:collapse; margin:20px 0;">
+                        <tr><td style="padding:8px; font-weight:bold;">Destination</td><td style="padding:8px;">${destination}</td></tr>
+                        <tr style="background:#f7f7f7;"><td style="padding:8px; font-weight:bold;">Start Date</td><td style="padding:8px;">${formatDate(startDate)}</td></tr>
+                        <tr><td style="padding:8px; font-weight:bold;">End Date</td><td style="padding:8px;">${formatDate(endDate)}</td></tr>
+                        <tr style="background:#f7f7f7;"><td style="padding:8px; font-weight:bold;">Travelers</td><td style="padding:8px;">${numberOfTravelers}</td></tr>
+                    </table>
+                    <p>The travel company can now see your details and will reach out with any further instructions.</p>
+                    <h2 style="text-align:center;">Happy Travels! 🌍✈️</h2>
+                    <p style="text-align:center;">With love,<br><strong>Team TravelMet 💙</strong></p>
+                </div>
+            `
+        });
+
+        console.log("✅ BOOKING CONFIRMATION EMAIL SENT!", result.messageId);
+        return result;
+
+    } catch (error) {
+        console.log("❌ SEND BOOKING CONFIRMATION EMAIL ERROR:", error.message);
+        throw error;
+    }
+}
+
+async function sendTourBookingCompanyEmail(data) {
+
+    const {
+        companyOwnerName,
+        companyEmail,
+        tourTitle,
+        destination,
+        startDate,
+        endDate,
+        contactName,
+        contactEmail,
+        contactPhone,
+        numberOfTravelers,
+        specialRequests
+    } = data;
+
+    if (!process.env.BREVO_API_KEY) {
+        console.log("⚠️ BREVO_API_KEY missing");
+        return;
+    }
+
+    try {
+        console.log("📧 Sending new booking alert to company:", companyEmail);
+
+        const result = await brevo.transactionalEmails.sendTransacEmail({
+            sender: {
+                name: "TravelMet 🌍",
+                email: "samnangare28@gmail.com"
+            },
+            to: [{ email: companyEmail, name: companyOwnerName }],
+            subject: `📥 New Booking: ${tourTitle} (${numberOfTravelers} traveler${numberOfTravelers > 1 ? "s" : ""})`,
+            htmlContent: `
+                <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:30px; color:#333;">
+                    <h1 style="text-align:center;">📥 New Tour Booking</h1>
+                    <p>Hey ${companyOwnerName},</p>
+                    <p>You have a new booking for <strong>${tourTitle}</strong> (${destination}, ${formatDate(startDate)} – ${formatDate(endDate)}).</p>
+                    <table style="width:100%; border-collapse:collapse; margin:20px 0;">
+                        <tr><td style="padding:8px; font-weight:bold;">Traveler Name</td><td style="padding:8px;">${contactName}</td></tr>
+                        <tr style="background:#f7f7f7;"><td style="padding:8px; font-weight:bold;">Email</td><td style="padding:8px;">${contactEmail}</td></tr>
+                        <tr><td style="padding:8px; font-weight:bold;">Phone</td><td style="padding:8px;">${contactPhone}</td></tr>
+                        <tr style="background:#f7f7f7;"><td style="padding:8px; font-weight:bold;">Number of Travelers</td><td style="padding:8px;">${numberOfTravelers}</td></tr>
+                        <tr><td style="padding:8px; font-weight:bold;">Special Requests</td><td style="padding:8px; white-space:pre-wrap;">${specialRequests || "None"}</td></tr>
+                    </table>
+                    <p>Log in to your TravelMet company dashboard to view the full traveler list for this tour.</p>
+                    <p style="text-align:center;">Team TravelMet 💙</p>
+                </div>
+            `
+        });
+
+        console.log("✅ COMPANY BOOKING ALERT EMAIL SENT!", result.messageId);
+        return result;
+
+    } catch (error) {
+        console.log("❌ SEND COMPANY BOOKING ALERT EMAIL ERROR:", error.message);
+        throw error;
+    }
+}
+
+module.exports = {
+    sendWelcomeEmail,
+    sendContactMessage,
+    sendPasswordResetEmail,
+    sendTourBookingUserEmail,
+    sendTourBookingCompanyEmail
+};
