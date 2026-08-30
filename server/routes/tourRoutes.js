@@ -11,8 +11,8 @@ const tourBookingController =
 const companyAuth =
     require("../middleware/companyAuth");
 
-const auth =
-    require("../middleware/auth");
+const { protect: auth } =
+    require("../middleware/authMiddleware");
 
 
 // =====================================================
@@ -77,7 +77,7 @@ router.get(
 //
 // Public
 //
-// GET /api/tours/:tourId/availability
+// GET /api/tours/:tourId/booking-count
 //
 // Used by TourDetails.jsx
 //
@@ -90,7 +90,7 @@ router.get(
 // =====================================================
 
 router.get(
-    "/:tourId/availability",
+    "/:tourId/booking-count",
     tourBookingController.getTourBookingCount
 );
 
