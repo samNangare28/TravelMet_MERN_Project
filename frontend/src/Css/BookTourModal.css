@@ -1,0 +1,226 @@
+@import "./design-tokens.css";
+
+/* ========================================
+   BOOK TOUR MODAL
+======================================== */
+
+.book-tour-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(16, 24, 40, 0.55);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+    animation: bookTourFadeIn 0.2s var(--tm-ease);
+}
+
+@keyframes bookTourFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.book-tour-modal {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--tm-surface);
+    border-radius: var(--tm-radius-lg);
+    box-shadow: var(--tm-shadow-lg);
+    animation: bookTourSlideUp 0.25s var(--tm-ease);
+}
+
+@keyframes bookTourSlideUp {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.book-tour-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: var(--tm-surface-muted);
+    color: var(--tm-ink);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s var(--tm-ease), transform 0.15s var(--tm-ease);
+}
+
+.book-tour-close-btn:hover {
+    background: var(--tm-danger-tint);
+    color: var(--tm-danger);
+    transform: rotate(90deg);
+}
+
+.book-tour-header {
+    padding: 32px 32px 20px;
+    background: var(--tm-orange-gradient);
+    border-radius: var(--tm-radius-lg) var(--tm-radius-lg) 0 0;
+    color: #fff;
+}
+
+.book-tour-header-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.22);
+    padding: 4px 12px;
+    border-radius: var(--tm-radius-pill);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+}
+
+.book-tour-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+.book-tour-header-sub {
+    margin: 6px 0 0;
+    font-size: 14px;
+    opacity: 0.92;
+}
+
+.book-tour-form {
+    padding: 24px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.book-tour-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.book-tour-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.book-tour-field label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--tm-ink);
+}
+
+.book-tour-field input,
+.book-tour-field select,
+.book-tour-field textarea {
+    border: 1.5px solid var(--tm-border);
+    border-radius: var(--tm-radius-sm);
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--tm-ink);
+    background: var(--tm-surface);
+    transition: border-color 0.15s var(--tm-ease), box-shadow 0.15s var(--tm-ease);
+    resize: vertical;
+}
+
+.book-tour-field input:focus,
+.book-tour-field select:focus,
+.book-tour-field textarea:focus {
+    outline: none;
+    border-color: var(--tm-orange);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+.book-tour-field input:disabled,
+.book-tour-field select:disabled,
+.book-tour-field textarea:disabled {
+    background: var(--tm-surface-muted);
+    cursor: not-allowed;
+}
+
+.book-tour-field small {
+    font-size: 12px;
+    color: var(--tm-muted);
+}
+
+.book-tour-error {
+    background: var(--tm-danger-tint);
+    border: 1px solid var(--tm-danger-border);
+    color: var(--tm-danger);
+    border-radius: var(--tm-radius-sm);
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.book-tour-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.book-tour-cancel-btn,
+.book-tour-submit-btn {
+    flex: 1;
+    padding: 13px 20px;
+    border-radius: var(--tm-radius-pill);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.15s var(--tm-ease), box-shadow 0.15s var(--tm-ease), opacity 0.15s var(--tm-ease);
+}
+
+.book-tour-cancel-btn {
+    background: var(--tm-surface-muted);
+    color: var(--tm-ink);
+    border: 1.5px solid var(--tm-border);
+}
+
+.book-tour-cancel-btn:hover:not(:disabled) {
+    background: var(--tm-border);
+}
+
+.book-tour-submit-btn {
+    background: var(--tm-orange-gradient);
+    color: #fff;
+    box-shadow: var(--tm-shadow-orange);
+}
+
+.book-tour-submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(249, 115, 22, 0.35);
+}
+
+.book-tour-submit-btn:disabled,
+.book-tour-cancel-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@media (max-width: 560px) {
+
+    .book-tour-header {
+        padding: 24px 20px 16px;
+    }
+
+    .book-tour-form {
+        padding: 20px 20px 24px;
+    }
+
+    .book-tour-field-row {
+        grid-template-columns: 1fr;
+    }
+
+}

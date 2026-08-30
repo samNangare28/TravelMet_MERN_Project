@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { TOUR_THEMES, THEME_ICONS } from "../Data/tourThemes";
 import "../Css/ExploreTours.css";
 
 function ExploreTours() {
@@ -20,6 +21,9 @@ function ExploreTours() {
     const [search, setSearch] = useState("");
 
     const [selectedDestination, setSelectedDestination] =
+        useState("All");
+
+    const [selectedTheme, setSelectedTheme] =
         useState("All");
 
 
@@ -113,6 +117,18 @@ function ExploreTours() {
 
 
     // =====================================================
+    // GET THEMES PRESENT IN CURRENT TOURS
+    // =====================================================
+
+    const availableThemes = [
+        "All",
+        ...TOUR_THEMES.filter((theme) =>
+            tours.some((tour) => tour.theme === theme)
+        )
+    ];
+
+
+    // =====================================================
     // FILTER TOURS
     // =====================================================
 
@@ -144,9 +160,15 @@ function ExploreTours() {
                     selectedDestination;
 
 
+            const matchesTheme =
+                selectedTheme === "All" ||
+                tour.theme === selectedTheme;
+
+
             return (
                 matchesSearch &&
-                matchesDestination
+                matchesDestination &&
+                matchesTheme
             );
 
         });
@@ -331,6 +353,43 @@ function ExploreTours() {
 
                     </div>
 
+
+                    {availableThemes.length > 1 && (
+
+                        <div className="theme-filters">
+
+                            {availableThemes.map(
+                                (theme) => (
+
+                                    <button
+                                        key={theme}
+                                        className={
+                                            selectedTheme ===
+                                            theme
+                                                ? "theme-filter active"
+                                                : "theme-filter"
+                                        }
+                                        onClick={() =>
+                                            setSelectedTheme(
+                                                theme
+                                            )
+                                        }
+                                    >
+                                        {theme !== "All" && (
+                                            <span className="theme-filter-icon">
+                                                {THEME_ICONS[theme] || "🌍"}
+                                            </span>
+                                        )}
+                                        {theme}
+                                    </button>
+
+                                )
+                            )}
+
+                        </div>
+
+                    )}
+
                 </section>
 
 
@@ -448,6 +507,15 @@ function ExploreTours() {
                                         <span className="explore-active-badge">
                                             ✓ Available
                                         </span>
+
+                                        {tour.theme && (
+
+                                            <span className="explore-theme-badge">
+                                                {THEME_ICONS[tour.theme] || "🌍"}{" "}
+                                                {tour.theme}
+                                            </span>
+
+                                        )}
 
                                     </div>
 

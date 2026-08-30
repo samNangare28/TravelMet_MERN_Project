@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
+import BookTourModal from "../components/BookTourModal";
+import { THEME_ICONS } from "../Data/tourThemes";
 import "../Css/TourDetails.css";
 
 function TourDetails() {
@@ -43,6 +45,9 @@ function TourDetails() {
 
     const [bookingError, setBookingError] =
         useState("");
+
+    const [showBookingModal, setShowBookingModal] =
+        useState(false);
 
 
     // =====================================================
@@ -278,7 +283,11 @@ function TourDetails() {
     // BOOK TOUR
     // =====================================================
 
-    const handleBookTour = async () => {
+    // =====================================================
+    // OPEN BOOKING FORM
+    // =====================================================
+
+    const openBookingModal = () => {
 
         const token =
             localStorage.getItem("token");
@@ -307,9 +316,29 @@ function TourDetails() {
         }
 
 
-        // =================================================
-        // PREVENT DOUBLE CLICK
-        // =================================================
+        setBookingError("");
+        setShowBookingModal(true);
+
+    };
+
+
+    // =====================================================
+    // SUBMIT BOOKING FORM
+    // =====================================================
+
+    const handleConfirmBooking = async (formValues) => {
+
+        const token =
+            localStorage.getItem("token");
+
+
+        if (!token) {
+
+            setShowBookingModal(false);
+            return;
+
+        }
+
 
         if (bookingLoading) {
 
@@ -319,9 +348,7 @@ function TourDetails() {
 
 
         setBookingLoading(true);
-
         setBookingMessage("");
-
         setBookingError("");
 
 
@@ -332,7 +359,7 @@ function TourDetails() {
 
                     `/api/tours/${id}/book`,
 
-                    {},
+                    formValues,
 
                     {
 
@@ -372,6 +399,8 @@ function TourDetails() {
                     response.data.message ||
                     "Tour registered successfully 🎉"
                 );
+
+                setShowBookingModal(false);
 
             }
 
@@ -713,6 +742,15 @@ function TourDetails() {
                     <span className="tour-details-destination">
                         📍 {tour.destination}
                     </span>
+
+                    {tour.theme && (
+
+                        <span className="tour-details-theme-badge">
+                            {THEME_ICONS[tour.theme] || "🌍"}{" "}
+                            {tour.theme}
+                        </span>
+
+                    )}
 
                     <h1>
                         {tour.title}
@@ -1290,7 +1328,7 @@ function TourDetails() {
                             <button
                                 className="tour-book-btn"
                                 onClick={
-                                    handleBookTour
+                                    openBookingModal
                                 }
                                 disabled={
                                     bookingLoading ||
@@ -1362,6 +1400,20 @@ function TourDetails() {
                 </footer>
 
             </main>
+
+
+            {showBookingModal && (
+
+                <BookTourModal
+                    tour={tour}
+                    remainingTravelers={remainingTravelers}
+                    loading={bookingLoading}
+                    errorMessage={bookingError}
+                    onConfirm={handleConfirmBooking}
+                    onClose={() => setShowBookingModal(false)}
+                />
+
+            )}
 
         </div>
 

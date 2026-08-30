@@ -1151,7 +1151,23 @@ function CompanyDashboard() {
                                                                 <div>
 
                                                                     <span>
-                                                                        BOOKED
+                                                                        SEATS BOOKED
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {
+                                                                            currentBooking.bookedTravelers ??
+                                                                            currentBooking.count
+                                                                        }
+                                                                    </strong>
+
+                                                                </div>
+
+
+                                                                <div>
+
+                                                                    <span>
+                                                                        BOOKINGS
                                                                     </span>
 
                                                                     <strong>
@@ -1249,6 +1265,7 @@ function CompanyDashboard() {
                                                                                                     user.profileImage
                                                                                                 }
                                                                                                 alt={
+                                                                                                    booking.contactName ||
                                                                                                     fullName ||
                                                                                                     user.username ||
                                                                                                     "Traveler"
@@ -1270,6 +1287,7 @@ function CompanyDashboard() {
 
                                                                                         <strong>
                                                                                             {
+                                                                                                booking.contactName ||
                                                                                                 fullName ||
                                                                                                 user.username ||
                                                                                                 "Traveler"
@@ -1277,17 +1295,37 @@ function CompanyDashboard() {
                                                                                         </strong>
 
                                                                                         <span>
+                                                                                            📧{" "}
                                                                                             {
+                                                                                                booking.contactEmail ||
                                                                                                 user.email ||
                                                                                                 "Email not available"
                                                                                             }
                                                                                         </span>
 
+                                                                                        {booking.contactPhone && (
+                                                                                            <span>
+                                                                                                📞{" "}
+                                                                                                {
+                                                                                                    booking.contactPhone
+                                                                                                }
+                                                                                            </span>
+                                                                                        )}
+
                                                                                         {user.username && (
                                                                                             <small>
-                                                                                                @
+                                                                                                Account: @
                                                                                                 {
                                                                                                     user.username
+                                                                                                }
+                                                                                            </small>
+                                                                                        )}
+
+                                                                                        {booking.specialRequests && (
+                                                                                            <small className="tour-booking-special-requests">
+                                                                                                📝{" "}
+                                                                                                {
+                                                                                                    booking.specialRequests
                                                                                                 }
                                                                                             </small>
                                                                                         )}
@@ -1295,9 +1333,22 @@ function CompanyDashboard() {
                                                                                     </div>
 
 
-                                                                                    <span className="tour-booking-confirmed">
-                                                                                        Confirmed
-                                                                                    </span>
+                                                                                    <div className="tour-booking-meta">
+
+                                                                                        <span className="tour-booking-travelers-badge">
+                                                                                            {
+                                                                                                booking.numberOfTravelers || 1
+                                                                                            }{" "}
+                                                                                            {(booking.numberOfTravelers || 1) === 1
+                                                                                                ? "traveler"
+                                                                                                : "travelers"}
+                                                                                        </span>
+
+                                                                                        <span className="tour-booking-confirmed">
+                                                                                            Confirmed
+                                                                                        </span>
+
+                                                                                    </div>
 
                                                                                 </div>
 

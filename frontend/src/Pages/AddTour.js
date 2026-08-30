@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { TOUR_THEMES } from "../Data/tourThemes";
 import "../Css/AddTour.css";
 
 function AddTour() {
@@ -19,7 +20,8 @@ function AddTour() {
         endDate: "",
         duration: "",
         maxTravelers: "",
-        image: ""
+        image: "",
+        theme: "Other"
     });
 
     const [loading, setLoading] = useState(false);
@@ -179,7 +181,10 @@ function AddTour() {
                             Number(formData.maxTravelers),
 
                         image:
-                            formData.image.trim()
+                            formData.image.trim(),
+
+                        theme:
+                            formData.theme
                     },
 
                     {
@@ -381,6 +386,43 @@ function AddTour() {
                                 maxLength="150"
                                 disabled={loading}
                             />
+
+                        </div>
+
+
+                        {/* THEME */}
+
+                        <div className="add-tour-field">
+
+                            <label>
+                                Tour Theme *
+                            </label>
+
+                            <select
+                                name="theme"
+                                value={
+                                    formData.theme
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                disabled={loading}
+                            >
+
+                                {TOUR_THEMES.map(
+                                    (themeOption) => (
+
+                                        <option
+                                            key={themeOption}
+                                            value={themeOption}
+                                        >
+                                            {themeOption}
+                                        </option>
+
+                                    )
+                                )}
+
+                            </select>
 
                         </div>
 
