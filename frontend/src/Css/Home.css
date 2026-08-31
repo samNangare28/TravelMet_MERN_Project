@@ -3,6 +3,18 @@
    Premium Travel UI
 ===================================================== */
 /* =========================================================
+   GLOBAL RESET (fixes width/overflow bugs caused by padding
+   being added on top of explicit widths)
+========================================================= */
+
+.home,
+.home *,
+.home *::before,
+.home *::after {
+    box-sizing: border-box;
+}
+
+/* =========================================================
    TRAVELMET HOME
    HERO + STATS
 ========================================================= */
@@ -13,7 +25,7 @@
     background: #f7f5ef;
     color: #101828;
     font-family: "Poppins", sans-serif;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 
@@ -201,7 +213,10 @@
 ========================================================= */
 
 .hero-buttons {
+    width: 100%;
+
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 
@@ -214,6 +229,8 @@
 .primary-btn,
 .secondary-btn {
     min-height: 52px;
+
+    width: 100%;
 
     padding: 0 27px;
 
@@ -440,6 +457,18 @@
         background-position: center center;
     }
 
+    .hero-inner {
+        width: min(900px, calc(100% - 70px));
+    }
+
+    .hero-content {
+        /* fixed 600px width previously overflowed / got clipped
+           on viewports narrower than ~740px because .hero has
+           overflow:hidden. Made fluid instead. */
+        width: 100%;
+        max-width: 600px;
+    }
+
     .hero h1 {
         font-size: 58px;
     }
@@ -463,6 +492,65 @@
 
     .stat-item:nth-child(-n + 2) {
         border-bottom: 1px solid #eaecf0;
+    }
+
+
+    /* FEATURES — 3 columns were too cramped between 650–1000px */
+    .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .feature-main {
+        grid-column: 1 / -1;
+    }
+
+
+    /* COMPANY — switch to single column earlier so text and
+       the 420px-wide card aren't squeezed into ~350px halves */
+    .company-section {
+        grid-template-columns: 1fr;
+
+        gap: 45px;
+
+        text-align: center;
+    }
+
+    .company-content > p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .company-list {
+        text-align: left;
+    }
+
+
+    /* COMMUNITY — same reasoning as company section above */
+    .community-section {
+        grid-template-columns: 1fr;
+
+        gap: 45px;
+    }
+
+    .community-content {
+        text-align: center;
+    }
+
+    .community-content > p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .community-visual {
+        min-height: 330px;
+    }
+
+    .community-image {
+        height: 270px;
+    }
+
+    .community-small-image {
+        height: 155px;
     }
 }
 
@@ -541,12 +629,6 @@
     .hero-buttons a {
         width: 100%;
         max-width: 300px;
-    }
-
-
-    .hero-buttons .primary-btn,
-    .hero-buttons .secondary-btn {
-        width: 100%;
     }
 
 
@@ -1209,6 +1291,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    gap: 10px;
 }
 
 .ai-input-row > div,
@@ -1217,6 +1301,8 @@
     flex-direction: column;
 
     gap: 6px;
+
+    min-width: 0;
 }
 
 .ai-input-row small,
@@ -1235,12 +1321,16 @@
 
     font-size: 10px;
     font-weight: 500;
+
+    overflow-wrap: anywhere;
 }
 
 .ai-input-row > span {
     color: #ff7617;
 
     font-size: 15px;
+
+    flex-shrink: 0;
 }
 
 .ai-input-grid {
@@ -1339,6 +1429,8 @@
     width: 44px;
     height: 44px;
 
+    flex-shrink: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1360,6 +1452,8 @@
     flex-direction: column;
 
     gap: 3px;
+
+    min-width: 0;
 }
 
 .company-header strong {
@@ -1377,6 +1471,8 @@
 .verified {
     width: 25px;
     height: 25px;
+
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;
@@ -1435,6 +1531,8 @@
 .company-footer {
     display: flex;
 
+    flex-wrap: wrap;
+
     gap: 10px;
 
     margin-top: 27px;
@@ -1450,6 +1548,8 @@
     color: #6f7988;
 
     font-size: 8px;
+
+    white-space: nowrap;
 }
 
 .company-content h2 {
@@ -1692,6 +1792,8 @@
     right: 12%;
     bottom: 35px;
 
+    max-width: calc(100% - 24px);
+
     padding: 13px 16px;
 
     display: flex;
@@ -1715,6 +1817,8 @@
     color: #ff7617;
 
     font-size: 17px;
+
+    flex-shrink: 0;
 }
 
 .community-note div {
@@ -1723,6 +1827,8 @@
     flex-direction: column;
 
     gap: 3px;
+
+    min-width: 0;
 }
 
 .community-note strong {
@@ -1874,7 +1980,11 @@
 }
 
 .cta-buttons {
+    width: 100%;
+
     display: flex;
+
+    flex-wrap: wrap;
 
     justify-content: center;
     align-items: center;
@@ -1895,18 +2005,6 @@
 
     .hero {
         min-height: 600px;
-    }
-
-    .hero-inner {
-        width: min(900px, calc(100% - 70px));
-    }
-
-    .hero-content {
-        width: 600px;
-    }
-
-    .hero h1 {
-        font-size: 62px;
     }
 
     .stats {
@@ -1943,14 +2041,6 @@
     .ai-preview {
         justify-content: flex-start;
     }
-
-    .company-section {
-        gap: 50px;
-    }
-
-    .community-section {
-        gap: 50px;
-    }
 }
 
 
@@ -1982,6 +2072,7 @@
 
     .hero-content {
         width: 100%;
+        max-width: 100%;
 
         padding: 60px 0 80px;
 
@@ -2118,6 +2209,10 @@
         gap: 14px;
     }
 
+    .feature-main {
+        grid-column: auto;
+    }
+
     .feature-card {
         min-height: auto;
 
@@ -2165,24 +2260,9 @@
     .company-section {
         width: calc(100% - 30px);
 
-        grid-template-columns: 1fr;
-
         gap: 45px;
 
         margin-bottom: 75px;
-    }
-
-    .company-content {
-        text-align: center;
-    }
-
-    .company-content > p {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .company-list {
-        text-align: left;
     }
 
     .company-body h3 {
@@ -2199,34 +2279,11 @@
     .community-section {
         width: calc(100% - 30px);
 
-        grid-template-columns: 1fr;
-
         gap: 45px;
 
         padding: 65px 0;
 
         margin-bottom: 75px;
-    }
-
-    .community-content {
-        text-align: center;
-    }
-
-    .community-content > p {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .community-visual {
-        min-height: 330px;
-    }
-
-    .community-image {
-        height: 270px;
-    }
-
-    .community-small-image {
-        height: 155px;
     }
 
     .community-note {
@@ -2283,6 +2340,7 @@
 
     .cta-buttons a {
         width: 100%;
+        max-width: 320px;
     }
 
     .cta-buttons .primary-btn,
