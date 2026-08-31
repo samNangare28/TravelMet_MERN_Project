@@ -1,12 +1,3 @@
-/* =====================================================
-   TRAVELMET HOME PAGE
-   Premium Travel UI
-===================================================== */
-/* =========================================================
-   GLOBAL RESET (fixes width/overflow bugs caused by padding
-   being added on top of explicit widths)
-========================================================= */
-
 .home,
 .home *,
 .home *::before,
@@ -851,9 +842,6 @@
 }
 
 
-/* =====================================================
-   FEATURE SECTION
-===================================================== */
 
 .feature-section {
     width: min(1120px, calc(100% - 50px));
@@ -898,9 +886,6 @@
         0 18px 35px rgba(27, 35, 48, 0.08);
 }
 
-.feature-main {
-    border-top: 3px solid #ff7617;
-}
 
 .feature-top {
     display: flex;
