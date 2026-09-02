@@ -38,6 +38,8 @@ function Footer() {
 
                     <Link to="/community">Community</Link>
 
+                    <Link to="/explore-tours">Explore Tours</Link>
+
                     <Link to="/contact">Contact</Link>
 
                 </div>
